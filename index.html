@@ -1,127 +1,127 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Linkchain — Criar perfil</title>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;min-height:100vh;background:linear-gradient(180deg,#071027 0%, #071b2b 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:24px}
-    .card{width:100%;max-width:880px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-    h1{font-size:20px;margin:0}
-    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:#042027;font-weight:600;cursor:pointer;transition:.2s}
-    button:hover{opacity:.8}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text],textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-    .profile-preview{background:#051021;padding:12px;border-radius:10px;display:flex;flex-direction:column;align-items:center;transition:background .3s,color .3s}
-    .avatar{width:120px;height:120px;border-radius:16px;background:#0b1220;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .links{margin-top:12px;width:100%;text-align:center}
-    .link-item{display:flex;gap:8px;margin-bottom:8px}
-    .link-item input{flex:1}
-    .small{font-size:13px;color:var(--muted)}
-    .danger{background:#f87171}
-    .muted-block{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
-    footer{margin-top:12px;display:flex;gap:8px;justify-content:flex-end}
-    @media(max-width:880px){.grid{grid-template-columns:1fr;}.avatar{width:96px;height:96px}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Linkchain — Criar perfil</title>
+<style>
+:root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;min-height:100vh;background:linear-gradient(180deg,#071027 0%, #071b2b 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{width:100%;max-width:880px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+h1{font-size:20px;margin:0}
+button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:#042027;font-weight:600;cursor:pointer;transition:.2s}
+button:hover{opacity:.8}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+input[type=text],textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+.profile-preview{background:#051021;padding:12px;border-radius:10px;display:flex;flex-direction:column;align-items:center;transition:background .3s,color .3s}
+.avatar{width:120px;height:120px;border-radius:16px;background:#0b1220;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.links{margin-top:12px;width:100%;text-align:center}
+.link-item{display:flex;gap:8px;margin-bottom:8px}
+.link-item input{flex:1}
+.small{font-size:13px;color:var(--muted)}
+.danger{background:#f87171}
+.muted-block{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
+footer{margin-top:12px;display:flex;gap:8px;justify-content:flex-end}
+@media(max-width:880px){.grid{grid-template-columns:1fr;}.avatar{width:96px;height:96px}}
+</style>
 </head>
 <body>
-  <div class="card">
-    <header>
-      <h1>Linkchain — Criar / Editar Perfil</h1>
-      <div>
-        <span id="walletAddr" class="small">não conectado</span>
-        <button id="connectBtn">Conectar carteira</button>
+<div class="card">
+  <header>
+    <h1>Linkchain — Criar / Editar Perfil</h1>
+    <div>
+      <span id="walletAddr" class="small">não conectado</span>
+      <button id="connectBtn">Conectar carteira</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div>
+      <div style="margin-bottom:12px">
+        <label>Nome</label>
+        <input id="name" type="text" placeholder="Seu nome público (ex: João)" />
       </div>
-    </header>
 
-    <div class="grid">
-      <div>
-        <div style="margin-bottom:12px">
-          <label>Nome</label>
-          <input id="name" type="text" placeholder="Seu nome público (ex: João)" />
-        </div>
+      <div style="margin-bottom:12px">
+        <label>@Handle (único)</label>
+        <input id="handle" type="text" placeholder="@joao" />
+      </div>
 
-        <div style="margin-bottom:12px">
-          <label>@Handle (único)</label>
-          <input id="handle" type="text" placeholder="@joao" />
-        </div>
+      <div style="margin-bottom:12px">
+        <label>Descrição</label>
+        <textarea id="description" rows="2" placeholder="Escreva algo sobre você"></textarea>
+      </div>
 
-        <div style="margin-bottom:12px">
-          <label>Descrição</label>
-          <textarea id="description" rows="2" placeholder="Escreva algo sobre você"></textarea>
-        </div>
+      <div style="margin-bottom:12px">
+        <label>Foto (URL)</label>
+        <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
+      </div>
 
-        <div style="margin-bottom:12px">
-          <label>Foto (URL)</label>
-          <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
-        </div>
-
-        <div id="linksBox" style="margin-bottom:12px">
-          <label>Links (rede social, site, etc.)</label>
-          <div id="linksList"></div>
-          <div style="margin-top:8px">
-            <button id="addLinkBtn" type="button">+ Adicionar link</button>
-          </div>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label>Cor de fundo</label>
-          <input id="bgColor" type="color" value="#071027" />
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label>Cor do botão</label>
-          <input id="accentColor" type="color" value="#06b6d4" />
-        </div>
-
-        <div style="margin-bottom:12px">
-          <label>Cor do texto</label>
-          <input id="textColor" type="color" value="#ffffff" />
-        </div>
-
-        <div class="muted-block small" style="margin-bottom:12px">
-          Personalize sua página e veja as mudanças ao vivo no painel à direita.
-        </div>
-
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="saveBtn">Salvar na blockchain</button>
-          <button id="previewBtn" type="button" class="danger">Abrir página pública</button>
+      <div id="linksBox" style="margin-bottom:12px">
+        <label>Links (rede social, site, etc.)</label>
+        <div id="linksList"></div>
+        <div style="margin-top:8px">
+          <button id="addLinkBtn" type="button">+ Adicionar link</button>
         </div>
       </div>
 
-      <aside>
-        <div class="profile-preview" id="previewBox">
-          <div class="avatar"><img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover"/></div>
-          <div style="margin-top:8px;text-align:center">
-            <div id="previewName" style="font-weight:700">Nome</div>
-            <div id="previewHandle" class="small">@handle</div>
-            <div id="previewDescription" class="small">Descrição</div>
-            <div id="previewAddr" class="small">endereço</div>
-          </div>
-          <div class="links" id="previewLinks"></div>
-        </div>
-        <div style="margin-top:12px;font-size:13px;color:var(--muted)">Link público (após salvar):</div>
-        <div id="publicLink" class="small" style="word-break:break-all;">—</div>
-      </aside>
+      <div style="margin-bottom:12px">
+        <label>Cor de fundo</label>
+        <input id="bgColor" type="color" value="#071027" />
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label>Cor do botão</label>
+        <input id="accentColor" type="color" value="#06b6d4" />
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label>Cor do texto</label>
+        <input id="textColor" type="color" value="#ffffff" />
+      </div>
+
+      <div class="muted-block small" style="margin-bottom:12px">
+        Personalize sua página e veja as mudanças ao vivo no painel à direita.
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="saveBtn">Salvar na blockchain</button>
+        <button id="previewBtn" type="button" class="danger">Abrir página pública</button>
+      </div>
     </div>
 
-    <footer>
-      <div class="small">Rede: <span id="networkName">—</span></div>
-    </footer>
+    <aside>
+      <div class="profile-preview" id="previewBox">
+        <div class="avatar"><img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover"/></div>
+        <div style="margin-top:8px;text-align:center">
+          <div id="previewName" style="font-weight:700">Nome</div>
+          <div id="previewHandle" class="small">@handle</div>
+          <div id="previewDescription" class="small">Descrição</div>
+          <div id="previewAddr" class="small">endereço</div>
+        </div>
+        <div class="links" id="previewLinks"></div>
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:var(--muted)">Link público (após salvar):</div>
+      <div id="publicLink" class="small" style="word-break:break-all;">—</div>
+    </aside>
   </div>
+
+  <footer>
+    <div class="small">Rede: <span id="networkName">—</span></div>
+  </footer>
+</div>
+
 <script type="module">
 import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
 
-const CONTRACT_ADDRESS = "0xe4163d7a6babd00e2e0e425f853a0e2ebc51cfe8";
+const CONTRACT_ADDRESS = "0x8c428af8e890d55503aefa5dc2a05fb3ec272f88";
 const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 
 const ABI = [
   "function setProfile(string name,string description,string photo,string[] links,string bgColor,string accentColor,string textColor,string handle) external",
   "function getProfileByAddress(address user) public view returns (tuple(string name,string description,string photo,string[] links,string bgColor,string accentColor,string textColor,string handle))",
-  "function getAddressByHandle(string handle) public view returns (address)",
   "event ProfileUpdated(address indexed user, string handle)"
 ];
 
@@ -131,122 +131,81 @@ const [
   previewName, previewHandle, previewDescription, previewAddr, avatarImg, previewLinks, saveBtn, bgColor,
   accentColor, textColor, previewBox, networkName, previewBtn
 ] = [
-  "connectBtn", "walletAddr", "name", "handle", "description", "photo", "addLinkBtn", "linksList", 
-  "previewName", "previewHandle", "previewDescription", "previewAddr", "avatarImg", "previewLinks",
-  "saveBtn", "bgColor", "accentColor", "textColor", "previewBox", "networkName", "previewBtn"
+  "connectBtn","walletAddr","name","handle","description","photo","addLinkBtn","linksList",
+  "previewName","previewHandle","previewDescription","previewAddr","avatarImg","previewLinks",
+  "saveBtn","bgColor","accentColor","textColor","previewBox","networkName","previewBtn"
 ].map(el);
 
 let signer = null, userAddress = null;
 
-const isMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
 async function switchToBSC() {
   try {
-    await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x61" }] });
-  } catch (error) {
-    if (error.code === 4902) {
-      await window.ethereum.request({
-        method: "wallet_addEthereumChain",
-        params: [{
-          chainId: "0x61",
-          chainName: "Binance Smart Chain Testnet",
-          rpcUrls: [RPC_URL],
-          nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
-          blockExplorerUrls: ["https://testnet.bscscan.com"]
-        }]
-      });
-    } else console.error(error);
+    await window.ethereum.request({ method: "wallet_switchEthereumChain", params:[{ chainId:"0x61" }] });
+  } catch(e) {
+    if(e.code===4902){
+      await window.ethereum.request({ method:"wallet_addEthereumChain", params:[{
+        chainId:"0x61", chainName:"BSC Testnet", rpcUrls:[RPC_URL], 
+        nativeCurrency:{name:"tBNB",symbol:"tBNB",decimals:18}, blockExplorerUrls:["https://testnet.bscscan.com"]
+      }]});
+    } else console.error(e);
   }
 }
 
 async function tryConnect() {
-  if (window.ethereum) {
-    try {
+  if(window.ethereum){
+    try{
       await switchToBSC();
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      await window.ethereum.request({ method:'eth_requestAccounts' });
       const provider = new ethers.BrowserProvider(window.ethereum);
       signer = await provider.getSigner();
       userAddress = await signer.getAddress();
       walletAddrSpan.textContent = userAddress;
-      const net = await provider.getNetwork();
-      networkName.textContent = net.name || "BSC Testnet";
       previewAddr.textContent = userAddress;
+      networkName.textContent = (await provider.getNetwork()).name || "BSC Testnet";
       connectBtn.textContent = 'Desconectar';
       connectBtn.onclick = disconnect;
       await loadProfileOnChain(userAddress, provider);
-    } catch (e) { console.error(e); }
-  } else {
-    if (isMobile()) {
-      const deep = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
-      window.location.href = deep;
-    } else alert('MetaMask não encontrada.');
-  }
+    } catch(e){ console.error(e); }
+  } else alert('MetaMask não encontrada.');
 }
-
-function disconnect() {
-  signer = null;
-  userAddress = null;
-  walletAddrSpan.textContent = 'não conectado';
-  connectBtn.textContent = 'Conectar carteira';
-  connectBtn.onclick = tryConnect;
-}
+function disconnect(){ signer=null; userAddress=null; walletAddrSpan.textContent='não conectado'; connectBtn.textContent='Conectar carteira'; connectBtn.onclick=tryConnect; }
 connectBtn.onclick = tryConnect;
 
-const getLinksData = () => Array.from(linksList.querySelectorAll('.link-item'))
-  .map(el => el.children[1].value) // salva apenas a URL no array
-  .filter(x => x);
+function getLinksData(){ return Array.from(linksList.querySelectorAll('.link-item')).map(el=>el.children[0].value).filter(x=>x); }
 
-function renderPreview() {
+function renderPreview(){
   previewName.textContent = nameInput.value || 'Seu nome';
   previewHandle.textContent = handleInput.value || '@handle';
   previewDescription.textContent = descriptionInput.value || 'Descrição';
   avatarImg.src = photoInput.value || '';
-  previewLinks.innerHTML = '';
-  for (const url of getLinksData()) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.textContent = url;
-    a.target = '_blank';
-    a.style.color = accentColor.value;
-    a.style.display = 'block';
-    a.style.margin = '6px 0';
-    a.style.textDecoration = 'none';
-    a.style.fontWeight = '600';
-    a.style.transition = '.2s';
-    a.onmouseover = () => a.style.opacity = '.7';
-    a.onmouseout = () => a.style.opacity = '1';
+  previewLinks.innerHTML='';
+  for(const url of getLinksData()){
+    const a=document.createElement('a');
+    a.href=url; a.textContent=url; a.target='_blank';
+    a.style.color=accentColor.value; a.style.display='block';
+    a.style.margin='6px 0'; a.style.textDecoration='none'; a.style.fontWeight='600'; a.style.transition='.2s';
+    a.onmouseover=()=>a.style.opacity='.7'; a.onmouseout=()=>a.style.opacity='1';
     previewLinks.appendChild(a);
   }
-  previewBox.style.background = bgColor.value;
-  previewBox.style.color = textColor.value;
+  previewBox.style.background=bgColor.value; previewBox.style.color=textColor.value;
 }
 
-function addLinkItem(url = '') {
-  const div = document.createElement('div');
-  div.className = 'link-item';
-  const inUrl = document.createElement('input');
-  inUrl.placeholder = 'https://...';
-  inUrl.value = url;
-  const del = document.createElement('button');
-  del.textContent = 'x';
-  del.onclick = () => { div.remove(); renderPreview(); };
-  div.append(inUrl, del);
-  linksList.appendChild(div);
-  inUrl.oninput = renderPreview;
-  renderPreview();
+function addLinkItem(url=''){
+  const div=document.createElement('div'); div.className='link-item';
+  const inUrl=document.createElement('input'); inUrl.placeholder='https://...'; inUrl.value=url;
+  const del=document.createElement('button'); del.textContent='x'; del.onclick=()=>{div.remove(); renderPreview();};
+  div.append(inUrl, del); linksList.appendChild(div); inUrl.oninput=renderPreview; renderPreview();
 }
+addLinkBtn.onclick=()=>addLinkItem(); addLinkItem('https://');
 
-addLinkBtn.onclick = () => addLinkItem();
-addLinkItem('https://');
+[nameInput, handleInput, descriptionInput, photoInput, bgColor, accentColor, textColor].forEach(el=>el.oninput=renderPreview);
 
-[nameInput, handleInput, descriptionInput, photoInput, bgColor, accentColor, textColor].forEach(el => el.oninput = renderPreview);
-
-async function saveProfile() {
-  if (!signer) return alert('Conecte sua carteira.');
-  const linksArray = getLinksData();
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-  try {
-    const tx = await contract.setProfile(
+async function saveProfile(){
+  if(!signer)return alert('Conecte sua carteira.');
+  const linksArray=getLinksData();
+  const contract=new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+  try{
+    const tx=await contract.setProfile(
       nameInput.value,
       descriptionInput.value,
       photoInput.value,
@@ -259,34 +218,28 @@ async function saveProfile() {
     alert('Confirme a transação na MetaMask.');
     await tx.wait();
     alert('Perfil salvo com sucesso na blockchain BSC!');
-  } catch (e) { alert('Erro: ' + e.message); }
+  } catch(e){ alert('Erro: '+e.message); }
 }
-saveBtn.onclick = saveProfile;
+saveBtn.onclick=saveProfile;
 
-previewBtn.onclick = () => {
-  if (!userAddress) return alert('Conecte sua carteira antes de abrir a página pública.');
-  const url = `profile.html?addr=${userAddress}`;
-  window.open(url, '_blank');
-};
+previewBtn.onclick=()=>{ if(!userAddress)return alert('Conecte sua carteira.'); window.open(`profile.html?addr=${userAddress}`,'_blank'); };
 
-async function loadProfileOnChain(addr, provider) {
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-  try {
-    const profile = await contract.getProfileByAddress(addr);
-    nameInput.value = profile.name || '';
-    handleInput.value = profile.handle || '';
-    descriptionInput.value = profile.description || '';
-    photoInput.value = profile.photo || '';
-    linksList.innerHTML = '';
-    (profile.links || []).forEach(url => addLinkItem(url));
-    bgColor.value = profile.bgColor || '#071027';
-    accentColor.value = profile.accentColor || '#06b6d4';
-    textColor.value = profile.textColor || '#ffffff';
+async function loadProfileOnChain(addr, provider){
+  const contract=new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+  try{
+    const profile=await contract.getProfileByAddress(addr);
+    nameInput.value=profile.name||'';
+    handleInput.value=profile.handle||'';
+    descriptionInput.value=profile.description||'';
+    photoInput.value=profile.photo||'';
+    linksList.innerHTML='';
+    (profile.links||[]).forEach(url=>addLinkItem(url));
+    bgColor.value=profile.bgColor||'#071027';
+    accentColor.value=profile.accentColor||'#06b6d4';
+    textColor.value=profile.textColor||'#ffffff';
     renderPreview();
-  } catch (e) { console.log(e); }
+  } catch(e){ console.log(e); }
 }
 </script>
-
-  
 </body>
 </html>
