@@ -100,94 +100,165 @@
       <div class="small">Rede: <span id="networkName">—</span></div>
     </footer>
   </div>
+<script type="module">
+  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.9.1/dist/ethers.esm.min.js";
 
-  <script type="module">
-    import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.9.1/dist/ethers.esm.min.js";
+  const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
+  const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+  const CHAIN_ID = 97; // BSC Testnet
 
-    const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
-    const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+  const ABI = [
+    "function setProfile(string calldata json) external",
+    "function getProfile(address user) public view returns (string memory)",
+    "event ProfileUpdated(address indexed user, string json)"
+  ];
 
-    const ABI = [
-      "function setProfile(string calldata json) external",
-      "function getProfile(address user) public view returns (string memory)",
-      "event ProfileUpdated(address indexed user, string json)"
-    ];
+  const el = (id)=>document.getElementById(id);
+  const [connectBtn,walletAddrSpan,nameInput,photoInput,addLinkBtn,linksList,previewName,previewAddr,avatarImg,previewLinks,saveBtn,bgColor,accentColor,textColor,previewBox,networkName]=["connectBtn","walletAddr","name","photo","addLinkBtn","linksList","previewName","previewAddr","avatarImg","previewLinks","saveBtn","bgColor","accentColor","textColor","previewBox","networkName"].map(el);
 
-    const el = (id)=>document.getElementById(id);
-    const [connectBtn,walletAddrSpan,nameInput,photoInput,addLinkBtn,linksList,previewName,previewAddr,avatarImg,previewLinks,saveBtn,bgColor,accentColor,textColor,previewBox,networkName]=["connectBtn","walletAddr","name","photo","addLinkBtn","linksList","previewName","previewAddr","avatarImg","previewLinks","saveBtn","bgColor","accentColor","textColor","previewBox","networkName"].map(el);
+  let signer=null,userAddress=null;
 
-    let signer=null,userAddress=null;
+  const isMobile=()=>/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    const isMobile=()=>/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    async function tryConnect(){
-      if(window.ethereum){
-        try{
-          await window.ethereum.request({method:'eth_requestAccounts'});
-          const provider=new ethers.BrowserProvider(window.ethereum);
-          signer=await provider.getSigner();
-          userAddress=await signer.getAddress();
-          walletAddrSpan.textContent=userAddress;
-          networkName.textContent=(await provider.getNetwork()).name||'desconhecida';
-          previewAddr.textContent=userAddress;
-          connectBtn.textContent='Desconectar';
-          connectBtn.onclick=disconnect;
-          await loadProfileOnChain(userAddress,provider);
-        }catch(e){console.error(e);}
-      }else{
-        if(isMobile()){
-          const deep=`https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
-          window.open(deep,'_blank');
-        }else alert('MetaMask não encontrada');
+  async function switchToBSC() {
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x61" }], // 97 em hexadecimal
+      });
+    } catch (error) {
+      if (error.code === 4902) {
+        // Rede não adicionada — adiciona automaticamente
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: "0x61",
+            chainName: "Binance Smart Chain Testnet",
+            rpcUrls: [RPC_URL],
+            nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
+            blockExplorerUrls: ["https://testnet.bscscan.com"]
+          }]
+        });
+      } else {
+        console.error(error);
       }
     }
+  }
 
-    function disconnect(){signer=null;userAddress=null;walletAddrSpan.textContent='não conectado';connectBtn.textContent='Conectar carteira';connectBtn.onclick=tryConnect;}
+  async function tryConnect(){
+    if(window.ethereum){
+      try{
+        await switchToBSC(); // força trocar pra BSC antes da conexão
+        await window.ethereum.request({method:'eth_requestAccounts'});
+        const provider=new ethers.BrowserProvider(window.ethereum);
+        signer=await provider.getSigner();
+        userAddress=await signer.getAddress();
+        walletAddrSpan.textContent=userAddress;
+        const net=await provider.getNetwork();
+        networkName.textContent=net.name || "BSC Testnet";
+        previewAddr.textContent=userAddress;
+        connectBtn.textContent='Desconectar';
+        connectBtn.onclick=disconnect;
+        await loadProfileOnChain(userAddress,provider);
+      }catch(e){console.error(e);}
+    }else{
+      if(isMobile()){
+        const deep=`https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
+        window.location.href=deep;
+      }else alert('MetaMask não encontrada');
+    }
+  }
+
+  function disconnect(){
+    signer=null;
+    userAddress=null;
+    walletAddrSpan.textContent='não conectado';
+    connectBtn.textContent='Conectar carteira';
     connectBtn.onclick=tryConnect;
+  }
+  connectBtn.onclick=tryConnect;
 
-    function addLinkItem(label='',url=''){
-      const div=document.createElement('div');div.className='link-item';
-      const inLabel=document.createElement('input');inLabel.placeholder='rótulo';inLabel.value=label;
-      const inUrl=document.createElement('input');inUrl.placeholder='https://...';inUrl.value=url;
-      const del=document.createElement('button');del.textContent='x';del.onclick=()=>{div.remove();renderPreview();};
-      div.append(inLabel,inUrl,del);linksList.appendChild(div);
-      inLabel.oninput=inUrl.oninput=renderPreview;renderPreview();
+  function addLinkItem(label='',url=''){
+    const div=document.createElement('div');
+    div.className='link-item';
+    const inLabel=document.createElement('input');
+    inLabel.placeholder='rótulo';
+    inLabel.value=label;
+    const inUrl=document.createElement('input');
+    inUrl.placeholder='https://...';
+    inUrl.value=url;
+    const del=document.createElement('button');
+    del.textContent='x';
+    del.onclick=()=>{div.remove();renderPreview();};
+    div.append(inLabel,inUrl,del);
+    linksList.appendChild(div);
+    inLabel.oninput=inUrl.oninput=renderPreview;
+    renderPreview();
+  }
+
+  addLinkBtn.onclick=()=>addLinkItem();
+  addLinkItem('Website','https://');
+
+  const getLinksData=()=>Array.from(linksList.querySelectorAll('.link-item')).map(el=>({label:el.children[0].value,url:el.children[1].value})).filter(x=>x.url);
+
+  function renderPreview(){
+    previewName.textContent=nameInput.value||'Seu nome';
+    avatarImg.src=photoInput.value||'';
+    previewLinks.innerHTML='';
+    for(const l of getLinksData()){
+      const a=document.createElement('a');
+      a.href=l.url;
+      a.textContent=l.label;
+      a.target='_blank';
+      a.style.color=accentColor.value;
+      a.style.display='block';
+      a.style.margin='6px 0';
+      a.style.textDecoration='none';
+      a.style.fontWeight='600';
+      a.style.transition='.2s';
+      a.onmouseover=()=>a.style.opacity='.7';
+      a.onmouseout=()=>a.style.opacity='1';
+      previewLinks.appendChild(a);
     }
+    previewBox.style.background=bgColor.value;
+    previewBox.style.color=textColor.value;
+  }
 
-    addLinkBtn.onclick=()=>addLinkItem();addLinkItem('Website','https://');
+  [nameInput,photoInput,bgColor,accentColor,textColor].forEach(el=>el.oninput=renderPreview);
 
-    const getLinksData=()=>Array.from(linksList.querySelectorAll('.link-item')).map(el=>({label:el.children[0].value,url:el.children[1].value})).filter(x=>x.url);
+  async function saveProfile(){
+    if(!signer)return alert('Conecte sua carteira.');
+    const profile={name:nameInput.value,photo:photoInput.value,links:getLinksData(),theme:{bg:bgColor.value,accent:accentColor.value,text:textColor.value}};
+    const contract=new ethers.Contract(CONTRACT_ADDRESS,ABI,signer);
+    try{
+      const tx=await contract.setProfile(JSON.stringify(profile));
+      alert('Confirme a transação na MetaMask.');
+      await tx.wait();
+      alert('Perfil salvo com sucesso na blockchain BSC!');
+    }catch(e){alert('Erro: '+e.message);}
+  }
+  saveBtn.onclick=saveProfile;
 
-    function renderPreview(){
-      previewName.textContent=nameInput.value||'Seu nome';
-      avatarImg.src=photoInput.value||'';
-      previewLinks.innerHTML='';
-      for(const l of getLinksData()){
-        const a=document.createElement('a');a.href=l.url;a.textContent=l.label;a.target='_blank';a.style.color=accentColor.value;a.style.display='block';a.style.margin='6px 0';a.style.textDecoration='none';a.style.fontWeight='600';a.style.transition='.2s';a.onmouseover=()=>a.style.opacity='.7';a.onmouseout=()=>a.style.opacity='1';previewLinks.appendChild(a);
+  async function loadProfileOnChain(addr,provider){
+    const contract=new ethers.Contract(CONTRACT_ADDRESS,ABI,provider);
+    try{
+      const json=await contract.getProfile(addr);
+      if(json){
+        const obj=JSON.parse(json);
+        nameInput.value=obj.name||'';
+        photoInput.value=obj.photo||'';
+        linksList.innerHTML='';
+        (obj.links||[]).forEach(l=>addLinkItem(l.label,l.url));
+        if(obj.theme){
+          bgColor.value=obj.theme.bg||'#071027';
+          accentColor.value=obj.theme.accent||'#06b6d4';
+          textColor.value=obj.theme.text||'#ffffff';
+        }
+        renderPreview();
       }
-      previewBox.style.background=bgColor.value;
-      previewBox.style.color=textColor.value;
-    }
+    }catch(e){console.log(e);}
+  }
+</script>
 
-    [nameInput,photoInput,bgColor,accentColor,textColor].forEach(el=>el.oninput=renderPreview);
-
-    async function saveProfile(){
-      if(!signer)return alert('Conecte sua carteira.');
-      const profile={name:nameInput.value,photo:photoInput.value,links:getLinksData(),theme:{bg:bgColor.value,accent:accentColor.value,text:textColor.value}};
-      const contract=new ethers.Contract(CONTRACT_ADDRESS,ABI,signer);
-      try{
-        const tx=await contract.setProfile(JSON.stringify(profile));
-        alert('Confirme a transação.');await tx.wait();alert('Perfil salvo!');
-      }catch(e){alert('Erro: '+e.message);}
-    }
-    saveBtn.onclick=saveProfile;
-
-    async function loadProfileOnChain(addr,provider){
-      const contract=new ethers.Contract(CONTRACT_ADDRESS,ABI,provider);
-      try{
-        const json=await contract.getProfile(addr);
-        if(json){const obj=JSON.parse(json);nameInput.value=obj.name||'';photoInput.value=obj.photo||'';linksList.innerHTML='';(obj.links||[]).forEach(l=>addLinkItem(l.label,l.url));if(obj.theme){bgColor.value=obj.theme.bg||'#071027';accentColor.value=obj.theme.accent||'#06b6d4';textColor.value=obj.theme.text||'#ffffff';}renderPreview();}
-      }catch(e){console.log(e);}
-    }
-  </script>
-
+ 
+    
