@@ -6,22 +6,24 @@
   <title>Linkchain — Criar perfil</title>
   <style>
     :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: rgba(30, 41, 59, 0.7);
-      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      --accent-primary: #3b82f6;
-      --accent-secondary: #06b6d4;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --border-light: rgba(255, 255, 255, 0.1);
-      --border-medium: rgba(255, 255, 255, 0.15);
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-      --shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+      --bg-primary: #0B0E11;
+      --bg-secondary: #161A1E;
+      --bg-card: rgba(22, 26, 30, 0.9);
+      --bg-gradient: linear-gradient(135deg, #0B0E11 0%, #1A1D23 100%);
+      --accent-primary: #F0B90B;
+      --accent-secondary: #F8D33A;
+      --accent-gradient: linear-gradient(135deg, #F0B90B 0%, #F8D33A 100%);
+      --text-primary: #EAECEF;
+      --text-secondary: #B7BDC6;
+      --text-muted: #848E9C;
+      --border-light: rgba(240, 185, 11, 0.1);
+      --border-medium: rgba(240, 185, 11, 0.15);
+      --border-accent: rgba(240, 185, 11, 0.3);
+      --success: #0ECB81;
+      --warning: #F0B90B;
+      --danger: #F6465D;
+      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+      --shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
       --radius-sm: 6px;
       --radius-md: 10px;
       --radius-lg: 16px;
@@ -58,7 +60,8 @@
     }
 
     .card:hover {
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      border-color: var(--border-accent);
     }
 
     header {
@@ -88,13 +91,14 @@
       justify-content: center;
       font-weight: 700;
       font-size: 18px;
+      color: #0B0E11;
     }
 
     h1 {
       font-size: 24px;
       margin: 0;
       font-weight: 700;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      background: var(--accent-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -109,7 +113,7 @@
     .wallet-address {
       font-size: 14px;
       color: var(--text-secondary);
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(11, 14, 17, 0.8);
       padding: 8px 12px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-light);
@@ -124,7 +128,7 @@
       border: none;
       padding: 12px 20px;
       border-radius: var(--radius-md);
-      color: white;
+      color: #0B0E11;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -132,12 +136,13 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+      box-shadow: 0 4px 6px rgba(240, 185, 11, 0.25);
     }
 
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.35);
+      box-shadow: 0 6px 12px rgba(240, 185, 11, 0.35);
+      background: var(--accent-secondary);
     }
 
     button:active {
@@ -152,17 +157,20 @@
     }
 
     button.secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-primary);
+      background: rgba(240, 185, 11, 0.1);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
     }
 
     button.danger {
       background: var(--danger);
-      box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25);
+      color: white;
+      box-shadow: 0 4px 6px rgba(246, 70, 93, 0.25);
     }
 
     button.danger:hover {
-      box-shadow: 0 6px 12px rgba(239, 68, 68, 0.35);
+      box-shadow: 0 6px 12px rgba(246, 70, 93, 0.35);
+      background: #ff5c75;
     }
 
     .grid {
@@ -188,7 +196,7 @@
       padding: 14px 16px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-medium);
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(11, 14, 17, 0.6);
       color: var(--text-primary);
       font-size: 15px;
       transition: all 0.2s ease;
@@ -197,7 +205,7 @@
     input[type=text]:focus, textarea:focus, select:focus {
       outline: none;
       border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.2);
     }
 
     .profile-preview {
@@ -222,7 +230,7 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      background: var(--accent-gradient);
     }
 
     .avatar {
@@ -287,7 +295,7 @@
     }
 
     .muted-block {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(240, 185, 11, 0.03);
       padding: 16px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-light);
@@ -455,7 +463,7 @@
     }
 
     ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.5);
+      background: rgba(11, 14, 17, 0.5);
     }
 
     ::-webkit-scrollbar-thumb {
@@ -511,7 +519,11 @@
           </div>
         </div>
 
-      
+        <!-- Bloco informativo - versão desktop -->
+        <div class="muted-block small desktop-text">
+          Personalize sua página e veja as mudanças ao vivo no painel à direita.
+        </div>
+
         <div class="actions">
           <button id="saveBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -546,8 +558,9 @@
           Personalize sua página e veja as mudanças ao vivo no painel acima.
         </div>
         
-       
-    </aside>
+        <div style="margin-top:16px;font-size:14px;color:var(--text-secondary);font-weight:500">Link público (após salvar):</div>
+        <div id="publicLink" class="small" style="word-break:break-all;margin-top:6px;padding:10px;background:rgba(240,185,11,0.03);border-radius:var(--radius-md);border:1px solid var(--border-light)">—</div>
+      </aside>
     </div>
 
     <footer>
@@ -680,13 +693,13 @@
         a.style.transition = '.2s';
         a.style.padding = '8px 12px';
         a.style.borderRadius = 'var(--radius-md)';
-        a.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+        a.style.backgroundColor = 'rgba(240, 185, 11, 0.1)';
         a.onmouseover = () => {
-          a.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+          a.style.backgroundColor = 'rgba(240, 185, 11, 0.2)';
           a.style.transform = 'translateY(-2px)';
         };
         a.onmouseout = () => {
-          a.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+          a.style.backgroundColor = 'rgba(240, 185, 11, 0.1)';
           a.style.transform = 'translateY(0)';
         };
         previewLinks.appendChild(a);
