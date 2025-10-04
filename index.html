@@ -41,10 +41,113 @@
       background: var(--bg-gradient);
       color: var(--text-primary);
       display: flex;
+      flex-direction: column;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    /* Header Styles */
+    .main-header {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 16px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-primary);
+      border-radius: var(--radius-md);
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
-      line-height: 1.6;
+      font-weight: 700;
+      font-size: 20px;
+      color: #0B0E11;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      margin-left: 32px;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .nav-link:hover {
+      color: var(--accent-primary);
+      background: rgba(240, 185, 11, 0.05);
+    }
+
+    .wallet-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .wallet-address {
+      font-size: 14px;
+      color: var(--text-secondary);
+      background: rgba(11, 14, 17, 0.8);
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
     }
 
     .card {
@@ -64,63 +167,23 @@
       border-color: var(--border-accent);
     }
 
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+    .page-header {
       margin-bottom: 28px;
-      gap: 16px;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--border-light);
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--accent-primary);
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 18px;
-      color: #0B0E11;
-    }
-
-    h1 {
+    .page-title {
       font-size: 24px;
       margin: 0;
       font-weight: 700;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text-primary);
     }
 
-    .wallet-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .wallet-address {
-      font-size: 14px;
+    .page-subtitle {
       color: var(--text-secondary);
-      background: rgba(11, 14, 17, 0.8);
-      padding: 8px 12px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-light);
-      max-width: 180px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: 14px;
+      margin-top: 8px;
     }
 
     button {
@@ -335,23 +398,35 @@
 
     /* --- RESPONSIVIDADE --- */
     @media (max-width: 880px) {
-      body {
-        padding: 16px;
-        align-items: flex-start;
+      .main-header {
+        padding: 12px 20px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .logo-section {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .wallet-section {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .main-content {
+        padding: 20px 16px;
       }
 
       .card {
         padding: 24px;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-
-      h1 {
-        font-size: 22px;
       }
 
       .grid {
@@ -423,7 +498,7 @@
         padding: 20px;
       }
 
-      h1 {
+      .page-title {
         font-size: 20px;
       }
 
@@ -444,6 +519,16 @@
       .avatar {
         width: 100px;
         height: 100px;
+      }
+
+      .logo-text {
+        font-size: 18px;
+      }
+
+      .wallet-address {
+        max-width: 140px;
+        font-size: 12px;
+        padding: 8px 12px;
       }
     }
 
@@ -477,13 +562,23 @@
   </style>
 </head>
 <body>
-  <div class="card">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">L</div>
-        <h1>Linkchain — Criar / Editar Perfil</h1>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <a href="#" class="logo">
+          <div class="logo-icon">L</div>
+          <div class="logo-text">Linkchain</div>
+        </a>
+        <nav class="nav-links">
+          <a href="#" class="nav-link">Início</a>
+          <a href="#" class="nav-link">Explorar</a>
+          <a href="#" class="nav-link">Documentação</a>
+          <a href="#" class="nav-link">Suporte</a>
+        </nav>
       </div>
-      <div class="wallet-info">
+      
+      <div class="wallet-section">
         <span id="walletAddr" class="wallet-address">não conectado</span>
         <button id="connectBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -492,85 +587,95 @@
           Conectar carteira
         </button>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <div class="grid">
-      <div>
-        <div class="form-section">
-          <label for="name">Nome</label>
-          <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
-        </div>
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="card">
+      <div class="page-header">
+        <h1 class="page-title">Criar / Editar Perfil</h1>
+        <p class="page-subtitle">Gerencie sua identidade Web3 na Binance Smart Chain</p>
+      </div>
 
-        <div class="form-section">
-          <label for="photo">Foto (URL)</label>
-          <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
-        </div>
+      <div class="grid">
+        <div>
+          <div class="form-section">
+            <label for="name">Nome</label>
+            <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
+          </div>
 
-        <div class="form-section" id="linksBox">
-          <label>Links (rede social, site, etc.)</label>
-          <div id="linksList"></div>
-          <div style="margin-top:12px">
-            <button id="addLinkBtn" type="button" class="secondary">
+          <div class="form-section">
+            <label for="photo">Foto (URL)</label>
+            <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
+          </div>
+
+          <div class="form-section" id="linksBox">
+            <label>Links (rede social, site, etc.)</label>
+            <div id="linksList"></div>
+            <div style="margin-top:12px">
+              <button id="addLinkBtn" type="button" class="secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor"/>
+                </svg>
+                Adicionar link
+              </button>
+            </div>
+          </div>
+
+          <!-- Bloco informativo - versão desktop -->
+          <div class="muted-block small desktop-text">
+            Personalize sua página e veja as mudanças ao vivo no painel à direita.
+          </div>
+
+          <div class="actions">
+            <button id="saveBtn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor"/>
+                <path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z" fill="currentColor"/>
               </svg>
-              Adicionar link
+              Salvar na blockchain
+            </button>
+            <button id="previewBtn" type="button" class="secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="currentColor"/>
+              </svg>
+              Abrir página pública
             </button>
           </div>
         </div>
 
-        <!-- Bloco informativo - versão desktop -->
-        <div class="muted-block small desktop-text">
-          Personalize sua página e veja as mudanças ao vivo no painel à direita.
-        </div>
-
-        <div class="actions">
-          <button id="saveBtn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z" fill="currentColor"/>
-            </svg>
-            Salvar na blockchain
-          </button>
-          <button id="previewBtn" type="button" class="secondary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="currentColor"/>
-            </svg>
-            Abrir página pública
-          </button>
-        </div>
+        <aside>
+          <div class="profile-preview" id="previewBox">
+            <div class="avatar">
+              <div class="avatar-placeholder" id="avatarPlaceholder">Adicione uma URL de imagem</div>
+              <img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover;display:none"/>
+            </div>
+            <div style="margin-top:12px;text-align:center">
+              <div id="previewName" style="font-weight:700;font-size:20px">Nome</div>
+              <div id="previewAddr" class="small" style="margin-top:4px">endereço</div>
+            </div>
+            <div class="links" id="previewLinks"></div>
+          </div>
+          
+          <!-- Bloco informativo - versão mobile -->
+          <div class="muted-block small mobile-text">
+            Personalize sua página e veja as mudanças ao vivo no painel acima.
+          </div>
+          
+          <div style="margin-top:16px;font-size:14px;color:var(--text-secondary);font-weight:500">Link público (após salvar):</div>
+          <div id="publicLink" class="small" style="word-break:break-all;margin-top:6px;padding:10px;background:rgba(240,185,11,0.03);border-radius:var(--radius-md);border:1px solid var(--border-light)">—</div>
+        </aside>
       </div>
 
-      <aside>
-        <div class="profile-preview" id="previewBox">
-          <div class="avatar">
-            <div class="avatar-placeholder" id="avatarPlaceholder">Adicione uma URL de imagem</div>
-            <img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover;display:none"/>
-          </div>
-          <div style="margin-top:12px;text-align:center">
-            <div id="previewName" style="font-weight:700;font-size:20px">Nome</div>
-            <div id="previewAddr" class="small" style="margin-top:4px">endereço</div>
-          </div>
-          <div class="links" id="previewLinks"></div>
+      <footer>
+        <div class="network-info">
+          <div class="network-indicator"></div>
+          <div class="small">Rede: <span id="networkName">—</span></div>
         </div>
-        
-        <!-- Bloco informativo - versão mobile -->
-        <div class="muted-block small mobile-text">
-          Personalize sua página e veja as mudanças ao vivo no painel acima.
-        </div>
-        
-        <div style="margin-top:16px;font-size:14px;color:var(--text-secondary);font-weight:500">Link público (após salvar):</div>
-        <div id="publicLink" class="small" style="word-break:break-all;margin-top:6px;padding:10px;background:rgba(240,185,11,0.03);border-radius:var(--radius-md);border:1px solid var(--border-light)">—</div>
-      </aside>
+        <div class="small">Linkchain • DApp de Perfil Web3 na BSC</div>
+      </footer>
     </div>
-
-    <footer>
-      <div class="network-info">
-        <div class="network-indicator"></div>
-        <div class="small">Rede: <span id="networkName">—</span></div>
-      </div>
-      <div class="small">Linkchain • DApp de Perfil Web3</div>
-    </footer>
-  </div>
+  </main>
 
   <script type="module">
     import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
