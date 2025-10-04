@@ -1,134 +1,139 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Linkchain — Perfil Público</title>
-  <style>
-    :root{
-      --bg:#071027;
-      --accent:#06b6d4;
-      --text:#ffffff;
-      --muted:#94a3b8;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linkchain — Perfil Público</title>
+<style>
+  :root{
+    --bg:#071027;
+    --card:#0b1220;
+    --accent:#06b6d4;
+    --text:#ffffff;
+    --muted:#94a3b8;
+  }
 
-    body{
-      font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
-      margin:0;
-      min-height:100vh;
-      background:var(--bg);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
+  body{
+    margin:0;
+    font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+  }
 
+  .card{
+    width:100%;
+    max-width:400px;
+    background:var(--card);
+    border-radius:20px;
+    padding:30px 20px;
+    box-shadow:0 8px 30px rgba(2,6,23,0.6);
+    text-align:center;
+  }
+
+  .avatar{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    overflow:hidden;
+    margin:0 auto 16px;
+    background:#1a1f2d;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .name{
+    font-weight:700;
+    font-size:24px;
+    margin-bottom:6px;
+    word-break:break-word;
+  }
+
+  .address{
+    font-size:14px;
+    color:var(--muted);
+    margin-bottom:20px;
+    word-break:break-all;
+  }
+
+  .links{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .links a{
+    display:block;
+    padding:12px 20px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.2s;
+    background:var(--accent);
+    color:#042027;
+  }
+
+  .links a:hover{
+    opacity:0.8;
+    transform:translateY(-2px);
+  }
+
+  .footer{
+    margin-top:20px;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  /* Responsividade */
+  @media(max-width:500px){
     .card{
-      width:100%;
-      max-width:880px;
-      background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
-      border-radius:12px;
-      padding:20px;
-      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+      padding:20px 16px;
     }
-
-    .profile-preview{
-      background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
-      padding:20px;
-      border-radius:12px;
-      text-align:center;
-    }
-
     .avatar{
-      width:120px;
-      height:120px;
-      border-radius:16px;
-      margin:0 auto;
-      overflow:hidden;
-      background:#0b1220;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      width:96px;
+      height:96px;
     }
-
-    .avatar img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-
     .name{
-      font-weight:700;
-      font-size:22px;
-      margin:12px 0 4px 0;
-      word-break:break-word;
+      font-size:20px;
     }
-
-    .address{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:12px;
-      word-break:break-all;
-    }
-
     .links a{
-      display:block;
-      margin:6px 0;
-      text-decoration:none;
-      font-weight:600;
-      transition:.2s;
+      padding:10px 16px;
+      font-size:14px;
     }
+  }
 
-    .links a:hover{
-      opacity:.7;
+  @media(max-width:360px){
+    .avatar{
+      width:80px;
+      height:80px;
     }
-
-    /* Responsividade */
-    @media(max-width:600px){
-      .card{
-        padding:16px;
-      }
-      .profile-preview{
-        padding:16px;
-      }
-      .avatar{
-        width:96px;
-        height:96px;
-      }
-      .name{
-        font-size:18px;
-      }
-      .links a{
-        font-size:14px;
-      }
+    .name{
+      font-size:18px;
     }
-
-    @media(max-width:400px){
-      body{
-        padding:12px;
-      }
-      .avatar{
-        width:80px;
-        height:80px;
-      }
-      .name{
-        font-size:16px;
-      }
-      .links a{
-        font-size:13px;
-      }
+    .links a{
+      font-size:13px;
     }
-  </style>
+  }
+</style>
 </head>
 <body>
   <div class="card">
-    <div class="profile-preview" id="profileBox">
-      <div class="avatar"><img id="avatarImg" src="" alt="Avatar"></div>
-      <div class="name" id="profileName">Carregando...</div>
-      <div class="address" id="profileAddr">—</div>
-      <div class="links" id="profileLinks"></div>
-    </div>
+    <div class="avatar"><img id="avatarImg" src="" alt="Avatar"></div>
+    <div class="name" id="profileName">Carregando...</div>
+    <div class="address" id="profileAddr">—</div>
+    <div class="links" id="profileLinks"></div>
+    <div class="footer">Linkchain — Perfil Público</div>
   </div>
 
   <script type="module">
@@ -146,7 +151,6 @@
     const profileAddr = el('profileAddr');
     const avatarImg = el('avatarImg');
     const profileLinks = el('profileLinks');
-    const profileBox = el('profileBox');
 
     const params = new URLSearchParams(window.location.search);
     const userAddress = params.get('addr');
@@ -176,13 +180,12 @@
               a.href = l.url;
               a.textContent = l.label;
               a.target='_blank';
-              a.style.color = (obj.theme?.accent) || 'var(--accent)';
+              a.style.background = obj.theme?.accent || 'var(--accent)';
+              a.style.color = '#042027';
               profileLinks.appendChild(a);
             });
           }
 
-          profileBox.style.background = obj.theme?.bg || 'var(--bg)';
-          profileBox.style.color = obj.theme?.text || 'var(--text)';
         } else {
           profileName.textContent = "Perfil vazio";
         }
