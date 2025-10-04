@@ -100,8 +100,8 @@
       <div class="small">Rede: <span id="networkName">—</span></div>
     </footer>
   </div>
-<script type="module" src="https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js">
-
+<script type="module">
+  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
 
   const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
   const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
@@ -114,7 +114,15 @@
   ];
 
   const el = (id)=>document.getElementById(id);
-  const [connectBtn,walletAddrSpan,nameInput,photoInput,addLinkBtn,linksList,previewName,previewAddr,avatarImg,previewLinks,saveBtn,bgColor,accentColor,textColor,previewBox,networkName]=["connectBtn","walletAddr","name","photo","addLinkBtn","linksList","previewName","previewAddr","avatarImg","previewLinks","saveBtn","bgColor","accentColor","textColor","previewBox","networkName"].map(el);
+  const [
+    connectBtn,walletAddrSpan,nameInput,photoInput,addLinkBtn,linksList,
+    previewName,previewAddr,avatarImg,previewLinks,saveBtn,bgColor,
+    accentColor,textColor,previewBox,networkName
+  ] = [
+    "connectBtn","walletAddr","name","photo","addLinkBtn","linksList","previewName",
+    "previewAddr","avatarImg","previewLinks","saveBtn","bgColor","accentColor",
+    "textColor","previewBox","networkName"
+  ].map(el);
 
   let signer=null,userAddress=null;
 
@@ -124,11 +132,10 @@
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x61" }], // 97 em hexadecimal
+        params: [{ chainId: "0x61" }],
       });
     } catch (error) {
       if (error.code === 4902) {
-        // Rede não adicionada — adiciona automaticamente
         await window.ethereum.request({
           method: "wallet_addEthereumChain",
           params: [{
@@ -139,16 +146,14 @@
             blockExplorerUrls: ["https://testnet.bscscan.com"]
           }]
         });
-      } else {
-        console.error(error);
-      }
+      } else console.error(error);
     }
   }
 
   async function tryConnect(){
     if(window.ethereum){
       try{
-        await switchToBSC(); // força trocar pra BSC antes da conexão
+        await switchToBSC();
         await window.ethereum.request({method:'eth_requestAccounts'});
         const provider=new ethers.BrowserProvider(window.ethereum);
         signer=await provider.getSigner();
@@ -165,7 +170,7 @@
       if(isMobile()){
         const deep=`https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
         window.location.href=deep;
-      }else alert('MetaMask não encontrada');
+      }else alert('MetaMask não encontrada.');
     }
   }
 
@@ -199,7 +204,9 @@
   addLinkBtn.onclick=()=>addLinkItem();
   addLinkItem('Website','https://');
 
-  const getLinksData=()=>Array.from(linksList.querySelectorAll('.link-item')).map(el=>({label:el.children[0].value,url:el.children[1].value})).filter(x=>x.url);
+  const getLinksData=()=>Array.from(linksList.querySelectorAll('.link-item'))
+    .map(el=>({label:el.children[0].value,url:el.children[1].value}))
+    .filter(x=>x.url);
 
   function renderPreview(){
     previewName.textContent=nameInput.value||'Seu nome';
@@ -259,6 +266,3 @@
     }catch(e){console.log(e);}
   }
 </script>
-
- 
-    
