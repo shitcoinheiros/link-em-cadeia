@@ -5,26 +5,226 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Linkchain — Criar perfil</title>
   <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;min-height:100vh;background:linear-gradient(180deg,#071027 0%, #071b2b 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:24px}
-    .card{width:100%;max-width:880px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-    h1{font-size:20px;margin:0}
-    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:#042027;font-weight:600;cursor:pointer;transition:.2s}
-    button:hover{opacity:.8}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text],textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-    .profile-preview{background:#051021;padding:12px;border-radius:10px;display:flex;flex-direction:column;align-items:center;transition:background .3s,color .3s}
-    .avatar{width:120px;height:120px;border-radius:16px;background:#0b1220;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .links{margin-top:12px;width:100%;text-align:center}
-    .link-item{display:flex;gap:8px;margin-bottom:8px}
-    .link-item input{flex:1}
-    .small{font-size:13px;color:var(--muted)}
-    .danger{background:#f87171}
-    .muted-block{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
-    footer{margin-top:12px;display:flex;gap:8px;justify-content:flex-end}
-    @media(max-width:880px){.grid{grid-template-columns:1fr;}.avatar{width:96px;height:96px}}
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #06b6d4;
+      --muted: #94a3b8;
+    }
+
+    body {
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #071027 0%, #071b2b 100%);
+      color: #e6eef6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 880px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    button {
+      background: var(--accent);
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #042027;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+      font-size: 15px;
+    }
+
+    button:hover { opacity: .8; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type=text], textarea, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: transparent;
+      color: inherit;
+      font-size: 15px;
+    }
+
+    .profile-preview {
+      background: #051021;
+      padding: 16px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background .3s, color .3s;
+      width: 100%;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      background: #0b1220;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .links {
+      margin-top: 12px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .link-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .link-item input {
+      flex: 1;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .danger {
+      background: #f87171;
+      color: white;
+    }
+
+    .muted-block {
+      background: rgba(255,255,255,0.02);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    footer {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 880px) {
+      body {
+        padding: 12px;
+        align-items: flex-start;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        order: -1;
+      }
+
+      .profile-preview {
+        margin-bottom: 20px;
+        padding: 14px;
+      }
+
+      .avatar {
+        width: 96px;
+        height: 96px;
+      }
+
+      button {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .link-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .link-item button {
+        width: 100%;
+      }
+
+      footer {
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 16px;
+      }
+
+      input[type=text] {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      .muted-block {
+        font-size: 12px;
+      }
+
+      button {
+        font-size: 13px;
+        padding: 9px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -61,7 +261,7 @@
           Personalize sua página e veja as mudanças ao vivo no painel à direita.
         </div>
 
-        <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <button id="saveBtn">Salvar na blockchain</button>
           <button id="previewBtn" type="button" class="danger">Abrir página pública</button>
         </div>
@@ -69,7 +269,9 @@
 
       <aside>
         <div class="profile-preview" id="previewBox">
-          <div class="avatar"><img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover"/></div>
+          <div class="avatar">
+            <img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover"/>
+          </div>
           <div style="margin-top:8px;text-align:center">
             <div id="previewName" style="font-weight:700">Nome</div>
             <div id="previewAddr" class="small">endereço</div>
