@@ -41,7 +41,17 @@
       <div>
         <div style="margin-bottom:12px">
           <label>Nome</label>
-          <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
+          <input id="name" type="text" placeholder="Seu nome público (ex: João)" />
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label>@Handle (único)</label>
+          <input id="handle" type="text" placeholder="@joao" />
+        </div>
+
+        <div style="margin-bottom:12px">
+          <label>Descrição</label>
+          <textarea id="description" rows="2" placeholder="Escreva algo sobre você"></textarea>
         </div>
 
         <div style="margin-bottom:12px">
@@ -87,6 +97,8 @@
           <div class="avatar"><img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover"/></div>
           <div style="margin-top:8px;text-align:center">
             <div id="previewName" style="font-weight:700">Nome</div>
+            <div id="previewHandle" class="small">@handle</div>
+            <div id="previewDescription" class="small">Descrição</div>
             <div id="previewAddr" class="small">endereço</div>
           </div>
           <div class="links" id="previewLinks"></div>
@@ -104,7 +116,7 @@
   <script type="module">
     import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
 
-    const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
+    const CONTRACT_ADDRESS = "0x10493afd022e59167e51db679a2e11d287cc9eeb";
     const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
     const CHAIN_ID = 97;
 
@@ -116,13 +128,13 @@
 
     const el = id => document.getElementById(id);
     const [
-      connectBtn, walletAddrSpan, nameInput, photoInput, addLinkBtn, linksList,
-      previewName, previewAddr, avatarImg, previewLinks, saveBtn, bgColor,
+      connectBtn, walletAddrSpan, nameInput, handleInput, descriptionInput, photoInput, addLinkBtn, linksList,
+      previewName, previewHandle, previewDescription, previewAddr, avatarImg, previewLinks, saveBtn, bgColor,
       accentColor, textColor, previewBox, networkName, previewBtn
     ] = [
-      "connectBtn", "walletAddr", "name", "photo", "addLinkBtn", "linksList", "previewName",
-      "previewAddr", "avatarImg", "previewLinks", "saveBtn", "bgColor", "accentColor",
-      "textColor", "previewBox", "networkName", "previewBtn"
+      "connectBtn", "walletAddr", "name", "handle", "description", "photo", "addLinkBtn", "linksList", 
+      "previewName", "previewHandle", "previewDescription", "previewAddr", "avatarImg", "previewLinks",
+      "saveBtn", "bgColor", "accentColor", "textColor", "previewBox", "networkName", "previewBtn"
     ].map(el);
 
     let signer = null, userAddress = null;
@@ -187,6 +199,8 @@
 
     function renderPreview() {
       previewName.textContent = nameInput.value || 'Seu nome';
+      previewHandle.textContent = handleInput.value || '@handle';
+      previewDescription.textContent = descriptionInput.value || 'Descrição';
       avatarImg.src = photoInput.value || '';
       previewLinks.innerHTML = '';
       for (const l of getLinksData()) {
@@ -229,11 +243,18 @@
     addLinkBtn.onclick = () => addLinkItem();
     addLinkItem('Website', 'https://');
 
-    [nameInput, photoInput, bgColor, accentColor, textColor].forEach(el => el.oninput = renderPreview);
+    [nameInput, handleInput, descriptionInput, photoInput, bgColor, accentColor, textColor].forEach(el => el.oninput = renderPreview);
 
     async function saveProfile() {
       if (!signer) return alert('Conecte sua carteira.');
-      const profile = { name: nameInput.value, photo: photoInput.value, links: getLinksData(), theme: { bg: bgColor.value, accent: accentColor.value, text: textColor.value } };
+      const profile = {
+        name: nameInput.value,
+        handle: handleInput.value,
+        description: descriptionInput.value,
+        photo: photoInput.value,
+        links: getLinksData(),
+        theme: { bg: bgColor.value, accent: accentColor.value, text: textColor.value }
+      };
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       try {
         const tx = await contract.setProfile(JSON.stringify(profile));
@@ -257,6 +278,8 @@
         if (json) {
           const obj = JSON.parse(json);
           nameInput.value = obj.name || '';
+          handleInput.value = obj.handle || '';
+          descriptionInput.value = obj.description || '';
           photoInput.value = obj.photo || '';
           linksList.innerHTML = '';
           (obj.links || []).forEach(l => addLinkItem(l.label, l.url));
