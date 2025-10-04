@@ -387,6 +387,27 @@
         justify-content: center;
         text-align: center;
       }
+
+      /* Ajuste específico para o texto informativo em dispositivos móveis */
+      .muted-block {
+        order: 1;
+        margin-top: 0;
+        margin-bottom: 24px;
+      }
+
+      .muted-block .desktop-text {
+        display: none;
+      }
+
+      .muted-block .mobile-text {
+        display: block;
+      }
+    }
+
+    @media (min-width: 881px) {
+      .muted-block .mobile-text {
+        display: none;
+      }
     }
 
     @media (max-width: 480px) {
@@ -490,7 +511,8 @@
           </div>
         </div>
 
-        <div class="muted-block small">
+        <!-- Bloco informativo - versão desktop -->
+        <div class="muted-block small desktop-text">
           Personalize sua página e veja as mudanças ao vivo no painel à direita.
         </div>
 
@@ -522,6 +544,12 @@
           </div>
           <div class="links" id="previewLinks"></div>
         </div>
+        
+        <!-- Bloco informativo - versão mobile -->
+        <div class="muted-block small mobile-text">
+          Personalize sua página e veja as mudanças ao vivo no painel acima.
+        </div>
+        
         <div style="margin-top:16px;font-size:14px;color:var(--text-secondary);font-weight:500">Link público (após salvar):</div>
         <div id="publicLink" class="small" style="word-break:break-all;margin-top:6px;padding:10px;background:rgba(255,255,255,0.03);border-radius:var(--radius-md);border:1px solid var(--border-light)">—</div>
       </aside>
