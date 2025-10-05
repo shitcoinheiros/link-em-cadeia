@@ -262,6 +262,16 @@
     background-clip: text;
   }
 
+  .description {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    padding: 0 16px;
+    max-height: 80px;
+    overflow-y: auto;
+  }
+
   .address {
     font-size: 15px;
     color: var(--text-secondary);
@@ -454,6 +464,11 @@
     .name {
       font-size: 24px;
     }
+
+    .description {
+      font-size: 14px;
+      padding: 0 12px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -478,6 +493,12 @@
 
     .name {
       font-size: 22px;
+    }
+
+    .description {
+      font-size: 13px;
+      padding: 0 8px;
+      max-height: 70px;
     }
 
     .link-item {
@@ -510,6 +531,11 @@
       font-size: 20px;
     }
 
+    .description {
+      font-size: 12px;
+      max-height: 60px;
+    }
+
     .link-item {
       font-size: 13px;
     }
@@ -538,18 +564,6 @@
   <!-- Header -->
   <header class="main-header">
     <div class="header-content">
-   <!--   <div class="logo-section">
-        <a href="index.html" class="logo">
-          <div class="logo-icon">L</div>
-          <div class="logo-text">Linkchain</div>
-        </a>
-        <nav class="nav-links">
-          <a href="index.html" class="nav-link">Criar Perfil</a>
-          <a href="#" class="nav-link">Explorar</a>
-          <a href="#" class="nav-link">Documentação</a>
-        </nav> -->
-      </div>
-      
       <a href="index.html" class="back-button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z" fill="currentColor"/>
@@ -577,6 +591,9 @@
 
       <div class="profile-info">
         <div class="name" id="profileName">Carregando...</div>
+        <div class="description" id="profileDescription">
+          <!-- A descrição será inserida aqui via JavaScript -->
+        </div>
         <div class="address" id="profileAddr">—</div>
         <div class="network-badge">
           <div class="network-indicator"></div>
@@ -615,6 +632,7 @@
 
     const el = (id)=>document.getElementById(id);
     const profileName = el('profileName');
+    const profileDescription = el('profileDescription');
     const profileAddr = el('profileAddr');
     const avatarImg = el('avatarImg');
     const profileLinks = el('profileLinks');
@@ -642,6 +660,15 @@
           const obj = JSON.parse(json);
 
           profileName.textContent = obj.name || 'Sem nome definido';
+          
+          // Atualizar descrição
+          if (obj.description && obj.description.trim() !== '') {
+            profileDescription.textContent = obj.description;
+          } else {
+            profileDescription.textContent = 'Nenhuma descrição fornecida.';
+            profileDescription.style.color = 'var(--text-muted)';
+            profileDescription.style.fontStyle = 'italic';
+          }
           
           // Atualizar avatar
           if (obj.photo) {
@@ -674,6 +701,8 @@
 
         } else {
           profileName.textContent = "Perfil não encontrado";
+          profileDescription.textContent = "Este endereço ainda não possui um perfil Linkchain cadastrado.";
+          profileDescription.style.color = 'var(--text-muted)';
           profileLinks.innerHTML = `
             <div style="text-align: center; color: var(--text-muted); padding: 20px;">
               Este endereço ainda não possui um perfil Linkchain
@@ -682,6 +711,8 @@
         }
       } catch(e) {
         profileName.textContent = "Erro ao carregar perfil";
+        profileDescription.textContent = "Ocorreu um erro ao tentar carregar as informações do perfil.";
+        profileDescription.style.color = 'var(--text-muted)';
         profileLinks.innerHTML = `
           <div style="text-align: center; color: var(--text-muted); padding: 20px;">
             Erro ao carregar informações do perfil
