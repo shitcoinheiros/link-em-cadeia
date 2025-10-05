@@ -272,9 +272,17 @@
     overflow-y: auto;
     word-wrap: break-word;
     white-space: pre-line;
-    text-align: justify;
+    text-align: center;
     max-width: 100%;
-    text-justify: inter-word;
+    text-align-last: center;
+  }
+
+  .description-line {
+    display: block;
+    width: 100%;
+    text-align: justify;
+    text-align-last: center;
+    margin-bottom: 2px;
   }
 
   .address {
@@ -643,7 +651,7 @@
     const profileLinks = el('profileLinks');
     const avatarPlaceholder = el('avatarPlaceholder');
 
-    // Função para quebrar texto a cada 40 caracteres e justificar
+    // Função para quebrar texto a cada 40 caracteres e justificar centralizado
     function formatDescription(text) {
       if (!text || text.trim() === '') {
         return 'Nenhuma descrição fornecida.';
@@ -674,7 +682,10 @@
         lines.push(currentLine);
       }
       
-      return lines.join('\n');
+      // Cria spans para cada linha com justificação centralizada
+      return lines.map(line => 
+        `<span class="description-line">${line}</span>`
+      ).join('');
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -700,10 +711,10 @@
 
           profileName.textContent = obj.name || 'Sem nome definido';
           
-          // Atualizar descrição com formatação de 40 caracteres por linha
+          // Atualizar descrição com formatação de 40 caracteres por linha e justificado centralizado
           if (obj.description && obj.description.trim() !== '') {
             const formattedDesc = formatDescription(obj.description);
-            profileDescription.textContent = formattedDesc;
+            profileDescription.innerHTML = formattedDesc;
           } else {
             profileDescription.textContent = 'Nenhuma descrição fornecida.';
             profileDescription.style.color = 'var(--text-muted)';
