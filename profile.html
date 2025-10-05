@@ -268,8 +268,12 @@
     line-height: 1.5;
     margin-bottom: 16px;
     padding: 0 16px;
-    max-height: 80px;
+    max-height: 120px;
     overflow-y: auto;
+    word-wrap: break-word;
+    white-space: pre-line;
+    text-align: center;
+    max-width: 100%;
   }
 
   .address {
@@ -498,7 +502,7 @@
     .description {
       font-size: 13px;
       padding: 0 8px;
-      max-height: 70px;
+      max-height: 100px;
     }
 
     .link-item {
@@ -533,7 +537,7 @@
 
     .description {
       font-size: 12px;
-      max-height: 60px;
+      max-height: 90px;
     }
 
     .link-item {
@@ -638,6 +642,40 @@
     const profileLinks = el('profileLinks');
     const avatarPlaceholder = el('avatarPlaceholder');
 
+    // Função para quebrar texto a cada 30 caracteres
+    function formatDescription(text) {
+      if (!text || text.trim() === '') {
+        return 'Nenhuma descrição fornecida.';
+      }
+      
+      const words = text.split(' ');
+      let lines = [];
+      let currentLine = '';
+      
+      for (let word of words) {
+        // Se adicionar esta palavra ultrapassar 30 caracteres, quebra a linha
+        if ((currentLine + ' ' + word).length > 30) {
+          if (currentLine !== '') {
+            lines.push(currentLine);
+          }
+          currentLine = word;
+        } else {
+          if (currentLine === '') {
+            currentLine = word;
+          } else {
+            currentLine += ' ' + word;
+          }
+        }
+      }
+      
+      // Adiciona a última linha
+      if (currentLine !== '') {
+        lines.push(currentLine);
+      }
+      
+      return lines.join('\n');
+    }
+
     const params = new URLSearchParams(window.location.search);
     const userAddress = params.get('addr');
     if (!userAddress) {
@@ -661,9 +699,10 @@
 
           profileName.textContent = obj.name || 'Sem nome definido';
           
-          // Atualizar descrição
+          // Atualizar descrição com formatação de 30 caracteres por linha
           if (obj.description && obj.description.trim() !== '') {
-            profileDescription.textContent = obj.description;
+            const formattedDesc = formatDescription(obj.description);
+            profileDescription.textContent = formattedDesc;
           } else {
             profileDescription.textContent = 'Nenhuma descrição fornecida.';
             profileDescription.style.color = 'var(--text-muted)';
