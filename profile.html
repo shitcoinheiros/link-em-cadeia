@@ -318,9 +318,14 @@
     align-items: center;
     justify-content: center;
     font-size: 16px;
-     border: 2px solid var(--bg-card); 
+    border: 2px solid var(--bg-card); 
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 10;
+    display: none; /* INICIALMENTE OCULTO */
+  }
+
+  .verified-badge.show {
+    display: flex; /* MOSTRA QUANDO TEM O TOKEN */
   }
 
   .profile-info {
@@ -749,8 +754,8 @@
           <div class="avatar-placeholder" id="avatarPlaceholder">Sem imagem</div>
           <img id="avatarImg" src="" alt="Avatar" style="display: none;">
         </div>
-        <!-- SELO AGORA ESTÁ POSICIONADO RELATIVO AO CENTRO -->
-        <div class="verified-badge" title="Verificado na BSC">
+        <!-- SELO AGORA ESTÁ POSICIONADO RELATIVO AO CENTRO - INICIALMENTE OCULTO -->
+        <div class="verified-badge" id="verifiedBadge" title="Holder de Token VIP">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
           </svg>
@@ -779,7 +784,7 @@
       </div>
 
       <div class="footer">
-        <div>Onchain — Perfil Público</div>
+        <div>Linkchain — Perfil Público</div>
         <div class="powered-by">
           Powered by
           <span class="bsc-badge">BSC</span>
@@ -794,8 +799,24 @@
     const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
     const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 
+    // CONFIGURAÇÃO DO TOKEN PARA VERIFICAÇÃO
+    const TOKEN_CONFIG = {
+      // EXEMPLO: Token BEP-20 na BSC Testnet - SUBSTITUA PELO SEU TOKEN
+      address: "0xYourTokenAddressHere", // ENDEREÇO DO SEU TOKEN
+      minBalance: "1", // BALANCE MÍNIMO REQUERIDO (em wei)
+      decimals: 18, // DECIMAIS DO TOKEN (geralmente 18 para maioria dos tokens)
+      name: "VIP Token" // NOME DO TOKEN PARA DISPLAY
+    };
+
     const ABI = [
       "function getProfile(address user) public view returns (string memory)"
+    ];
+
+    // ABI PARA TOKENS BEP-20/ERC-20
+    const TOKEN_ABI = [
+      "function balanceOf(address account) public view returns (uint256)",
+      "function decimals() public view returns (uint8)",
+      "function name() public view returns (string memory)"
     ];
 
     const el = (id)=>document.getElementById(id);
@@ -807,6 +828,7 @@
     const avatarPlaceholder = el('avatarPlaceholder');
     const shareButton = el('shareButton');
     const shareOptions = el('shareOptions');
+    const verifiedBadge = el('verifiedBadge');
 
     // Variáveis globais para dados do perfil
     let currentProfileData = {
@@ -851,6 +873,32 @@
       return lines.map(line => 
         `<span class="description-line">${line}</span>`
       ).join('');
+    }
+
+    // Função para verificar se o endereço possui o token
+    async function checkTokenBalance(userAddress) {
+      try {
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+        const tokenContract = new ethers.Contract(TOKEN_CONFIG.address, TOKEN_ABI, provider);
+        
+        // Verifica o balance do token
+        const balance = await tokenContract.balanceOf(userAddress);
+        const decimals = await tokenContract.decimals();
+        
+        // Converte o balance para unidades humanas
+        const formattedBalance = ethers.formatUnits(balance, decimals);
+        
+        console.log(`Balance do token ${TOKEN_CONFIG.name}:`, formattedBalance);
+        
+        // Verifica se tem o balance mínimo requerido
+        const hasToken = parseFloat(formattedBalance) >= parseFloat(TOKEN_CONFIG.minBalance);
+        
+        return hasToken;
+        
+      } catch (error) {
+        console.error('Erro ao verificar balance do token:', error);
+        return false;
+      }
     }
 
     // Função para atualizar meta tags
@@ -980,6 +1028,15 @@
           } else {
             avatarImg.style.display = 'none';
             avatarPlaceholder.style.display = 'block';
+          }
+          
+          // VERIFICAR SE TEM O TOKEN E MOSTRAR BADGE
+          if (TOKEN_CONFIG.address && TOKEN_CONFIG.address !== "0xYourTokenAddressHere") {
+            const hasToken = await checkTokenBalance(userAddress);
+            if (hasToken) {
+              verifiedBadge.classList.add('show');
+              verifiedBadge.setAttribute('title', `Holder de ${TOKEN_CONFIG.name}`);
+            }
           }
           
           // Atualizar links
