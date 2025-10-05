@@ -272,8 +272,9 @@
     overflow-y: auto;
     word-wrap: break-word;
     white-space: pre-line;
-    text-align: center;
+    text-align: justify;
     max-width: 100%;
+    text-justify: inter-word;
   }
 
   .address {
@@ -642,7 +643,7 @@
     const profileLinks = el('profileLinks');
     const avatarPlaceholder = el('avatarPlaceholder');
 
-    // Função para quebrar texto a cada 30 caracteres
+    // Função para quebrar texto a cada 40 caracteres e justificar
     function formatDescription(text) {
       if (!text || text.trim() === '') {
         return 'Nenhuma descrição fornecida.';
@@ -653,8 +654,8 @@
       let currentLine = '';
       
       for (let word of words) {
-        // Se adicionar esta palavra ultrapassar 30 caracteres, quebra a linha
-        if ((currentLine + ' ' + word).length > 30) {
+        // Se adicionar esta palavra ultrapassar 40 caracteres, quebra a linha
+        if ((currentLine + ' ' + word).length > 40) {
           if (currentLine !== '') {
             lines.push(currentLine);
           }
@@ -699,7 +700,7 @@
 
           profileName.textContent = obj.name || 'Sem nome definido';
           
-          // Atualizar descrição com formatação de 30 caracteres por linha
+          // Atualizar descrição com formatação de 40 caracteres por linha
           if (obj.description && obj.description.trim() !== '') {
             const formattedDesc = formatDescription(obj.description);
             profileDescription.textContent = formattedDesc;
