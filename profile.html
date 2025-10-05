@@ -185,6 +185,8 @@
   .avatar-container {
     position: relative;
     margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
   }
 
   .avatar {
@@ -192,7 +194,6 @@
     height: 140px;
     border-radius: 50%;
     overflow: hidden;
-    margin: 0 auto;
     background: var(--bg-primary);
     display: flex;
     justify-content: center;
@@ -222,18 +223,20 @@
 
   .verified-badge {
     position: absolute;
-    bottom: 10px;
-    right: calc(50% - 70px);
+    bottom: 8px;
+    right: 8px;
     background: var(--success);
     color: #0B0E11;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 16px;
     border: 3px solid var(--bg-card);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
   }
 
   .profile-info {
@@ -398,7 +401,7 @@
     animation: pulse 2s infinite;
   }
 
-  /* Responsividade */
+  /* Responsividade - AJUSTES ESPECÍFICOS PARA O SELO */
   @media (max-width: 880px) {
     .main-header {
       padding: 12px 20px;
@@ -431,6 +434,16 @@
       height: 120px;
     }
 
+    /* Ajuste específico do selo para mobile */
+    .verified-badge {
+      bottom: 6px;
+      right: 6px;
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      border: 2px solid var(--bg-card);
+    }
+
     .name {
       font-size: 24px;
     }
@@ -444,6 +457,16 @@
     .avatar {
       width: 100px;
       height: 100px;
+    }
+
+    /* Ajuste mais específico para telas menores */
+    .verified-badge {
+      bottom: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+      border: 2px solid var(--bg-card);
     }
 
     .name {
@@ -464,6 +487,16 @@
     .avatar {
       width: 80px;
       height: 80px;
+    }
+
+    /* Ajuste final para telas muito pequenas */
+    .verified-badge {
+      bottom: 3px;
+      right: 3px;
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+      border: 2px solid var(--bg-card);
     }
 
     .name {
@@ -526,11 +559,11 @@
         <div class="avatar">
           <div class="avatar-placeholder" id="avatarPlaceholder">Sem imagem</div>
           <img id="avatarImg" src="" alt="Avatar" style="display: none;">
-        </div>
-        <div class="verified-badge" title="Verificado na BSC">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
-          </svg>
+          <div class="verified-badge" title="Verificado na BSC">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
+            </svg>
+          </div>
         </div>
       </div>
 
