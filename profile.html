@@ -182,12 +182,13 @@
     transform: translateY(-5px);
   }
 
+  /* CORREÇÃO DO AVATAR CENTRALIZADO */
   .avatar-container {
     position: relative;
     margin-bottom: 24px;
-    display: inline-block; /* Mudado para inline-block */
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
 
   .avatar {
@@ -226,11 +227,11 @@
     z-index: 1;
   }
 
-  /* SELO VERIFICADO - POSICIONAMENTO CORRETO */
+  /* SELO VERIFICADO - POSICIONAMENTO CORRETO E CENTRALIZADO */
   .verified-badge {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    right: calc(50% - 60px); /* Posiciona relativo ao centro */
     background: var(--success);
     color: #0B0E11;
     width: 32px;
@@ -242,7 +243,7 @@
     font-size: 16px;
     border: 3px solid var(--bg-card);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 10; /* Z-index alto para ficar acima de tudo */
+    z-index: 10;
   }
 
   .profile-info {
@@ -407,7 +408,7 @@
     animation: pulse 2s infinite;
   }
 
-  /* RESPONSIVIDADE - AJUSTES ESPECÍFICOS PARA O SELO */
+  /* RESPONSIVIDADE - AJUSTES ESPECÍFICOS PARA O SELO E AVATAR CENTRALIZADO */
   @media (max-width: 880px) {
     .main-header {
       padding: 12px 20px;
@@ -440,10 +441,10 @@
       height: 120px;
     }
 
-    /* SELO EM DISPOSITIVOS MÓVEIS - SOBREPOSTO */
+    /* SELO EM DISPOSITIVOS MÓVEIS - CENTRALIZADO */
     .verified-badge {
       bottom: 8px;
-      right: 8px;
+      right: calc(50% - 50px); /* Ajuste proporcional para 120px */
       width: 28px;
       height: 28px;
       font-size: 14px;
@@ -465,10 +466,10 @@
       height: 100px;
     }
 
-    /* SELO EM TELAS PEQUENAS - SOBREPOSTO */
+    /* SELO EM TELAS PEQUENAS - CENTRALIZADO */
     .verified-badge {
       bottom: 6px;
-      right: 6px;
+      right: calc(50% - 40px); /* Ajuste proporcional para 100px */
       width: 24px;
       height: 24px;
       font-size: 12px;
@@ -495,10 +496,10 @@
       height: 80px;
     }
 
-    /* SELO EM TELAS MUITO PEQUENAS - SOBREPOSTO */
+    /* SELO EM TELAS MUITO PEQUENAS - CENTRALIZADO */
     .verified-badge {
       bottom: 4px;
-      right: 4px;
+      right: calc(50% - 30px); /* Ajuste proporcional para 80px */
       width: 20px;
       height: 20px;
       font-size: 10px;
@@ -561,12 +562,12 @@
   <!-- Main Content -->
   <main class="main-content">
     <div class="profile-card">
-   <center>   <div class="avatar-container">
+      <div class="avatar-container">
         <div class="avatar">
           <div class="avatar-placeholder" id="avatarPlaceholder">Sem imagem</div>
           <img id="avatarImg" src="" alt="Avatar" style="display: none;">
-        </div> </center>
-        <!-- SELO AGORA ESTÁ FORA DO .avatar MAS DENTRO DO .avatar-container -->
+        </div>
+        <!-- SELO AGORA ESTÁ POSICIONADO RELATIVO AO CENTRO -->
         <div class="verified-badge" title="Verificado na BSC">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
