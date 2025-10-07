@@ -727,6 +727,20 @@
         order: -1; /* Coloca o preview antes do formulário */
         margin-bottom: 28px;
       }
+
+      /* NOVO: Modal com animação de baixo para cima em mobile */
+      .modal {
+        align-items: flex-end;
+        justify-content: center;
+      }
+
+      .modal-content {
+        width: 100%;
+        max-width: none;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        animation: slideUp 0.3s ease-out;
+        margin-bottom: 0;
+      }
     }
 
     @media (min-width: 881px) {
@@ -759,6 +773,16 @@
       /* NOVO: Garante que no desktop o preview fique à direita */
       .grid aside {
         order: 0; /* Mantém ordem normal */
+      }
+
+      /* NOVO: Modal centralizado no desktop */
+      .modal {
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        animation: fadeIn 0.3s ease-out;
       }
     }
 
@@ -808,12 +832,28 @@
         min-width: 140px;
         right: -10px;
       }
+
+      .modal-content {
+        padding: 20px;
+      }
     }
 
     /* Animações */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* NOVA: Animação de slide up para mobile */
+    @keyframes slideUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(100%); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
     }
 
     .card, .profile-preview {
@@ -1157,6 +1197,8 @@
     connectBtn.onclick = () => {
       if (!signer) {
         walletModal.style.display = 'flex';
+        // Forçar reflow para garantir que a animação funcione
+        void walletModal.offsetWidth;
       } else {
         disconnect();
       }
@@ -1349,6 +1391,8 @@
     async function saveProfile() {
       if (!signer) {
         walletModal.style.display = 'flex';
+        // Forçar reflow para garantir que a animação funcione
+        void walletModal.offsetWidth;
         return;
       }
       const profile = { 
@@ -1371,6 +1415,8 @@
       if (!userAddress) {
         alert('Conecte sua carteira antes de abrir a página pública.');
         walletModal.style.display = 'flex';
+        // Forçar reflow para garantir que a animação funcione
+        void walletModal.offsetWidth;
         return;
       }
       const url = `profile.html?addr=${userAddress}`;
