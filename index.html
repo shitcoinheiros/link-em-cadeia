@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Linkchain — Criar perfil</title>
+  <title>Tie Bio</title>
   <style>
     :root {
       --bg-primary: #0B0E11;
@@ -716,6 +716,17 @@
         width: 100%;
         justify-content: center;
       }
+
+      /* NOVO: Reorganização do grid para mobile - preview primeiro */
+      .grid {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .grid aside {
+        order: -1; /* Coloca o preview antes do formulário */
+        margin-bottom: 28px;
+      }
     }
 
     @media (min-width: 881px) {
@@ -743,6 +754,11 @@
 
       .actions button {
         width: auto;
+      }
+
+      /* NOVO: Garante que no desktop o preview fique à direita */
+      .grid aside {
+        order: 0; /* Mantém ordem normal */
       }
     }
 
