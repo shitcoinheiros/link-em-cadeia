@@ -110,14 +110,14 @@
     }
 
     .network-selector {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 8px;
     }
 
     .network-logo {
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--bg-secondary);
       display: flex;
@@ -126,6 +126,7 @@
       border: 1px solid var(--border-light);
       cursor: pointer;
       transition: all 0.2s ease;
+      overflow: hidden;
     }
 
     .network-logo:hover {
@@ -134,8 +135,69 @@
     }
 
     .network-logo img {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    .network-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      min-width: 150px;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 101;
+      backdrop-filter: blur(10px);
+    }
+
+    .network-dropdown.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .network-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .network-option:hover {
+      background: rgba(240, 185, 11, 0.1);
+    }
+
+    .network-option.active {
+      background: rgba(240, 185, 11, 0.15);
+    }
+
+    .network-option-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .network-option-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .network-option-name {
+      font-size: 14px;
+      font-weight: 500;
     }
 
     .wallet-address {
@@ -440,12 +502,19 @@
 
     .link-item {
       display: flex;
-      gap: 12px;
+      flex-direction: column;
+      gap: 8px;
       margin-bottom: 12px;
-      align-items: center;
+      align-items: stretch;
     }
 
-    .link-item input {
+    .link-item-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .link-item-row input {
       flex: 1;
     }
 
@@ -455,6 +524,8 @@
       border: 1px solid var(--border-medium);
       color: var(--text-secondary);
       box-shadow: none;
+      width: 100%;
+      justify-content: center;
     }
 
     .link-item button:hover {
@@ -478,9 +549,9 @@
 
     .actions {
       display: flex;
+      flex-direction: column;
       gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
+      align-items: stretch;
       margin-top: 24px;
     }
 
@@ -613,11 +684,65 @@
       .muted-block .mobile-text {
         display: block;
       }
+
+      /* Melhorias para formulários em mobile */
+      .form-section {
+        margin-bottom: 20px;
+      }
+
+      input[type=text], textarea, select {
+        padding: 12px 14px;
+        font-size: 16px; /* Melhor para evitar zoom em iOS */
+      }
+
+      textarea {
+        min-height: 120px;
+      }
+
+      .link-item {
+        gap: 10px;
+      }
+
+      .link-item-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .link-item-row input {
+        width: 100%;
+      }
+
+      .actions button {
+        width: 100%;
+        justify-content: center;
+      }
     }
 
     @media (min-width: 881px) {
       .muted-block .mobile-text {
         display: none;
+      }
+
+      .grid {
+        grid-template-columns: 1fr 360px;
+      }
+
+      .link-item {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .link-item-row {
+        flex-direction: row;
+      }
+
+      .actions {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .actions button {
+        width: auto;
       }
     }
 
@@ -631,7 +756,7 @@
       }
 
       input[type=text], textarea {
-        font-size: 14px;
+        font-size: 16px;
         padding: 12px;
       }
 
@@ -661,6 +786,11 @@
 
       .mobile-nav-item {
         font-size: 9px;
+      }
+
+      .network-dropdown {
+        min-width: 140px;
+        right: -10px;
       }
     }
 
@@ -707,10 +837,39 @@
       <div class="wallet-section">
         <div class="network-selector">
           <div class="network-logo" id="networkLogo">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#F0B90B"/>
-              <path d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z" fill="#F0B90B"/>
-            </svg>
+            <img src="https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png" alt="BNB Chain">
+          </div>
+          <div class="network-dropdown" id="networkDropdown">
+            <div class="network-option active" data-chain="bsc">
+              <div class="network-option-icon">
+                <img src="https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png" alt="BNB Chain">
+              </div>
+              <div class="network-option-name">BNB Chain</div>
+            </div>
+            <div class="network-option" data-chain="ethereum">
+              <div class="network-option-icon">
+                <img src="https://assets.coingecko.com/coins/images/279/small/ethereum.png" alt="Ethereum">
+              </div>
+              <div class="network-option-name">Ethereum</div>
+            </div>
+            <div class="network-option" data-chain="polygon">
+              <div class="network-option-icon">
+                <img src="https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png" alt="Polygon">
+              </div>
+              <div class="network-option-name">Polygon</div>
+            </div>
+            <div class="network-option" data-chain="base">
+              <div class="network-option-icon">
+                <img src="https://assets.coingecko.com/coins/images/27623/small/Base.png" alt="Base">
+              </div>
+              <div class="network-option-name">Base</div>
+            </div>
+            <div class="network-option" data-chain="avalanche">
+              <div class="network-option-icon">
+                <img src="https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png" alt="Avalanche">
+              </div>
+              <div class="network-option-name">Avalanche</div>
+            </div>
           </div>
         </div>
         <span id="walletAddr" class="wallet-address">não conectado</span>
@@ -920,16 +1079,63 @@
       connectBtn, walletAddrSpan, nameInput, descriptionInput, photoInput, addLinkBtn, linksList,
       previewName, previewAddr, previewDescription, avatarImg, previewLinks, saveBtn,
       previewBox, networkName, previewBtn, avatarPlaceholder, charCount,
-      walletModal, closeModal, networkLogo
+      walletModal, closeModal, networkLogo, networkDropdown
     ] = [
       "connectBtn", "walletAddr", "name", "description", "photo", "addLinkBtn", "linksList", "previewName",
       "previewAddr", "previewDescription", "avatarImg", "previewLinks", "saveBtn", "previewBox", "networkName", "previewBtn", "avatarPlaceholder", "charCount",
-      "walletModal", "closeModal", "networkLogo"
+      "walletModal", "closeModal", "networkLogo", "networkDropdown"
     ].map(el);
 
     let signer = null, userAddress = null;
 
     const isMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    // Seletor de redes
+    networkLogo.addEventListener('click', (e) => {
+      e.stopPropagation();
+      networkDropdown.classList.toggle('active');
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!networkLogo.contains(e.target) && !networkDropdown.contains(e.target)) {
+        networkDropdown.classList.remove('active');
+      }
+    });
+
+    // Selecionar rede
+    document.querySelectorAll('.network-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const chain = option.getAttribute('data-chain');
+        
+        // Atualizar estado ativo
+        document.querySelectorAll('.network-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+        option.classList.add('active');
+        
+        // Atualizar logo principal
+        const logoImg = option.querySelector('img').src;
+        networkLogo.querySelector('img').src = logoImg;
+        
+        // Fechar dropdown
+        networkDropdown.classList.remove('active');
+        
+        // Atualizar nome da rede
+        const networkNames = {
+          'bsc': 'BNB Chain',
+          'ethereum': 'Ethereum',
+          'polygon': 'Polygon',
+          'base': 'Base',
+          'avalanche': 'Avalanche'
+        };
+        
+        networkName.textContent = networkNames[chain] || 'Unknown Network';
+        
+        // Aqui você pode adicionar lógica para mudar de rede
+        console.log(`Mudando para rede: ${chain}`);
+      });
+    });
 
     // Modal de conexão
     connectBtn.onclick = () => {
@@ -1020,7 +1226,10 @@
     }
 
     const getLinksData = () => Array.from(linksList.querySelectorAll('.link-item'))
-      .map(el => ({ label: el.children[0].value, url: el.children[1].value }))
+      .map(el => ({ 
+        label: el.querySelector('input[placeholder*="rótulo"]').value, 
+        url: el.querySelector('input[placeholder*="https"]').value 
+      }))
       .filter(x => x.url);
 
     function renderPreview() {
@@ -1071,22 +1280,32 @@
     function addLinkItem(label = '', url = '') {
       const div = document.createElement('div');
       div.className = 'link-item';
-      const inLabel = document.createElement('input');
-      inLabel.placeholder = 'rótulo (ex: Twitter)';
-      inLabel.value = label;
-      const inUrl = document.createElement('input');
-      inUrl.placeholder = 'https://...';
-      inUrl.value = url;
+      
+      const labelInput = document.createElement('input');
+      labelInput.placeholder = 'rótulo (ex: Twitter)';
+      labelInput.value = label;
+      
+      const urlInput = document.createElement('input');
+      urlInput.placeholder = 'https://...';
+      urlInput.value = url;
+      
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'link-item-row';
+      rowDiv.append(labelInput, urlInput);
+      
       const del = document.createElement('button');
       del.innerHTML = `
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
         </svg>
+        Remover
       `;
       del.onclick = () => { div.remove(); renderPreview(); };
-      div.append(inLabel, inUrl, del);
+      
+      div.append(rowDiv, del);
       linksList.appendChild(div);
-      inLabel.oninput = inUrl.oninput = renderPreview;
+      
+      labelInput.oninput = urlInput.oninput = renderPreview;
       renderPreview();
     }
 
