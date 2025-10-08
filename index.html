@@ -4,9 +4,891 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>TieBio</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/shitcoinheiros/link-em-cadeia/catuaba.css">
+<style>   
+    :root {
+      --bg-primary: #0B0E11;
+      --bg-secondary: #161A1E;
+      --bg-card: rgba(22, 26, 30, 0.9);
+      --bg-gradient: linear-gradient(135deg, #0B0E11 0%, #1A1D23 100%);
+      --accent-primary: #F0B90B;
+      --accent-secondary: #F8D33A;
+      --accent-gradient: linear-gradient(135deg, #F0B90B 0%, #F8D33A 100%);
+      --text-primary: #EAECEF;
+      --text-secondary: #B7BDC6;
+      --text-muted: #848E9C;
+      --border-light: rgba(240, 185, 11, 0.1);
+      --border-medium: rgba(240, 185, 11, 0.15);
+      --border-accent: rgba(240, 185, 11, 0.3);
+      --success: #0ECB81;
+      --warning: #F0B90B;
+      --danger: #F6465D;
+      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+      --shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    /* Header Styles */
+    .main-header {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #0B0E11;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .wallet-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .network-selector {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .network-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .network-logo:hover {
+      border-color: var(--accent-primary);
+      transform: scale(1.05);
+    }
+
+    .network-logo img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    .network-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      min-width: 180px;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 101;
+      backdrop-filter: blur(10px);
+    }
+
+    .network-dropdown.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .network-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .network-option:hover {
+      background: rgba(240, 185, 11, 0.1);
+    }
+
+    .network-option.active {
+      background: rgba(240, 185, 11, 0.15);
+    }
+
+    .network-option-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .network-option-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .network-option-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .wallet-address {
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: rgba(11, 14, 17, 0.8);
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Modal de Conexão */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 14, 17, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-xl);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-modal:hover {
+      background: rgba(240, 185, 11, 0.1);
+      color: var(--accent-primary);
+    }
+
+    .wallet-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .wallet-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(11, 14, 17, 0.6);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .wallet-option:hover {
+      border-color: var(--accent-primary);
+      background: rgba(240, 185, 11, 0.05);
+    }
+
+    .wallet-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wallet-name {
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      padding-bottom: 80px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 980px;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border-light);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      border-color: var(--border-accent);
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .page-title {
+      font-size: 22px;
+      margin: 0;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    button {
+      background: var(--accent-primary);
+      border: none;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: #0B0E11;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 6px rgba(240, 185, 11, 0.25);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(240, 185, 11, 0.35);
+      background: var(--accent-secondary);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
+      box-shadow: none;
+    }
+
+    button.secondary:hover {
+      background: rgba(240, 185, 11, 0.1);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    button.danger {
+      background: var(--danger);
+      color: white;
+      box-shadow: 0 4px 6px rgba(246, 70, 93, 0.25);
+    }
+
+    button.danger:hover {
+      box-shadow: 0 6px 12px rgba(246, 70, 93, 0.35);
+      background: #ff5c75;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input[type=text], textarea, select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-medium);
+      background: rgba(11, 14, 17, 0.6);
+      color: var(--text-primary);
+      font-size: 15px;
+      transition: all 0.2s ease;
+      resize: vertical;
+      min-height: 44px;
+    }
+
+    textarea {
+      min-height: 100px;
+      font-family: inherit;
+    }
+
+    input[type=text]:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.2);
+    }
+
+    .profile-preview {
+      background: var(--bg-secondary);
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      width: 100%;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-preview::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent-gradient);
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 3px solid var(--border-light);
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .avatar:hover {
+      transform: scale(1.03);
+      border-color: var(--accent-primary);
+    }
+
+    .avatar-placeholder {
+      color: var(--text-muted);
+      font-size: 14px;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .links {
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .link-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: stretch;
+    }
+
+    .link-item-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .link-item-row input {
+      flex: 1;
+    }
+
+    .link-item button {
+      padding: 10px 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
+      box-shadow: none;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .link-item button:hover {
+      background: var(--danger);
+      color: white;
+      transform: none;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .muted-block {
+      background: rgba(240, 185, 11, 0.03);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      margin: 20px 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+
+    footer {
+      margin-top: 24px;
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .network-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .network-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .preview-description {
+      margin-top: 16px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+      max-height: 100px;
+      overflow-y: auto;
+      padding: 0 8px;
+      width: 100%;
+    }
+
+    /* Footer Mobile */
+    .mobile-footer {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border-light);
+      padding: 12px 16px;
+      z-index: 90;
+    }
+
+    .mobile-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 10px;
+      transition: all 0.2s ease;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .mobile-nav-item.active,
+    .mobile-nav-item:hover {
+      color: var(--accent-primary);
+      background: rgba(240, 185, 11, 0.05);
+    }
+
+    .mobile-nav-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 880px) {
+      .main-header {
+        padding: 12px 16px;
+      }
+
+      .logo-text {
+        font-size: 16px;
+      }
+
+      .logo-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+      }
+
+      .wallet-address {
+        max-width: 100px;
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+
+      button {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+
+      .mobile-footer {
+        display: block;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+
+      footer {
+        justify-content: center;
+        text-align: center;
+      }
+
+      .muted-block .desktop-text {
+        display: none;
+      }
+
+      .muted-block .mobile-text {
+        display: block;
+      }
+
+      /* Melhorias para formulários em mobile */
+      .form-section {
+        margin-bottom: 20px;
+      }
+
+      input[type=text], textarea, select {
+        padding: 12px 14px;
+        font-size: 16px;
+      }
+
+      textarea {
+        min-height: 120px;
+      }
+
+      .link-item {
+        gap: 10px;
+      }
+
+      .link-item-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .link-item-row input {
+        width: 100%;
+      }
+
+      .actions button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* Reorganização do grid para mobile - preview primeiro */
+      .grid {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .grid aside {
+        order: -1;
+        margin-bottom: 28px;
+      }
+
+      /* Modal com animação de baixo para cima em mobile */
+      .modal {
+        align-items: flex-end;
+        justify-content: center;
+      }
+
+      .modal-content {
+        width: 100%;
+        max-width: none;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        animation: slideUp 0.3s ease-out;
+        margin-bottom: 0;
+      }
+    }
+
+    @media (min-width: 881px) {
+      .muted-block .mobile-text {
+        display: none;
+      }
+
+      .grid {
+        grid-template-columns: 1fr 360px;
+      }
+
+      .link-item {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .link-item-row {
+        flex-direction: row;
+      }
+
+      .actions {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .actions button {
+        width: auto;
+      }
+
+      /* Garante que no desktop o preview fique à direita */
+      .grid aside {
+        order: 0;
+      }
+
+      /* Modal centralizado no desktop */
+      .modal {
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        animation: fadeIn 0.3s ease-out;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px;
+      }
+
+      .page-title {
+        font-size: 20px;
+      }
+
+      input[type=text], textarea, select {
+        font-size: 16px;
+        padding: 12px;
+      }
+
+      .muted-block {
+        font-size: 12px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 12px;
+      }
+
+      .avatar {
+        width: 100px;
+        height: 100px;
+      }
+
+      .logo-text {
+        font-size: 16px;
+      }
+
+      .wallet-address {
+        max-width: 90px;
+        font-size: 10px;
+        padding: 6px 8px;
+      }
+
+      .mobile-nav-item {
+        font-size: 9px;
+      }
+
+      .network-dropdown {
+        min-width: 160px;
+        right: -10px;
+      }
+
+      .modal-content {
+        padding: 20px;
+      }
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animação de slide up para mobile */
+    @keyframes slideUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(100%); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    .card, .profile-preview {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(11, 14, 17, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-primary);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-secondary);
+    }
+
+    /* Estilos para o campo de token contract (inicialmente oculto) */
+    .token-contract-field {
+      display: none;
+      margin-top: 12px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .token-contract-field.visible {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -81,7 +963,7 @@
         <h2 class="modal-title">Conectar Carteira</h2>
         <button class="close-modal" id="closeModal">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+            <path d="M19 6.41L17.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
           </svg>
         </button>
       </div>
@@ -124,6 +1006,24 @@
 
       <div class="grid">
         <div>
+          <!-- Nova seção: Tipo de Perfil -->
+          <div class="form-section">
+            <label for="profileType">Tipo de Perfil</label>
+            <select id="profileType">
+              <option value="personal">Perfil Pessoal</option>
+              <option value="project">Perfil de Projeto</option>
+            </select>
+          </div>
+
+          <!-- Campo condicional para Token Contract -->
+          <div class="form-section token-contract-field" id="tokenContractField">
+            <label for="tokenContract">Endereço do Contrato do Token</label>
+            <input id="tokenContract" type="text" placeholder="0x..." />
+            <div class="small" style="margin-top: 4px;">
+              Cole o endereço do contrato do token do seu projeto
+            </div>
+          </div>
+
           <div class="form-section">
             <label for="name">Nome</label>
             <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
@@ -185,6 +1085,8 @@
             <div style="margin-top:12px;text-align:center">
               <div id="previewName" style="font-weight:700;font-size:20px">Nome</div>
               <div id="previewAddr" class="small" style="margin-top:4px">endereço</div>
+              <!-- Nova linha para mostrar o tipo de perfil no preview -->
+              <div id="previewType" class="small" style="margin-top:2px;color:var(--accent-primary);font-weight:600"></div>
             </div>
             <div class="preview-description" id="previewDescription">
               Sua descrição aparecerá aqui...
@@ -330,6 +1232,12 @@
     const closeModal = document.getElementById("closeModal");
     const networkLogo = document.getElementById("networkLogo");
     const networkDropdown = document.getElementById("networkDropdown");
+    
+    // Novos elementos para tipo de perfil
+    const profileTypeSelect = document.getElementById("profileType");
+    const tokenContractField = document.getElementById("tokenContractField");
+    const tokenContractInput = document.getElementById("tokenContract");
+    const previewType = document.getElementById("previewType");
 
     let signer = null;
     let userAddress = null;
@@ -565,6 +1473,16 @@
         avatarPlaceholder.style.display = "block";
       }
       
+      // Atualizar tipo de perfil no preview
+      const profileType = profileTypeSelect.value;
+      if (profileType === "project") {
+        previewType.textContent = "Projeto";
+        previewType.style.display = "block";
+      } else {
+        previewType.textContent = "Pessoal";
+        previewType.style.display = "block";
+      }
+      
       // Atualizar links
       previewLinks.innerHTML = "";
       for (const link of getLinksData()) {
@@ -626,10 +1544,21 @@
       renderPreview();
     }
 
+    // Gerenciar visibilidade do campo de token contract
+    profileTypeSelect.addEventListener("change", function() {
+      if (this.value === "project") {
+        tokenContractField.classList.add("visible");
+      } else {
+        tokenContractField.classList.remove("visible");
+        tokenContractInput.value = ""; // Limpar o campo quando não for projeto
+      }
+      renderPreview();
+    });
+
     addLinkButton.onclick = () => addLinkItem();
     addLinkItem("Website", "https://");
 
-    [nameInput, descriptionInput, photoInput].forEach((element) => element.oninput = renderPreview);
+    [nameInput, descriptionInput, photoInput, tokenContractInput].forEach((element) => element.oninput = renderPreview);
 
     // Contador de caracteres para a descrição
     descriptionInput.addEventListener("input", () => {
@@ -659,7 +1588,9 @@
         name: nameInput.value, 
         description: descriptionInput.value,
         photo: photoInput.value, 
-        links: getLinksData() 
+        links: getLinksData(),
+        profileType: profileTypeSelect.value,
+        tokenContract: profileTypeSelect.value === "project" ? tokenContractInput.value : ""
       };
       
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
@@ -700,6 +1631,17 @@
           photoInput.value = profileObject.photo || "";
           linksList.innerHTML = "";
           (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
+          
+          // Carregar tipo de perfil e token contract se existirem
+          if (profileObject.profileType) {
+            profileTypeSelect.value = profileObject.profileType;
+            // Disparar o evento change para mostrar/ocultar o campo de token
+            profileTypeSelect.dispatchEvent(new Event('change'));
+            if (profileObject.tokenContract) {
+              tokenContractInput.value = profileObject.tokenContract;
+            }
+          }
+          
           renderPreview();
           
           // Atualizar contador de caracteres
