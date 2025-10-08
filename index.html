@@ -65,7 +65,9 @@
     }
 
 
-    .logo-icon {
+
+
+.logo-icon {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-md);
@@ -73,8 +75,21 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: transparent; /* Remove qualquer background */
+  border: none; /* Remove borda se houver */
 }
 
+.logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block; /* Garante que a imagem ocupe todo o espaço */
+}
+
+
+
+
+    
     .logo-section {
       display: flex;
       align-items: center;
