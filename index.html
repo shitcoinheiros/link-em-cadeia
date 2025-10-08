@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tie Bio</title>
+  <title>Tie Bio - Criar Perfil Web3</title>
   <style>
     :root {
       --bg-primary: #0B0E11;
@@ -149,7 +149,7 @@
       border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
       padding: 8px;
-      min-width: 150px;
+      min-width: 180px;
       box-shadow: var(--shadow-lg);
       display: none;
       z-index: 101;
@@ -313,7 +313,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px 16px;
-      padding-bottom: 80px; /* Espaço para o footer móvel */
+      padding-bottom: 80px;
     }
 
     .card {
@@ -692,7 +692,7 @@
 
       input[type=text], textarea, select {
         padding: 12px 14px;
-        font-size: 16px; /* Melhor para evitar zoom em iOS */
+        font-size: 16px;
       }
 
       textarea {
@@ -717,18 +717,18 @@
         justify-content: center;
       }
 
-      /* NOVO: Reorganização do grid para mobile - preview primeiro */
+      /* Reorganização do grid para mobile - preview primeiro */
       .grid {
         display: flex;
         flex-direction: column;
       }
 
       .grid aside {
-        order: -1; /* Coloca o preview antes do formulário */
+        order: -1;
         margin-bottom: 28px;
       }
 
-      /* NOVO: Modal com animação de baixo para cima em mobile */
+      /* Modal com animação de baixo para cima em mobile */
       .modal {
         align-items: flex-end;
         justify-content: center;
@@ -770,12 +770,12 @@
         width: auto;
       }
 
-      /* NOVO: Garante que no desktop o preview fique à direita */
+      /* Garante que no desktop o preview fique à direita */
       .grid aside {
-        order: 0; /* Mantém ordem normal */
+        order: 0;
       }
 
-      /* NOVO: Modal centralizado no desktop */
+      /* Modal centralizado no desktop */
       .modal {
         align-items: center;
         justify-content: center;
@@ -829,7 +829,7 @@
       }
 
       .network-dropdown {
-        min-width: 140px;
+        min-width: 160px;
         right: -10px;
       }
 
@@ -844,7 +844,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* NOVA: Animação de slide up para mobile */
+    /* Animação de slide up para mobile */
     @keyframes slideUp {
       from { 
         opacity: 0; 
@@ -984,7 +984,7 @@
     <div class="card">
       <div class="page-header">
         <h1 class="page-title">Criar / Editar Perfil</h1>
-        <p class="page-subtitle">Gerencie sua identidade Web3 na Binance Smart Chain</p>
+        <p class="page-subtitle">Gerencie sua identidade Web3 na blockchain</p>
       </div>
 
       <div class="grid">
@@ -1072,7 +1072,7 @@
           <div class="network-indicator"></div>
           <div class="small">Rede: <span id="networkName">—</span></div>
         </div>
-        <div class="small">Linkchain • DApp de Perfil Web3 na BSC</div>
+        <div class="small">Linkchain • DApp de Perfil Web3</div>
       </footer>
     </div>
   </main>
@@ -1120,162 +1120,283 @@
   <script type="module">
     import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
 
-    const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
-    const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
-    const CHAIN_ID = 97;
+    // Configurações das redes blockchain
+    const NETWORKS = {
+      bsc: {
+        chainId: "0x38",
+        chainName: "Binance Smart Chain",
+        rpcUrls: ["https://bsc-dataseed.binance.org/"],
+        nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+        blockExplorerUrls: ["https://bscscan.com"]
+      },
+      bscTestnet: {
+        chainId: "0x61",
+        chainName: "Binance Smart Chain Testnet",
+        rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+        nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
+        blockExplorerUrls: ["https://testnet.bscscan.com"]
+      },
+      ethereum: {
+        chainId: "0x1",
+        chainName: "Ethereum Mainnet",
+        rpcUrls: ["https://mainnet.infura.io/v3/"],
+        nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+        blockExplorerUrls: ["https://etherscan.io"]
+      },
+      polygon: {
+        chainId: "0x89",
+        chainName: "Polygon Mainnet",
+        rpcUrls: ["https://polygon-rpc.com/"],
+        nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
+        blockExplorerUrls: ["https://polygonscan.com"]
+      },
+      base: {
+        chainId: "0x2105",
+        chainName: "Base Mainnet",
+        rpcUrls: ["https://mainnet.base.org/"],
+        nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+        blockExplorerUrls: ["https://basescan.org"]
+      },
+      avalanche: {
+        chainId: "0xA86A",
+        chainName: "Avalanche Mainnet",
+        rpcUrls: ["https://api.avax.network/ext/bc/C/rpc"],
+        nativeCurrency: { name: "AVAX", symbol: "AVAX", decimals: 18 },
+        blockExplorerUrls: ["https://snowtrace.io"]
+      }
+    };
 
+    const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
     const ABI = [
       "function setProfile(string calldata json) external",
       "function getProfile(address user) public view returns (string memory)",
       "event ProfileUpdated(address indexed user, string json)"
     ];
 
-    const el = id => document.getElementById(id);
-    const [
-      connectBtn, walletAddrSpan, nameInput, descriptionInput, photoInput, addLinkBtn, linksList,
-      previewName, previewAddr, previewDescription, avatarImg, previewLinks, saveBtn,
-      previewBox, networkName, previewBtn, avatarPlaceholder, charCount,
-      walletModal, closeModal, networkLogo, networkDropdown
-    ] = [
-      "connectBtn", "walletAddr", "name", "description", "photo", "addLinkBtn", "linksList", "previewName",
-      "previewAddr", "previewDescription", "avatarImg", "previewLinks", "saveBtn", "previewBox", "networkName", "previewBtn", "avatarPlaceholder", "charCount",
-      "walletModal", "closeModal", "networkLogo", "networkDropdown"
-    ].map(el);
+    // Elementos do DOM
+    const connectButton = document.getElementById("connectBtn");
+    const walletAddressSpan = document.getElementById("walletAddr");
+    const nameInput = document.getElementById("name");
+    const descriptionInput = document.getElementById("description");
+    const photoInput = document.getElementById("photo");
+    const addLinkButton = document.getElementById("addLinkBtn");
+    const linksList = document.getElementById("linksList");
+    const previewName = document.getElementById("previewName");
+    const previewAddr = document.getElementById("previewAddr");
+    const previewDescription = document.getElementById("previewDescription");
+    const avatarImg = document.getElementById("avatarImg");
+    const previewLinks = document.getElementById("previewLinks");
+    const saveButton = document.getElementById("saveBtn");
+    const networkName = document.getElementById("networkName");
+    const previewButton = document.getElementById("previewBtn");
+    const avatarPlaceholder = document.getElementById("avatarPlaceholder");
+    const charCount = document.getElementById("charCount");
+    const walletModal = document.getElementById("walletModal");
+    const closeModal = document.getElementById("closeModal");
+    const networkLogo = document.getElementById("networkLogo");
+    const networkDropdown = document.getElementById("networkDropdown");
 
-    let signer = null, userAddress = null;
+    let signer = null;
+    let userAddress = null;
+    let currentNetwork = "bsc";
 
-    const isMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    // Detectar se é dispositivo móvel
+    const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // Seletor de redes
-    networkLogo.addEventListener('click', (e) => {
-      e.stopPropagation();
-      networkDropdown.classList.toggle('active');
+    // Configuração do seletor de redes
+    networkLogo.addEventListener("click", (event) => {
+      event.stopPropagation();
+      networkDropdown.classList.toggle("active");
     });
 
     // Fechar dropdown ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!networkLogo.contains(e.target) && !networkDropdown.contains(e.target)) {
-        networkDropdown.classList.remove('active');
+    document.addEventListener("click", (event) => {
+      if (!networkLogo.contains(event.target) && !networkDropdown.contains(event.target)) {
+        networkDropdown.classList.remove("active");
       }
     });
 
     // Selecionar rede
-    document.querySelectorAll('.network-option').forEach(option => {
-      option.addEventListener('click', () => {
-        const chain = option.getAttribute('data-chain');
+    document.querySelectorAll(".network-option").forEach((option) => {
+      option.addEventListener("click", async () => {
+        const chain = option.getAttribute("data-chain");
         
-        // Atualizar estado ativo
-        document.querySelectorAll('.network-option').forEach(opt => {
-          opt.classList.remove('active');
+        // Atualizar estado ativo visual
+        document.querySelectorAll(".network-option").forEach((opt) => {
+          opt.classList.remove("active");
         });
-        option.classList.add('active');
+        option.classList.add("active");
         
         // Atualizar logo principal
-        const logoImg = option.querySelector('img').src;
-        networkLogo.querySelector('img').src = logoImg;
+        const logoImage = option.querySelector("img").src;
+        networkLogo.querySelector("img").src = logoImage;
         
         // Fechar dropdown
-        networkDropdown.classList.remove('active');
+        networkDropdown.classList.remove("active");
         
-        // Atualizar nome da rede
-        const networkNames = {
-          'bsc': 'BNB Chain',
-          'ethereum': 'Ethereum',
-          'polygon': 'Polygon',
-          'base': 'Base',
-          'avalanche': 'Avalanche'
-        };
-        
-        networkName.textContent = networkNames[chain] || 'Unknown Network';
-        
-        // Aqui você pode adicionar lógica para mudar de rede
-        console.log(`Mudando para rede: ${chain}`);
+        // Mudar rede na carteira se estiver conectado
+        if (window.ethereum && signer) {
+          try {
+            await switchNetwork(chain);
+            currentNetwork = chain;
+            updateNetworkInfo();
+          } catch (error) {
+            console.error("Erro ao mudar de rede:", error);
+            alert("Erro ao mudar para a rede selecionada. Verifique se sua carteira suporta esta rede.");
+          }
+        } else {
+          currentNetwork = chain;
+          updateNetworkInfo();
+        }
       });
     });
 
+    // Função para mudar de rede na carteira
+    async function switchNetwork(chain) {
+      if (!window.ethereum) {
+        throw new Error("Carteira não detectada");
+      }
+
+      const networkConfig = NETWORKS[chain];
+      if (!networkConfig) {
+        throw new Error("Rede não suportada");
+      }
+
+      try {
+        // Tentar mudar para a rede
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: networkConfig.chainId }]
+        });
+      } catch (switchError) {
+        // Se a rede não estiver adicionada, adicioná-la
+        if (switchError.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [networkConfig]
+            });
+          } catch (addError) {
+            throw new Error("Não foi possível adicionar a rede à carteira");
+          }
+        } else {
+          throw switchError;
+        }
+      }
+    }
+
+    // Atualizar informações da rede na interface
+    function updateNetworkInfo() {
+      const networkNames = {
+        "bsc": "BNB Chain",
+        "bscTestnet": "BSC Testnet", 
+        "ethereum": "Ethereum",
+        "polygon": "Polygon",
+        "base": "Base",
+        "avalanche": "Avalanche"
+      };
+      
+      networkName.textContent = networkNames[currentNetwork] || "Rede Desconhecida";
+    }
+
     // Modal de conexão
-    connectBtn.onclick = () => {
+    connectButton.onclick = () => {
       if (!signer) {
-        walletModal.style.display = 'flex';
-        // Forçar reflow para garantir que a animação funcione
+        walletModal.style.display = "flex";
         void walletModal.offsetWidth;
       } else {
-        disconnect();
+        disconnectWallet();
       }
     };
 
     closeModal.onclick = () => {
-      walletModal.style.display = 'none';
+      walletModal.style.display = "none";
     };
 
     // Fechar modal ao clicar fora
-    window.onclick = (e) => {
-      if (e.target === walletModal) {
-        walletModal.style.display = 'none';
+    window.onclick = (event) => {
+      if (event.target === walletModal) {
+        walletModal.style.display = "none";
       }
     };
 
     // Opções de carteira no modal
-    document.getElementById('metamaskOption').onclick = tryConnect;
-    document.getElementById('walletconnectOption').onclick = () => alert('WalletConnect em breve!');
-    document.getElementById('binanceOption').onclick = () => alert('Binance Chain em breve!');
+    document.getElementById("metamaskOption").onclick = connectWallet;
+    document.getElementById("walletconnectOption").onclick = () => alert("WalletConnect em breve!");
+    document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
 
-    async function switchToBSC() {
-      try {
-        await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x61" }] });
-      } catch (error) {
-        if (error.code === 4902) {
-          await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [{
-              chainId: "0x61",
-              chainName: "Binance Smart Chain Testnet",
-              rpcUrls: [RPC_URL],
-              nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
-              blockExplorerUrls: ["https://testnet.bscscan.com"]
-            }]
-          });
-        } else console.error(error);
-      }
-    }
-
-    async function tryConnect() {
+    // Conectar carteira
+    async function connectWallet() {
       if (window.ethereum) {
         try {
-          await switchToBSC();
-          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          // Solicitar conexão da carteira
+          await window.ethereum.request({ method: "eth_requestAccounts" });
+          
+          // Configurar provedor Ethers
           const provider = new ethers.BrowserProvider(window.ethereum);
           signer = await provider.getSigner();
           userAddress = await signer.getAddress();
-          walletAddrSpan.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
-          const net = await provider.getNetwork();
-          networkName.textContent = net.name || "BSC Testnet";
+          
+          // Atualizar interface
+          walletAddressSpan.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
           previewAddr.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
-          connectBtn.innerHTML = `
+          
+          // Obter informações da rede
+          const network = await provider.getNetwork();
+          currentNetwork = getNetworkFromChainId(network.chainId);
+          updateNetworkInfo();
+          
+          // Atualizar botão de conexão
+          connectButton.innerHTML = `
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
             </svg>
             Desconectar
           `;
-          walletModal.style.display = 'none';
+          
+          // Fechar modal
+          walletModal.style.display = "none";
+          
+          // Carregar perfil se existir
           await loadProfileOnChain(userAddress, provider);
-        } catch (e) { 
-          console.error(e);
-          alert('Erro ao conectar: ' + e.message);
+          
+        } catch (error) {
+          console.error("Erro ao conectar:", error);
+          alert("Erro ao conectar carteira: " + error.message);
         }
       } else {
-        if (isMobile()) {
-          const deep = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
-          window.location.href = deep;
-        } else alert('MetaMask não encontrada.');
+        if (isMobileDevice()) {
+          // Deep link para MetaMask em dispositivos móveis
+          const deepLink = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
+          window.location.href = deepLink;
+        } else {
+          alert("MetaMask não encontrada. Por favor, instale a MetaMask para continuar.");
+        }
       }
     }
 
-    function disconnect() {
+    // Obter nome da rede a partir do chainId
+    function getNetworkFromChainId(chainId) {
+      const chainIdHex = "0x" + chainId.toString(16);
+      
+      const chainIdMap = {
+        "0x1": "ethereum",
+        "0x38": "bsc", 
+        "0x61": "bscTestnet",
+        "0x89": "polygon",
+        "0x2105": "base",
+        "0xA86A": "avalanche"
+      };
+      
+      return chainIdMap[chainIdHex] || "unknown";
+    }
+
+    // Desconectar carteira
+    function disconnectWallet() {
       signer = null;
       userAddress = null;
-      walletAddrSpan.textContent = 'não conectado';
-      connectBtn.innerHTML = `
+      walletAddressSpan.textContent = "não conectado";
+      connectButton.innerHTML = `
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M13 9H21V11H13V9ZM13 13H21V15H13V13ZM13 17H21V19H13V17ZM4 19H10V21H4C2.9 21 2 20.1 2 19V5C2 3.9 2.9 3 4 3H10V5H4V19ZM7 11H9V9H7V11ZM7 15H9V13H7V15ZM7 19H9V17H7V19Z" fill="currentColor"/>
         </svg>
@@ -1283,167 +1404,180 @@
       `;
     }
 
-    const getLinksData = () => Array.from(linksList.querySelectorAll('.link-item'))
-      .map(el => ({ 
-        label: el.querySelector('input[placeholder*="rótulo"]').value, 
-        url: el.querySelector('input[placeholder*="https"]').value 
+    // Obter dados dos links
+    const getLinksData = () => Array.from(linksList.querySelectorAll(".link-item"))
+      .map((element) => ({ 
+        label: element.querySelector('input[placeholder*="rótulo"]').value, 
+        url: element.querySelector('input[placeholder*="https"]').value 
       }))
-      .filter(x => x.url);
+      .filter((link) => link.url);
 
+    // Renderizar preview
     function renderPreview() {
-      previewName.textContent = nameInput.value || 'Seu nome';
+      previewName.textContent = nameInput.value || "Seu nome";
       
       // Atualizar descrição
-      const descriptionText = descriptionInput.value || 'Sua descrição aparecerá aqui...';
+      const descriptionText = descriptionInput.value || "Sua descrição aparecerá aqui...";
       previewDescription.textContent = descriptionText;
       
       // Atualizar avatar
       if (photoInput.value) {
         avatarImg.src = photoInput.value;
-        avatarImg.style.display = 'block';
-        avatarPlaceholder.style.display = 'none';
+        avatarImg.style.display = "block";
+        avatarPlaceholder.style.display = "none";
       } else {
-        avatarImg.style.display = 'none';
-        avatarPlaceholder.style.display = 'block';
+        avatarImg.style.display = "none";
+        avatarPlaceholder.style.display = "block";
       }
       
       // Atualizar links
-      previewLinks.innerHTML = '';
-      for (const l of getLinksData()) {
-        const a = document.createElement('a');
-        a.href = l.url;
-        a.textContent = l.label;
-        a.target = '_blank';
-        a.style.color = 'var(--accent-primary)';
-        a.style.display = 'block';
-        a.style.margin = '8px 0';
-        a.style.textDecoration = 'none';
-        a.style.fontWeight = '600';
-        a.style.transition = '.2s';
-        a.style.padding = '8px 12px';
-        a.style.borderRadius = 'var(--radius-md)';
-        a.style.backgroundColor = 'rgba(240, 185, 11, 0.1)';
-        a.onmouseover = () => {
-          a.style.backgroundColor = 'rgba(240, 185, 11, 0.2)';
-          a.style.transform = 'translateY(-2px)';
+      previewLinks.innerHTML = "";
+      for (const link of getLinksData()) {
+        const anchor = document.createElement("a");
+        anchor.href = link.url;
+        anchor.textContent = link.label;
+        anchor.target = "_blank";
+        anchor.style.color = "var(--accent-primary)";
+        anchor.style.display = "block";
+        anchor.style.margin = "8px 0";
+        anchor.style.textDecoration = "none";
+        anchor.style.fontWeight = "600";
+        anchor.style.transition = ".2s";
+        anchor.style.padding = "8px 12px";
+        anchor.style.borderRadius = "var(--radius-md)";
+        anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
+        anchor.onmouseover = () => {
+          anchor.style.backgroundColor = "rgba(240, 185, 11, 0.2)";
+          anchor.style.transform = "translateY(-2px)";
         };
-        a.onmouseout = () => {
-          a.style.backgroundColor = 'rgba(240, 185, 11, 0.1)';
-          a.style.transform = 'translateY(0)';
+        anchor.onmouseout = () => {
+          anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
+          anchor.style.transform = "translateY(0)";
         };
-        previewLinks.appendChild(a);
+        previewLinks.appendChild(anchor);
       }
     }
 
-    function addLinkItem(label = '', url = '') {
-      const div = document.createElement('div');
-      div.className = 'link-item';
+    // Adicionar item de link
+    function addLinkItem(label = "", url = "") {
+      const div = document.createElement("div");
+      div.className = "link-item";
       
-      const labelInput = document.createElement('input');
-      labelInput.placeholder = 'rótulo (ex: Twitter)';
+      const labelInput = document.createElement("input");
+      labelInput.placeholder = "rótulo (ex: Twitter)";
       labelInput.value = label;
       
-      const urlInput = document.createElement('input');
-      urlInput.placeholder = 'https://...';
+      const urlInput = document.createElement("input");
+      urlInput.placeholder = "https://...";
       urlInput.value = url;
       
-      const rowDiv = document.createElement('div');
-      rowDiv.className = 'link-item-row';
+      const rowDiv = document.createElement("div");
+      rowDiv.className = "link-item-row";
       rowDiv.append(labelInput, urlInput);
       
-      const del = document.createElement('button');
-      del.innerHTML = `
+      const deleteButton = document.createElement("button");
+      deleteButton.innerHTML = `
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
         </svg>
         Remover
       `;
-      del.onclick = () => { div.remove(); renderPreview(); };
+      deleteButton.onclick = () => { div.remove(); renderPreview(); };
       
-      div.append(rowDiv, del);
+      div.append(rowDiv, deleteButton);
       linksList.appendChild(div);
       
       labelInput.oninput = urlInput.oninput = renderPreview;
       renderPreview();
     }
 
-    addLinkBtn.onclick = () => addLinkItem();
-    addLinkItem('Website', 'https://');
+    addLinkButton.onclick = () => addLinkItem();
+    addLinkItem("Website", "https://");
 
-    [nameInput, descriptionInput, photoInput].forEach(el => el.oninput = renderPreview);
+    [nameInput, descriptionInput, photoInput].forEach((element) => element.oninput = renderPreview);
 
     // Contador de caracteres para a descrição
-    descriptionInput.addEventListener('input', () => {
+    descriptionInput.addEventListener("input", () => {
       const count = descriptionInput.value.length;
       charCount.textContent = count;
       
       if (count > 450) {
-        charCount.style.color = 'var(--warning)';
+        charCount.style.color = "var(--warning)";
       } else {
-        charCount.style.color = 'var(--text-muted)';
+        charCount.style.color = "var(--text-muted)";
       }
       
       if (count >= 500) {
-        charCount.style.color = 'var(--danger)';
+        charCount.style.color = "var(--danger)";
       }
     });
 
+    // Salvar perfil na blockchain
     async function saveProfile() {
       if (!signer) {
-        walletModal.style.display = 'flex';
-        // Forçar reflow para garantir que a animação funcione
+        walletModal.style.display = "flex";
         void walletModal.offsetWidth;
         return;
       }
+      
       const profile = { 
         name: nameInput.value, 
         description: descriptionInput.value,
         photo: photoInput.value, 
         links: getLinksData() 
       };
+      
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      
       try {
-        const tx = await contract.setProfile(JSON.stringify(profile));
-        alert('Confirme a transação na MetaMask.');
-        await tx.wait();
-        alert('Perfil salvo com sucesso na blockchain BSC!');
-      } catch (e) { alert('Erro: ' + e.message); }
+        const transaction = await contract.setProfile(JSON.stringify(profile));
+        alert("Confirme a transação na sua carteira.");
+        await transaction.wait();
+        alert("Perfil salvo com sucesso na blockchain!");
+      } catch (error) { 
+        alert("Erro ao salvar perfil: " + error.message); 
+      }
     }
-    saveBtn.onclick = saveProfile;
+    
+    saveButton.onclick = saveProfile;
 
-    previewBtn.onclick = () => {
+    previewButton.onclick = () => {
       if (!userAddress) {
-        alert('Conecte sua carteira antes de abrir a página pública.');
-        walletModal.style.display = 'flex';
-        // Forçar reflow para garantir que a animação funcione
+        alert("Conecte sua carteira antes de abrir a página pública.");
+        walletModal.style.display = "flex";
         void walletModal.offsetWidth;
         return;
       }
       const url = `profile.html?addr=${userAddress}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     };
 
-    async function loadProfileOnChain(addr, provider) {
+    // Carregar perfil da blockchain
+    async function loadProfileOnChain(address, provider) {
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+      
       try {
-        const json = await contract.getProfile(addr);
-        if (json) {
-          const obj = JSON.parse(json);
-          nameInput.value = obj.name || '';
-          descriptionInput.value = obj.description || '';
-          photoInput.value = obj.photo || '';
-          linksList.innerHTML = '';
-          (obj.links || []).forEach(l => addLinkItem(l.label, l.url));
+        const jsonData = await contract.getProfile(address);
+        if (jsonData) {
+          const profileObject = JSON.parse(jsonData);
+          nameInput.value = profileObject.name || "";
+          descriptionInput.value = profileObject.description || "";
+          photoInput.value = profileObject.photo || "";
+          linksList.innerHTML = "";
+          (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
           renderPreview();
           
           // Atualizar contador de caracteres
           charCount.textContent = descriptionInput.value.length;
         }
-      } catch (e) { console.log(e); }
+      } catch (error) { 
+        console.log("Erro ao carregar perfil:", error); 
+      }
     }
 
     // Inicializar preview
     renderPreview();
+    updateNetworkInfo();
   </script>
 </body>
 </html>
