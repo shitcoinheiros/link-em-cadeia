@@ -23,6 +23,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
+<!-- Chart.js para gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
   :root {
     --bg-primary: #0B0E11;
@@ -39,6 +42,7 @@
     --border-medium: rgba(240, 185, 11, 0.15);
     --border-accent: rgba(240, 185, 11, 0.3);
     --success: #0ECB81;
+    --danger: #F6465D;
     --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
     --shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
     --radius-sm: 6px;
@@ -420,6 +424,7 @@
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     text-align: center;
+    position: relative;
   }
 
   .token-contract-label {
@@ -434,6 +439,36 @@
     color: var(--accent-primary);
     word-break: break-all;
     font-family: monospace;
+    padding-right: 30px;
+  }
+
+  .copy-contract-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(240, 185, 11, 0.1);
+    border: 1px solid var(--border-light);
+    color: var(--accent-primary);
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .copy-contract-btn:hover {
+    background: rgba(240, 185, 11, 0.2);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .copy-contract-btn.copied {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
   }
 
   .badges-container {
@@ -482,6 +517,80 @@
   .badge.dev {
     background: linear-gradient(135deg, #7158E2, #8B78E6);
     color: white;
+  }
+
+  /* Estilos para o gráfico de candlestick */
+  .chart-section {
+    margin: 20px 0;
+    padding: 16px;
+    background: rgba(11, 14, 17, 0.6);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .chart-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .chart-timeframe {
+    display: flex;
+    gap: 6px;
+  }
+
+  .timeframe-btn {
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .timeframe-btn.active {
+    background: rgba(240, 185, 11, 0.1);
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
+  }
+
+  .timeframe-btn:hover:not(.active) {
+    background: rgba(240, 185, 11, 0.05);
+  }
+
+  .chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+  }
+
+  .chart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .chart-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--danger);
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
   }
 
   .links-section {
@@ -661,6 +770,10 @@
       font-size: 10px;
       padding: 5px 10px;
     }
+
+    .chart-container {
+      height: 180px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -736,6 +849,20 @@
     .token-contract-address {
       font-size: 11px;
     }
+
+    .chart-container {
+      height: 160px;
+    }
+
+    .chart-timeframe {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .timeframe-btn {
+      font-size: 10px;
+      padding: 3px 6px;
+    }
   }
 
   @media (max-width: 360px) {
@@ -784,6 +911,10 @@
     .badge {
       font-size: 8px;
       padding: 3px 6px;
+    }
+
+    .chart-container {
+      height: 140px;
     }
   }
 
@@ -902,6 +1033,28 @@
       <div id="tokenContractSection" class="token-contract-section" style="display: none;">
         <div class="token-contract-label">CONTRATO DO TOKEN</div>
         <div class="token-contract-address" id="tokenContractAddress">—</div>
+        <button class="copy-contract-btn" id="copyContractBtn" title="Copiar contrato">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Seção do Gráfico (para Projetos) -->
+      <div id="chartSection" class="chart-section" style="display: none;">
+        <div class="chart-header">
+          <div class="chart-title">GRÁFICO DO TOKEN</div>
+          <div class="chart-timeframe">
+            <button class="timeframe-btn active" data-timeframe="1D">1D</button>
+            <button class="timeframe-btn" data-timeframe="1W">1W</button>
+            <button class="timeframe-btn" data-timeframe="1M">1M</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-loading" id="chartLoading">Carregando gráfico...</div>
+          <canvas id="priceChart"></canvas>
+          <div class="chart-error" id="chartError" style="display: none;"></div>
+        </div>
       </div>
 
       <!-- Seção dos Cargos (para Perfis Pessoais) -->
@@ -965,15 +1118,22 @@
     const profileTypeBadge = el('profileTypeBadge');
     const tokenContractSection = el('tokenContractSection');
     const tokenContractAddress = el('tokenContractAddress');
+    const copyContractBtn = el('copyContractBtn');
     const badgesSection = el('badgesSection');
+    const chartSection = el('chartSection');
+    const chartLoading = el('chartLoading');
+    const chartError = el('chartError');
+    const priceChart = el('priceChart');
 
-    // Variáveis globais para dados do perfil
+    // Variáveis globais
     let currentProfileData = {
       name: '',
       description: '',
       photo: '',
       address: ''
     };
+    let chartInstance = null;
+    let currentTimeframe = '1D';
 
     // Função para quebrar texto a cada 40 caracteres e justificar centralizado
     function formatDescription(text) {
@@ -1038,6 +1198,216 @@
       }
     }
 
+    // Função para copiar contrato
+    function setupCopyContractButton() {
+      copyContractBtn.addEventListener('click', async function() {
+        const contractAddress = tokenContractAddress.textContent;
+        
+        try {
+          await navigator.clipboard.writeText(contractAddress);
+          
+          // Feedback visual
+          const originalHTML = this.innerHTML;
+          this.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
+            </svg>
+          `;
+          this.classList.add('copied');
+          
+          setTimeout(() => {
+            this.innerHTML = originalHTML;
+            this.classList.remove('copied');
+          }, 2000);
+          
+        } catch (err) {
+          console.error('Erro ao copiar:', err);
+          alert('Erro ao copiar endereço do contrato');
+        }
+      });
+    }
+
+    // Função para gerar dados de candlestick fictícios (simulação)
+    function generateMockCandlestickData(timeframe) {
+      const data = [];
+      let basePrice = 100; // Preço base
+      const now = new Date();
+      
+      // Define número de pontos baseado no timeframe
+      let points = 24; // 1D - 24 horas
+      if (timeframe === '1W') points = 7; // 1W - 7 dias
+      if (timeframe === '1M') points = 30; // 1M - 30 dias
+      
+      for (let i = points - 1; i >= 0; i--) {
+        const date = new Date(now);
+        if (timeframe === '1D') {
+          date.setHours(now.getHours() - i);
+        } else {
+          date.setDate(now.getDate() - i);
+        }
+        
+        // Gera variação de preço realista
+        const volatility = 0.02; // 2% de volatilidade
+        const change = (Math.random() - 0.5) * 2 * volatility;
+        const newPrice = basePrice * (1 + change);
+        
+        const open = basePrice;
+        const close = newPrice;
+        const high = Math.max(open, close) * (1 + Math.random() * 0.01);
+        const low = Math.min(open, close) * (1 - Math.random() * 0.01);
+        const volume = Math.random() * 1000000;
+        
+        data.push({
+          timestamp: date.getTime(),
+          open,
+          high,
+          low,
+          close,
+          volume
+        });
+        
+        basePrice = close;
+      }
+      
+      return data;
+    }
+
+    // Função para criar gráfico de candlestick
+    function createCandlestickChart(data, timeframe) {
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+      
+      const ctx = priceChart.getContext('2d');
+      
+      // Prepara dados para o Chart.js
+      const labels = data.map(item => {
+        const date = new Date(item.timestamp);
+        if (timeframe === '1D') {
+          return date.getHours() + 'h';
+        } else {
+          return date.getDate() + '/' + (date.getMonth() + 1);
+        }
+      });
+      
+      const chartData = {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Preço',
+            data: data.map(item => ({
+              x: item.timestamp,
+              o: item.open,
+              h: item.high,
+              l: item.low,
+              c: item.close
+            })),
+            type: 'candlestick',
+            borderColor: 'rgba(240, 185, 11, 0.8)',
+            borderWidth: 1,
+            color: {
+              up: 'rgba(14, 203, 129, 0.8)',
+              down: 'rgba(246, 70, 93, 0.8)',
+              unchanged: 'rgba(240, 185, 11, 0.8)',
+            },
+          }
+        ]
+      };
+      
+      chartInstance = new Chart(ctx, {
+        type: 'candlestick',
+        data: chartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                label: function(context) {
+                  const point = context.raw;
+                  return [
+                    `Abertura: $${point.o.toFixed(2)}`,
+                    `Máxima: $${point.h.toFixed(2)}`,
+                    `Mínima: $${point.l.toFixed(2)}`,
+                    `Fechamento: $${point.c.toFixed(2)}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: timeframe === '1D' ? 'hour' : 'day'
+              },
+              grid: {
+                color: 'rgba(240, 185, 11, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(240, 185, 11, 0.6)'
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(240, 185, 11, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(240, 185, 11, 0.6)',
+                callback: function(value) {
+                  return '$' + value.toFixed(2);
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Função para carregar gráfico
+    function loadChart(tokenContract, timeframe) {
+      chartLoading.style.display = 'flex';
+      chartError.style.display = 'none';
+      priceChart.style.display = 'none';
+      
+      // Simulação de carregamento
+      setTimeout(() => {
+        try {
+          const mockData = generateMockCandlestickData(timeframe);
+          createCandlestickChart(mockData, timeframe);
+          chartLoading.style.display = 'none';
+          priceChart.style.display = 'block';
+        } catch (error) {
+          console.error('Erro ao carregar gráfico:', error);
+          chartLoading.style.display = 'none';
+          chartError.style.display = 'flex';
+          chartError.textContent = 'Erro ao carregar dados do gráfico';
+        }
+      }, 1000);
+    }
+
+    // Função para configurar botões de timeframe
+    function setupTimeframeButtons(tokenContract) {
+      const timeframeBtns = document.querySelectorAll('.timeframe-btn');
+      
+      timeframeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remove classe active de todos os botões
+          timeframeBtns.forEach(b => b.classList.remove('active'));
+          // Adiciona classe active ao botão clicado
+          this.classList.add('active');
+          
+          currentTimeframe = this.dataset.timeframe;
+          loadChart(tokenContract, currentTimeframe);
+        });
+      });
+    }
+
     // Função para atualizar meta tags
     function updateMetaTags(profileData) {
       const currentUrl = window.location.href;
@@ -1070,6 +1440,14 @@
           if (profileData.tokenContract) {
             tokenContractSection.style.display = 'block';
             tokenContractAddress.textContent = profileData.tokenContract;
+            
+            // Configurar botão de copiar
+            setupCopyContractButton();
+            
+            // Mostrar gráfico
+            chartSection.style.display = 'block';
+            setupTimeframeButtons(profileData.tokenContract);
+            loadChart(profileData.tokenContract, currentTimeframe);
           }
           
           // Ocultar badges de cargos
@@ -1077,8 +1455,9 @@
         } else {
           profileTypeBadge.textContent = 'Pessoal';
           
-          // Ocultar contrato de token
+          // Ocultar contrato de token e gráfico
           tokenContractSection.style.display = 'none';
+          chartSection.style.display = 'none';
           
           // Mostrar badges de cargos se existirem
           if (profileData.roles && profileData.roles.length > 0) {
@@ -1123,6 +1502,7 @@
         // Perfil antigo sem tipo definido
         profileTypeBadge.style.display = 'none';
         tokenContractSection.style.display = 'none';
+        chartSection.style.display = 'none';
         badgesSection.style.display = 'none';
       }
     }
