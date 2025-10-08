@@ -399,6 +399,91 @@
     background: var(--success);
   }
 
+  /* Novos estilos para tipo de perfil e cargos */
+  .profile-type-badge {
+    display: inline-block;
+    background: rgba(240, 185, 11, 0.1);
+    color: var(--accent-primary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .token-contract-section {
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: rgba(240, 185, 11, 0.05);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+
+  .token-contract-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .token-contract-address {
+    font-size: 13px;
+    color: var(--accent-primary);
+    word-break: break-all;
+    font-family: monospace;
+  }
+
+  .badges-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+    justify-content: center;
+  }
+
+  .badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .badge.ceo {
+    background: linear-gradient(135deg, #FF6B6B, #EE5A24);
+    color: white;
+  }
+
+  .badge.coo {
+    background: linear-gradient(135deg, #48DBFB, #18DCFF);
+    color: #0B0E11;
+  }
+
+  .badge.cto {
+    background: linear-gradient(135deg, #32FF7E, #18DC66);
+    color: #0B0E11;
+  }
+
+  .badge.cfo {
+    background: linear-gradient(135deg, #FF9F1C, #FFAF40);
+    color: #0B0E11;
+  }
+
+  .badge.cmo {
+    background: linear-gradient(135deg, #FF8CDB, #FF6FD8);
+    color: #0B0E11;
+  }
+
+  .badge.dev {
+    background: linear-gradient(135deg, #7158E2, #8B78E6);
+    color: white;
+  }
+
   .links-section {
     margin-bottom: 32px;
   }
@@ -567,6 +652,15 @@
       font-size: 16px;
       padding: 0 12px;
     }
+
+    .badges-container {
+      gap: 6px;
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 5px 10px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -625,6 +719,23 @@
     .back-button {
       margin-right: auto; /* EMPURRA O BOTÃO PARA A ESQUERDA */
     }
+
+    .badges-container {
+      gap: 4px;
+    }
+
+    .badge {
+      font-size: 9px;
+      padding: 4px 8px;
+    }
+
+    .token-contract-section {
+      padding: 10px 12px;
+    }
+
+    .token-contract-address {
+      font-size: 11px;
+    }
   }
 
   @media (max-width: 360px) {
@@ -664,6 +775,15 @@
     .back-button {
       padding: 8px 16px;
       font-size: 13px;
+    }
+
+    .badges-container {
+      gap: 3px;
+    }
+
+    .badge {
+      font-size: 8px;
+      padding: 3px 6px;
     }
   }
 
@@ -764,6 +884,10 @@
 
       <div class="profile-info">
         <div class="name" id="profileName">Carregando...</div>
+        
+        <!-- Badge do Tipo de Perfil -->
+        <div id="profileTypeBadge" class="profile-type-badge" style="display: none;"></div>
+        
         <div class="description" id="profileDescription">
           <!-- A descrição será inserida aqui via JavaScript -->
         </div>
@@ -773,6 +897,15 @@
           Network address
         </div>
       </div>
+
+      <!-- Seção do Contrato de Token (para Projetos) -->
+      <div id="tokenContractSection" class="token-contract-section" style="display: none;">
+        <div class="token-contract-label">CONTRATO DO TOKEN</div>
+        <div class="token-contract-address" id="tokenContractAddress">—</div>
+      </div>
+
+      <!-- Seção dos Cargos (para Perfis Pessoais) -->
+      <div id="badgesSection" class="badges-container" style="display: none;"></div>
 
       <div class="links-section">
         <div class="section-title">Links do Perfil</div>
@@ -829,6 +962,10 @@
     const shareButton = el('shareButton');
     const shareOptions = el('shareOptions');
     const verifiedBadge = el('verifiedBadge');
+    const profileTypeBadge = el('profileTypeBadge');
+    const tokenContractSection = el('tokenContractSection');
+    const tokenContractAddress = el('tokenContractAddress');
+    const badgesSection = el('badgesSection');
 
     // Variáveis globais para dados do perfil
     let currentProfileData = {
@@ -921,6 +1058,75 @@
       document.title = title;
     }
 
+    // Função para exibir informações do tipo de perfil
+    function displayProfileType(profileData) {
+      if (profileData.profileType) {
+        profileTypeBadge.style.display = 'inline-block';
+        
+        if (profileData.profileType === 'project') {
+          profileTypeBadge.textContent = 'Projeto';
+          
+          // Mostrar contrato de token se existir
+          if (profileData.tokenContract) {
+            tokenContractSection.style.display = 'block';
+            tokenContractAddress.textContent = profileData.tokenContract;
+          }
+          
+          // Ocultar badges de cargos
+          badgesSection.style.display = 'none';
+        } else {
+          profileTypeBadge.textContent = 'Pessoal';
+          
+          // Ocultar contrato de token
+          tokenContractSection.style.display = 'none';
+          
+          // Mostrar badges de cargos se existirem
+          if (profileData.roles && profileData.roles.length > 0) {
+            badgesSection.style.display = 'flex';
+            badgesSection.innerHTML = '';
+            
+            profileData.roles.forEach(role => {
+              const badge = document.createElement("div");
+              badge.className = `badge ${role}`;
+              
+              // Adicionar ícone específico para cada cargo
+              let icon = "";
+              switch(role) {
+                case "ceo":
+                  icon = "👑";
+                  break;
+                case "coo":
+                  icon = "⚙️";
+                  break;
+                case "cto":
+                  icon = "💻";
+                  break;
+                case "cfo":
+                  icon = "💰";
+                  break;
+                case "cmo":
+                  icon = "📢";
+                  break;
+                case "dev":
+                  icon = "🔧";
+                  break;
+              }
+              
+              badge.innerHTML = `${icon} ${role.toUpperCase()}`;
+              badgesSection.appendChild(badge);
+            });
+          } else {
+            badgesSection.style.display = 'none';
+          }
+        }
+      } else {
+        // Perfil antigo sem tipo definido
+        profileTypeBadge.style.display = 'none';
+        tokenContractSection.style.display = 'none';
+        badgesSection.style.display = 'none';
+      }
+    }
+
     // Função para compartilhar
     function shareProfile(platform) {
       const currentUrl = window.location.href;
@@ -1004,7 +1210,10 @@
             name: obj.name || 'Sem nome definido',
             description: obj.description || 'Perfil criado na plataforma Linkchain',
             photo: obj.photo || '',
-            address: userAddress
+            address: userAddress,
+            profileType: obj.profileType,
+            tokenContract: obj.tokenContract,
+            roles: obj.roles
           };
           
           // Atualizar meta tags
@@ -1029,6 +1238,9 @@
             avatarImg.style.display = 'none';
             avatarPlaceholder.style.display = 'block';
           }
+          
+          // Exibir informações do tipo de perfil
+          displayProfileType(obj);
           
           // VERIFICAR SE TEM O TOKEN E MOSTRAR BADGE
           if (TOKEN_CONFIG.address && TOKEN_CONFIG.address !== "0xYourTokenAddressHere") {
