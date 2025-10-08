@@ -888,6 +888,122 @@
     .token-contract-field.visible {
       display: block;
     }
+
+    /* Estilos para os checkboxes de cargos */
+    .roles-section {
+      display: none;
+      margin-top: 12px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .roles-section.visible {
+      display: block;
+    }
+
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .role-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(11, 14, 17, 0.6);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .role-checkbox:hover {
+      border-color: var(--accent-primary);
+      background: rgba(240, 185, 11, 0.05);
+    }
+
+    .role-checkbox input[type="checkbox"] {
+      margin: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent-primary);
+    }
+
+    .role-checkbox.checked {
+      border-color: var(--accent-primary);
+      background: rgba(240, 185, 11, 0.1);
+    }
+
+    /* Estilos para os emblemas no preview */
+    .badges-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+      justify-content: center;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge.ceo {
+      background: linear-gradient(135deg, #FF6B6B, #EE5A24);
+      color: white;
+    }
+
+    .badge.coo {
+      background: linear-gradient(135deg, #48DBFB, #18DCFF);
+      color: #0B0E11;
+    }
+
+    .badge.cto {
+      background: linear-gradient(135deg, #32FF7E, #18DC66);
+      color: #0B0E11;
+    }
+
+    .badge.cfo {
+      background: linear-gradient(135deg, #FF9F1C, #FFAF40);
+      color: #0B0E11;
+    }
+
+    .badge.cmo {
+      background: linear-gradient(135deg, #FF8CDB, #FF6FD8);
+      color: #0B0E11;
+    }
+
+    .badge.dev {
+      background: linear-gradient(135deg, #7158E2, #8B78E6);
+      color: white;
+    }
+
+    .token-contract-preview {
+      margin: 12px 0;
+      padding: 10px;
+      background: rgba(240, 185, 11, 0.1);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--accent-primary);
+      text-align: center;
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    .token-contract-preview a {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+
+    .token-contract-preview a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -1015,12 +1131,46 @@
             </select>
           </div>
 
-          <!-- Campo condicional para Token Contract -->
+          <!-- Campo condicional para Token Contract (Projeto) -->
           <div class="form-section token-contract-field" id="tokenContractField">
             <label for="tokenContract">Endereço do Contrato do Token</label>
             <input id="tokenContract" type="text" placeholder="0x..." />
             <div class="small" style="margin-top: 4px;">
               Cole o endereço do contrato do token do seu projeto
+            </div>
+          </div>
+
+          <!-- Campo condicional para Cargos (Pessoal) -->
+          <div class="form-section roles-section" id="rolesSection">
+            <label>Cargos no Projeto</label>
+            <div class="small" style="margin-bottom: 8px;">
+              Selecione os cargos que você representa no projeto
+            </div>
+            <div class="roles-grid">
+              <label class="role-checkbox" data-role="ceo">
+                <input type="checkbox" value="ceo">
+                <span>CEO</span>
+              </label>
+              <label class="role-checkbox" data-role="coo">
+                <input type="checkbox" value="coo">
+                <span>COO</span>
+              </label>
+              <label class="role-checkbox" data-role="cto">
+                <input type="checkbox" value="cto">
+                <span>CTO</span>
+              </label>
+              <label class="role-checkbox" data-role="cfo">
+                <input type="checkbox" value="cfo">
+                <span>CFO</span>
+              </label>
+              <label class="role-checkbox" data-role="cmo">
+                <input type="checkbox" value="cmo">
+                <span>CMO</span>
+              </label>
+              <label class="role-checkbox" data-role="dev">
+                <input type="checkbox" value="dev">
+                <span>DEV</span>
+              </label>
             </div>
           </div>
 
@@ -1091,6 +1241,16 @@
             <div class="preview-description" id="previewDescription">
               Sua descrição aparecerá aqui...
             </div>
+            
+            <!-- Container para o contrato de token (Projeto) -->
+            <div id="tokenContractPreview" class="token-contract-preview" style="display: none;">
+              <strong>Token Contract:</strong><br>
+              <span id="previewTokenContract">—</span>
+            </div>
+            
+            <!-- Container para os emblemas de cargos (Pessoal) -->
+            <div id="badgesPreview" class="badges-container" style="display: none;"></div>
+            
             <div class="links" id="previewLinks"></div>
           </div>
           
@@ -1238,6 +1398,11 @@
     const tokenContractField = document.getElementById("tokenContractField");
     const tokenContractInput = document.getElementById("tokenContract");
     const previewType = document.getElementById("previewType");
+    const rolesSection = document.getElementById("rolesSection");
+    const roleCheckboxes = document.querySelectorAll('.role-checkbox input[type="checkbox"]');
+    const tokenContractPreview = document.getElementById("tokenContractPreview");
+    const previewTokenContract = document.getElementById("previewTokenContract");
+    const badgesPreview = document.getElementById("badgesPreview");
 
     let signer = null;
     let userAddress = null;
@@ -1455,6 +1620,17 @@
       }))
       .filter((link) => link.url);
 
+    // Obter cargos selecionados
+    function getSelectedRoles() {
+      const selectedRoles = [];
+      roleCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          selectedRoles.push(checkbox.value);
+        }
+      });
+      return selectedRoles;
+    }
+
     // Renderizar preview
     function renderPreview() {
       previewName.textContent = nameInput.value || "Seu nome";
@@ -1478,9 +1654,63 @@
       if (profileType === "project") {
         previewType.textContent = "Projeto";
         previewType.style.display = "block";
+        
+        // Mostrar contrato de token se existir
+        if (tokenContractInput.value) {
+          tokenContractPreview.style.display = "block";
+          previewTokenContract.textContent = tokenContractInput.value;
+        } else {
+          tokenContractPreview.style.display = "none";
+        }
+        
+        // Ocultar badges para perfil de projeto
+        badgesPreview.style.display = "none";
       } else {
         previewType.textContent = "Pessoal";
         previewType.style.display = "block";
+        
+        // Ocultar contrato de token para perfil pessoal
+        tokenContractPreview.style.display = "none";
+        
+        // Mostrar badges se houver cargos selecionados
+        const selectedRoles = getSelectedRoles();
+        if (selectedRoles.length > 0) {
+          badgesPreview.style.display = "flex";
+          badgesPreview.innerHTML = "";
+          
+          selectedRoles.forEach(role => {
+            const badge = document.createElement("div");
+            badge.className = `badge ${role}`;
+            
+            // Adicionar ícone específico para cada cargo
+            let icon = "";
+            switch(role) {
+              case "ceo":
+                icon = "👑";
+                break;
+              case "coo":
+                icon = "⚙️";
+                break;
+              case "cto":
+                icon = "💻";
+                break;
+              case "cfo":
+                icon = "💰";
+                break;
+              case "cmo":
+                icon = "📢";
+                break;
+              case "dev":
+                icon = "🔧";
+                break;
+            }
+            
+            badge.innerHTML = `${icon} ${role.toUpperCase()}`;
+            badgesPreview.appendChild(badge);
+          });
+        } else {
+          badgesPreview.style.display = "none";
+        }
       }
       
       // Atualizar links
@@ -1544,15 +1774,29 @@
       renderPreview();
     }
 
-    // Gerenciar visibilidade do campo de token contract
+    // Gerenciar visibilidade dos campos condicionais
     profileTypeSelect.addEventListener("change", function() {
       if (this.value === "project") {
         tokenContractField.classList.add("visible");
+        rolesSection.classList.remove("visible");
       } else {
         tokenContractField.classList.remove("visible");
-        tokenContractInput.value = ""; // Limpar o campo quando não for projeto
+        rolesSection.classList.add("visible");
       }
       renderPreview();
+    });
+
+    // Configurar checkboxes de cargos
+    roleCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", function() {
+        const label = this.closest('.role-checkbox');
+        if (this.checked) {
+          label.classList.add('checked');
+        } else {
+          label.classList.remove('checked');
+        }
+        renderPreview();
+      });
     });
 
     addLinkButton.onclick = () => addLinkItem();
@@ -1590,7 +1834,8 @@
         photo: photoInput.value, 
         links: getLinksData(),
         profileType: profileTypeSelect.value,
-        tokenContract: profileTypeSelect.value === "project" ? tokenContractInput.value : ""
+        tokenContract: profileTypeSelect.value === "project" ? tokenContractInput.value : "",
+        roles: profileTypeSelect.value === "personal" ? getSelectedRoles() : []
       };
       
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
@@ -1632,13 +1877,27 @@
           linksList.innerHTML = "";
           (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
           
-          // Carregar tipo de perfil e token contract se existirem
+          // Carregar tipo de perfil e campos condicionais
           if (profileObject.profileType) {
             profileTypeSelect.value = profileObject.profileType;
-            // Disparar o evento change para mostrar/ocultar o campo de token
+            // Disparar o evento change para mostrar/ocultar os campos
             profileTypeSelect.dispatchEvent(new Event('change'));
-            if (profileObject.tokenContract) {
+            
+            if (profileObject.profileType === "project" && profileObject.tokenContract) {
               tokenContractInput.value = profileObject.tokenContract;
+            }
+            
+            if (profileObject.profileType === "personal" && profileObject.roles) {
+              // Marcar os checkboxes dos cargos
+              roleCheckboxes.forEach(checkbox => {
+                checkbox.checked = profileObject.roles.includes(checkbox.value);
+                const label = checkbox.closest('.role-checkbox');
+                if (checkbox.checked) {
+                  label.classList.add('checked');
+                } else {
+                  label.classList.remove('checked');
+                }
+              });
             }
           }
           
@@ -1655,6 +1914,9 @@
     // Inicializar preview
     renderPreview();
     updateNetworkInfo();
+    
+    // Inicializar seção de cargos como visível para perfil pessoal
+    rolesSection.classList.add("visible");
   </script>
 </body>
 </html>
