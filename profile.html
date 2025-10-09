@@ -1286,16 +1286,26 @@
       }
     }
 
-    // Função para formatar preço em USD
+    // Função para formatar preço em USD CORRIGIDA
     function formatPrice(price) {
       if (price === null || price === undefined) return '—';
       
+      // Para preços muito pequenos (menos que 0.0001), usar mais casas decimais
       if (price < 0.0001) {
-        return '$' + price.toExponential(4);
+        // Formatar com 9 casas decimais para preços muito baixos
+        return '$' + price.toFixed(9);
       } else if (price < 1) {
+        // Para preços entre 0.0001 e 1, usar 6 casas decimais
         return '$' + price.toFixed(6);
-      } else {
+      } else if (price < 10) {
+        // Para preços entre 1 e 10, usar 4 casas decimais
         return '$' + price.toFixed(4);
+      } else if (price < 1000) {
+        // Para preços entre 10 e 1000, usar 2 casas decimais
+        return '$' + price.toFixed(2);
+      } else {
+        // Para preços acima de 1000, usar formatação compacta
+        return '$' + formatNumber(price, 2);
       }
     }
 
