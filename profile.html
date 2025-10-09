@@ -25,6 +25,8 @@
 
 <!-- Chart.js para gráficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.min.js"></script>
 
 <style>
   :root {
@@ -1240,7 +1242,7 @@
       return data;
     }
 
-    // Função para criar gráfico de candlestick
+    // Função para criar gráfico de candlestick (CORRIGIDA)
     function createCandlestickChart(data, timeframe) {
       if (chartInstance) {
         chartInstance.destroy();
@@ -1248,17 +1250,8 @@
       
       const ctx = priceChart.getContext('2d');
       
-      const labels = data.map(item => {
-        const date = new Date(item.timestamp);
-        if (timeframe === '1D') {
-          return date.getHours() + 'h';
-        } else {
-          return date.getDate() + '/' + (date.getMonth() + 1);
-        }
-      });
-      
+      // Prepara os dados para o gráfico
       const chartData = {
-        labels: labels,
         datasets: [
           {
             label: 'Preço',
@@ -1281,6 +1274,7 @@
         ]
       };
       
+      // Configurações do gráfico corrigidas
       chartInstance = new Chart(ctx, {
         type: 'candlestick',
         data: chartData,
@@ -1311,16 +1305,22 @@
             x: {
               type: 'time',
               time: {
-                unit: timeframe === '1D' ? 'hour' : 'day'
+                unit: timeframe === '1D' ? 'hour' : 'day',
+                displayFormats: {
+                  hour: 'HH:mm',
+                  day: 'dd/MM'
+                }
               },
               grid: {
                 color: 'rgba(240, 185, 11, 0.1)'
               },
               ticks: {
-                color: 'rgba(240, 185, 11, 0.6)'
+                color: 'rgba(240, 185, 11, 0.6)',
+                maxTicksLimit: 8
               }
             },
             y: {
+              position: 'right',
               grid: {
                 color: 'rgba(240, 185, 11, 0.1)'
               },
@@ -1331,6 +1331,10 @@
                 }
               }
             }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index'
           }
         }
       });
