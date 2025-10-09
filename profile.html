@@ -23,9 +23,6 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
-<!-- ApexCharts CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.45.0/dist/apexcharts.css">
-
 <style>
   :root {
     --bg-primary: #0B0E11;
@@ -506,7 +503,7 @@
     color: white;
   }
 
-  /* Estilos para o gráfico de candlestick */
+  /* Estilos para o gráfico personalizado */
   .chart-section {
     margin: 20px 0;
     padding: 16px;
@@ -580,8 +577,8 @@
     padding: 20px;
   }
 
-  /* Estilos para o gráfico de candlestick */
-  .candlestick-chart {
+  /* Estilos para o gráfico personalizado */
+  .custom-chart {
     width: 100%;
     height: 100%;
     position: relative;
@@ -642,6 +639,25 @@
     font-size: 14px;
     font-weight: 600;
     color: var(--text-primary);
+  }
+
+  .chart-canvas-container {
+    height: 180px;
+    width: 100%;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .chart-canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chart-volume {
+    height: 30px;
+    width: 100%;
+    margin-top: 8px;
+    opacity: 0.7;
   }
 
   .links-section {
@@ -824,6 +840,10 @@
     .chart-container {
       height: 250px;
     }
+
+    .chart-canvas-container {
+      height: 150px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -902,6 +922,10 @@
       height: 200px;
     }
 
+    .chart-canvas-container {
+      height: 120px;
+    }
+
     .chart-timeframe {
       flex-wrap: wrap;
       justify-content: center;
@@ -970,6 +994,10 @@
 
     .chart-container {
       height: 180px;
+    }
+
+    .chart-canvas-container {
+      height: 100px;
     }
   }
 
@@ -1091,7 +1119,7 @@
         </button>
       </div>
 
-      <!-- Seção do Gráfico de Candlestick -->
+      <!-- Seção do Gráfico Personalizado -->
       <div id="chartSection" class="chart-section" style="display: none;">
         <div class="chart-header">
           <div class="chart-title">GRÁFICO DO TOKEN</div>
@@ -1103,11 +1131,19 @@
         </div>
         <div class="chart-container">
           <div class="chart-loading" id="chartLoading">Carregando dados do token...</div>
-          <div class="candlestick-chart" id="candlestickChart" style="display: none;"></div>
+          <div class="custom-chart" id="customChart" style="display: none;">
+            <div class="chart-price-info">
+              <div class="current-price" id="currentPrice">—</div>
+              <div class="price-change" id="priceChange">—</div>
+            </div>
+            <div class="chart-canvas-container">
+              <canvas class="chart-canvas" id="priceChart"></canvas>
+            </div>
+            <div class="chart-stats" id="chartStats">
+              <!-- Stats serão preenchidos via JavaScript -->
+            </div>
+          </div>
           <div class="chart-error" id="chartError" style="display: none;"></div>
-        </div>
-        <div class="chart-stats" id="chartStats">
-          <!-- Stats serão preenchidos via JavaScript -->
         </div>
       </div>
 
@@ -1175,8 +1211,11 @@
     const chartSection = el('chartSection');
     const chartLoading = el('chartLoading');
     const chartError = el('chartError');
-    const candlestickChart = el('candlestickChart');
+    const customChart = el('customChart');
+    const currentPrice = el('currentPrice');
+    const priceChange = el('priceChange');
     const chartStats = el('chartStats');
+    const priceChartCanvas = el('priceChart');
 
     // Variáveis globais
     let currentProfileData = {
@@ -1302,300 +1341,149 @@
       }
     }
 
-    // Função para gerar dados de candlestick simulados
-    function generateCandlestickData(timeframe = '1D') {
-      const data = [];
-      let basePrice = 0.001 + Math.random() * 0.01; // Preço base entre 0.001 e 0.011
-      
-      const periods = timeframe === '1D' ? 24 : timeframe === '1W' ? 7 : 30;
-      const timeLabels = [];
-      
-      // Gerar labels de tempo baseado no timeframe
-      if (timeframe === '1D') {
-        for (let i = 0; i < periods; i++) {
-          timeLabels.push(`${i.toString().padStart(2, '0')}:00`);
-        }
-      } else if (timeframe === '1W') {
-        const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-        timeLabels.push(...days);
-      } else {
-        for (let i = 1; i <= periods; i++) {
-          timeLabels.push(`${i}/M`);
-        }
-      }
-      
-      for (let i = 0; i < periods; i++) {
-        const open = basePrice;
-        const volatility = 0.02 + Math.random() * 0.08; // Volatilidade entre 2% e 10%
-        const change = (Math.random() - 0.5) * volatility;
-        const close = open * (1 + change);
-        
-        const high = Math.max(open, close) * (1 + Math.random() * 0.02);
-        const low = Math.min(open, close) * (1 - Math.random() * 0.02);
-        
-        const volume = 10000 + Math.random() * 50000;
-        
-        data.push({
-          x: timeLabels[i],
-          y: [open, high, low, close],
-          volume: volume
-        });
-        
-        basePrice = close;
-      }
-      
-      return data;
-    }
-
-    // Função para criar gráfico de candlestick
-    function createCandlestickChart(tokenData, timeframe = '1D') {
+    // Função para criar gráfico personalizado
+    function createCustomChart(tokenData) {
       if (chartInstance) {
         chartInstance.destroy();
       }
 
-      const attributes = tokenData.attributes;
-      const currentPriceValue = parseFloat(attributes.base_token_price_usd);
-      const price24hChange = attributes.price_change_percentage.h24 ? 
-        parseFloat(attributes.price_change_percentage.h24) : 0;
-
-      // Gerar dados de candlestick
-      const candlestickData = generateCandlestickData(timeframe);
+      const ctx = priceChartCanvas.getContext('2d');
       
-      // Calcular estatísticas dos dados gerados
-      const prices = candlestickData.map(d => d.y[3]); // Preços de fechamento
-      const volumes = candlestickData.map(d => d.volume);
+      // Dados simulados para o gráfico (baseados nos dados da API)
+      const priceChanges = tokenData.attributes.price_change_percentage;
+      const timeframes = ['m5', 'm15', 'm30', 'h1', 'h6', 'h24'];
+      const labels = ['5m', '15m', '30m', '1h', '6h', '24h'];
       
-      const maxPrice = Math.max(...prices);
-      const minPrice = Math.min(...prices);
-      const avgVolume = volumes.reduce((a, b) => a + b, 0) / volumes.length;
+      const data = timeframes.map(tf => {
+        const change = priceChanges[tf];
+        return change ? parseFloat(change) : 0;
+      });
 
-      const options = {
-        series: [{
-          name: 'Preço',
-          type: 'candlestick',
-          data: candlestickData
-        }, {
-          name: 'Volume',
-          type: 'bar',
-          data: volumes.map((volume, index) => ({
-            x: candlestickData[index].x,
-            y: volume
-          }))
-        }],
-        chart: {
-          type: 'candlestick',
-          height: '70%',
-          foreColor: '#B7BDC6',
-          toolbar: {
-            show: true,
-            tools: {
-              download: true,
-              selection: false,
-              zoom: true,
-              zoomin: true,
-              zoomout: true,
-              pan: false,
-              reset: true
-            }
-          },
-          zoom: {
-            enabled: true
-          }
+      const currentPriceValue = parseFloat(tokenData.attributes.base_token_price_usd);
+      const price24hChange = priceChanges.h24 ? parseFloat(priceChanges.h24) : 0;
+      
+      // Atualizar informações de preço
+      currentPrice.textContent = formatPrice(currentPriceValue);
+      
+      if (price24hChange !== 0) {
+        priceChange.textContent = `${price24hChange > 0 ? '+' : ''}${price24hChange.toFixed(2)}%`;
+        priceChange.className = `price-change ${price24hChange >= 0 ? 'positive' : 'negative'}`;
+      } else {
+        priceChange.textContent = '0.00%';
+        priceChange.className = 'price-change';
+      }
+
+      // Criar gradiente para o gráfico
+      const gradient = ctx.createLinearGradient(0, 0, 0, 180);
+      if (price24hChange >= 0) {
+        gradient.addColorStop(0, 'rgba(14, 203, 129, 0.3)');
+        gradient.addColorStop(1, 'rgba(14, 203, 129, 0.05)');
+      } else {
+        gradient.addColorStop(0, 'rgba(246, 70, 93, 0.3)');
+        gradient.addColorStop(1, 'rgba(246, 70, 93, 0.05)');
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Variação de Preço (%)',
+            data: data,
+            borderColor: price24hChange >= 0 ? '#0ECB81' : '#F6465D',
+            backgroundColor: gradient,
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: price24hChange >= 0 ? '#0ECB81' : '#F6465D',
+            pointBorderColor: '#0B0E11',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
         },
-        title: {
-          text: '',
-          align: 'left'
-        },
-        xaxis: {
-          type: 'category',
-          labels: {
-            style: {
-              colors: '#B7BDC6',
-              fontSize: '11px'
-            }
-          },
-          axisBorder: {
-            show: true,
-            color: 'rgba(240, 185, 11, 0.2)'
-          },
-          axisTicks: {
-            show: true,
-            color: 'rgba(240, 185, 11, 0.2)'
-          }
-        },
-        yaxis: [
-          {
-            seriesName: 'Preço',
-            opposite: false,
-            axisTicks: {
-              show: true,
-              color: 'rgba(240, 185, 11, 0.2)'
-            },
-            axisBorder: {
-              show: true,
-              color: 'rgba(240, 185, 11, 0.2)'
-            },
-            labels: {
-              style: {
-                colors: '#B7BDC6',
-                fontSize: '11px'
-              },
-              formatter: function(value) {
-                return formatPrice(value);
-              }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
             },
             tooltip: {
-              enabled: true
-            }
-          },
-          {
-            seriesName: 'Volume',
-            opposite: true,
-            axisTicks: {
-              show: true,
-              color: 'rgba(240, 185, 11, 0.2)'
-            },
-            axisBorder: {
-              show: true,
-              color: 'rgba(240, 185, 11, 0.2)'
-            },
-            labels: {
-              style: {
-                colors: '#B7BDC6',
-                fontSize: '11px'
-              },
-              formatter: function(value) {
-                return formatNumber(value, 0);
+              backgroundColor: 'rgba(22, 26, 30, 0.9)',
+              titleColor: '#EAECEF',
+              bodyColor: '#EAECEF',
+              borderColor: 'rgba(240, 185, 11, 0.3)',
+              borderWidth: 1,
+              callbacks: {
+                label: function(context) {
+                  return `Variação: ${context.parsed.y.toFixed(2)}%`;
+                }
               }
             }
-          }
-        ],
-        plotOptions: {
-          candlestick: {
-            colors: {
-                  upward: '#0ECB81',
-                  downward: '#F6465D'
-            },
-            wick: {
-              useFillColor: true
-            }
           },
-          bar: {
-            columnWidth: '60%',
-            colors: {
-              ranges: [{
-                from: 0,
-                to: 1000000000,
-                color: 'rgba(240, 185, 11, 0.3)'
-              }]
-            }
-          }
-        },
-        grid: {
-          borderColor: 'rgba(240, 185, 11, 0.1)',
-          strokeDashArray: 4,
-          padding: {
-            top: 20,
-            right: 20,
-            bottom: 20,
-            left: 20
-          }
-        },
-        tooltip: {
-          shared: true,
-          intersect: false,
-          theme: 'dark',
-          custom: function({ seriesIndex, dataPointIndex, w }) {
-            if (seriesIndex === 0) {
-              const o = w.globals.seriesCandleO[seriesIndex][dataPointIndex];
-              const h = w.globals.seriesCandleH[seriesIndex][dataPointIndex];
-              const l = w.globals.seriesCandleL[seriesIndex][dataPointIndex];
-              const c = w.globals.seriesCandleC[seriesIndex][dataPointIndex];
-              
-              return `
-                <div class="apexcharts-tooltip-candlestick" style="background: #161A1E; padding: 8px; border: 1px solid rgba(240, 185, 11, 0.3); border-radius: 6px;">
-                  <div style="font-weight: bold; margin-bottom: 4px;">${w.globals.categoryLabels[dataPointIndex]}</div>
-                  <div>Abertura: <span style="color: #B7BDC6">${formatPrice(o)}</span></div>
-                  <div>Alta: <span style="color: #0ECB81">${formatPrice(h)}</span></div>
-                  <div>Baixa: <span style="color: #F6465D">${formatPrice(l)}</span></div>
-                  <div>Fechamento: <span style="color: ${c >= o ? '#0ECB81' : '#F6465D'}">${formatPrice(c)}</span></div>
-                </div>
-              `;
-            }
-            return '';
-          }
-        },
-        legend: {
-          show: false
-        },
-        stroke: {
-          width: [2, 1]
-        },
-        colors: ['#0ECB81', '#F0B90B'],
-        states: {
-          hover: {
-            filter: {
-              type: 'none'
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(240, 185, 11, 0.1)',
+                borderColor: 'rgba(240, 185, 11, 0.2)'
+              },
+              ticks: {
+                color: '#B7BDC6'
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(240, 185, 11, 0.1)',
+                borderColor: 'rgba(240, 185, 11, 0.2)'
+              },
+              ticks: {
+                color: '#B7BDC6',
+                callback: function(value) {
+                  return value + '%';
+                }
+              }
             }
           }
         }
-      };
-
-      chartInstance = new ApexCharts(candlestickChart, options);
-      chartInstance.render();
+      });
 
       // Atualizar estatísticas
-      updateChartStats(tokenData, {
-        maxPrice,
-        minPrice,
-        avgVolume,
-        currentPrice: currentPriceValue,
-        priceChange: price24hChange
-      });
+      updateChartStats(tokenData);
     }
 
     // Função para atualizar estatísticas do gráfico
-    function updateChartStats(tokenData, chartData) {
+    function updateChartStats(tokenData) {
       const attributes = tokenData.attributes;
       const transactions = attributes.transactions;
       const volume = attributes.volume_usd;
       
       chartStats.innerHTML = `
         <div class="stat-item">
-          <div class="stat-label">Preço Atual</div>
-          <div class="stat-value">${formatPrice(chartData.currentPrice)}</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Variação 24h</div>
-          <div class="stat-value" style="color: ${chartData.priceChange >= 0 ? '#0ECB81' : '#F6465D'}">
-            ${chartData.priceChange >= 0 ? '+' : ''}${chartData.priceChange.toFixed(2)}%
-          </div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Máxima</div>
-          <div class="stat-value">${formatPrice(chartData.maxPrice)}</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Mínima</div>
-          <div class="stat-value">${formatPrice(chartData.minPrice)}</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Volume Médio</div>
-          <div class="stat-value">${formatNumber(chartData.avgVolume, 0)}</div>
-        </div>
-        <div class="stat-item">
           <div class="stat-label">FDV</div>
           <div class="stat-value">${formatPrice(parseFloat(attributes.fdv_usd))}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Volume 24h</div>
+          <div class="stat-value">${formatNumber(parseFloat(volume.h24))}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Liquidez</div>
+          <div class="stat-value">${formatPrice(parseFloat(attributes.reserve_in_usd))}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Transações 24h</div>
+          <div class="stat-value">${formatNumber(transactions.h24.buys + transactions.h24.sells)}</div>
         </div>
       `;
     }
 
     // Função para carregar dados do GeckoTerminal
-    async function loadGeckoTerminalData(contractAddress, timeframe = '1D') {
+    async function loadGeckoTerminalData(contractAddress) {
       try {
         chartLoading.style.display = 'flex';
         chartError.style.display = 'none';
-        candlestickChart.style.display = 'none';
+        customChart.style.display = 'none';
         
         // Verifica se temos um contrato válido
         if (!contractAddress || contractAddress === '—' || !ethers.isAddress(contractAddress)) {
@@ -1614,12 +1502,12 @@
         if (data.data && data.data.length > 0) {
           const tokenData = data.data[0];
           
-          // Mostrar o gráfico de candlestick
+          // Mostrar o gráfico personalizado
           chartLoading.style.display = 'none';
-          candlestickChart.style.display = 'block';
+          customChart.style.display = 'block';
           
           // Criar gráfico com os dados
-          createCandlestickChart(tokenData, timeframe);
+          createCustomChart(tokenData);
           
         } else {
           throw new Error('Nenhum pool encontrado para este token');
@@ -1654,7 +1542,7 @@
           currentTimeframe = this.dataset.timeframe;
           
           // Recarrega os dados
-          loadGeckoTerminalData(tokenContract, currentTimeframe);
+          loadGeckoTerminalData(tokenContract);
         });
       });
     }
@@ -1911,7 +1799,7 @@
     // Iniciar carregamento
     loadProfile();
   </script>
-  <!-- ApexCharts Library -->
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.0/dist/apexcharts.min.js"></script>
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
