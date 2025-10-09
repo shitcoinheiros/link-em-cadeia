@@ -23,10 +23,22 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
-<!-- Chart.js para gráficos -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/index.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.min.js"></script>
+<!-- REMOVIDO: Chart.js e dependências -->
+<!-- ADICIONADO: TradingView Widget -->
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+{
+  "autosize": true,
+  "symbol": "BINANCE:BTCUSDT",
+  "interval": "D",
+  "timezone": "America/Sao_Paulo",
+  "theme": "dark",
+  "style": "1",
+  "locale": "br",
+  "enable_publishing": false,
+  "allow_symbol_change": true,
+  "container_id": "tradingview_chart"
+}
+</script>
 
 <style>
   :root {
@@ -508,7 +520,7 @@
     color: white;
   }
 
-  /* Estilos para o gráfico de candlestick */
+  /* Estilos para o gráfico do TradingView */
   .chart-section {
     margin: 20px 0;
     padding: 16px;
@@ -558,7 +570,7 @@
 
   .chart-container {
     position: relative;
-    height: 200px;
+    height: 300px;
     width: 100%;
   }
 
@@ -580,6 +592,18 @@
     font-size: 14px;
     text-align: center;
     padding: 20px;
+  }
+
+  /* Container do TradingView */
+  .tradingview-widget-container {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .tradingview-widget-container iframe {
+    border: none;
+    border-radius: var(--radius-sm);
   }
 
   .links-section {
@@ -760,7 +784,7 @@
     }
 
     .chart-container {
-      height: 180px;
+      height: 250px;
     }
   }
 
@@ -837,7 +861,7 @@
     }
 
     .chart-container {
-      height: 160px;
+      height: 200px;
     }
 
     .chart-timeframe {
@@ -898,7 +922,7 @@
     }
 
     .chart-container {
-      height: 140px;
+      height: 180px;
     }
   }
 
@@ -1020,7 +1044,7 @@
         </button>
       </div>
 
-      <!-- Seção do Gráfico (para Projetos) -->
+      <!-- Seção do Gráfico (para Projetos) - AGORA COM TRADINGVIEW -->
       <div id="chartSection" class="chart-section" style="display: none;">
         <div class="chart-header">
           <div class="chart-title">GRÁFICO DO TOKEN</div>
@@ -1032,7 +1056,7 @@
         </div>
         <div class="chart-container">
           <div class="chart-loading" id="chartLoading">Carregando gráfico...</div>
-          <canvas id="priceChart"></canvas>
+          <div class="tradingview-widget-container" id="tradingview_chart"></div>
           <div class="chart-error" id="chartError" style="display: none;"></div>
         </div>
       </div>
@@ -1101,7 +1125,7 @@
     const chartSection = el('chartSection');
     const chartLoading = el('chartLoading');
     const chartError = el('chartError');
-    const priceChart = el('priceChart');
+    const tradingviewChart = el('tradingview_chart');
 
     // Variáveis globais
     let currentProfileData = {
@@ -1110,7 +1134,6 @@
       photo: '',
       address: ''
     };
-    let chartInstance = null;
     let currentTimeframe = '1D';
 
     // Função para quebrar texto a cada 40 caracteres e justificar centralizado
@@ -1199,166 +1222,49 @@
       });
     }
 
-    // Função para gerar dados de candlestick fictícios
-    function generateMockCandlestickData(timeframe) {
-      const data = [];
-      let basePrice = 100;
-      const now = new Date();
-      
-      let points = 24;
-      if (timeframe === '1W') points = 7;
-      if (timeframe === '1M') points = 30;
-      
-      for (let i = points - 1; i >= 0; i--) {
-        const date = new Date(now);
-        if (timeframe === '1D') {
-          date.setHours(now.getHours() - i);
-        } else {
-          date.setDate(now.getDate() - i);
-        }
-        
-        const volatility = 0.02;
-        const change = (Math.random() - 0.5) * 2 * volatility;
-        const newPrice = basePrice * (1 + change);
-        
-        const open = basePrice;
-        const close = newPrice;
-        const high = Math.max(open, close) * (1 + Math.random() * 0.01);
-        const low = Math.min(open, close) * (1 - Math.random() * 0.01);
-        const volume = Math.random() * 1000000;
-        
-        data.push({
-          timestamp: date.getTime(),
-          open,
-          high,
-          low,
-          close,
-          volume
-        });
-        
-        basePrice = close;
-      }
-      
-      return data;
-    }
-
-    // Função para criar gráfico de candlestick (CORRIGIDA)
-    function createCandlestickChart(data, timeframe) {
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
-      
-      const ctx = priceChart.getContext('2d');
-      
-      // Prepara os dados para o gráfico
-      const chartData = {
-        datasets: [
-          {
-            label: 'Preço',
-            data: data.map(item => ({
-              x: item.timestamp,
-              o: item.open,
-              h: item.high,
-              l: item.low,
-              c: item.close
-            })),
-            type: 'candlestick',
-            borderColor: 'rgba(240, 185, 11, 0.8)',
-            borderWidth: 1,
-            color: {
-              up: 'rgba(14, 203, 129, 0.8)',
-              down: 'rgba(246, 70, 93, 0.8)',
-              unchanged: 'rgba(240, 185, 11, 0.8)',
-            },
-          }
-        ]
-      };
-      
-      // Configurações do gráfico corrigidas
-      chartInstance = new Chart(ctx, {
-        type: 'candlestick',
-        data: chartData,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              mode: 'index',
-              intersect: false,
-              callbacks: {
-                label: function(context) {
-                  const point = context.raw;
-                  return [
-                    `Abertura: $${point.o.toFixed(2)}`,
-                    `Máxima: $${point.h.toFixed(2)}`,
-                    `Mínima: $${point.l.toFixed(2)}`,
-                    `Fechamento: $${point.c.toFixed(2)}`
-                  ];
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              type: 'time',
-              time: {
-                unit: timeframe === '1D' ? 'hour' : 'day',
-                displayFormats: {
-                  hour: 'HH:mm',
-                  day: 'dd/MM'
-                }
-              },
-              grid: {
-                color: 'rgba(240, 185, 11, 0.1)'
-              },
-              ticks: {
-                color: 'rgba(240, 185, 11, 0.6)',
-                maxTicksLimit: 8
-              }
-            },
-            y: {
-              position: 'right',
-              grid: {
-                color: 'rgba(240, 185, 11, 0.1)'
-              },
-              ticks: {
-                color: 'rgba(240, 185, 11, 0.6)',
-                callback: function(value) {
-                  return '$' + value.toFixed(2);
-                }
-              }
-            }
-          },
-          interaction: {
-            intersect: false,
-            mode: 'index'
-          }
-        }
-      });
-    }
-
-    // Função para carregar gráfico
-    function loadChart(tokenContract, timeframe) {
+    // Função para carregar gráfico do TradingView
+    function loadTradingViewChart(symbol = "BINANCE:BTCUSDT", timeframe = "D") {
       chartLoading.style.display = 'flex';
       chartError.style.display = 'none';
-      priceChart.style.display = 'none';
+      tradingviewChart.style.display = 'none';
       
-      setTimeout(() => {
-        try {
-          const mockData = generateMockCandlestickData(timeframe);
-          createCandlestickChart(mockData, timeframe);
+      // Remove qualquer widget anterior
+      tradingviewChart.innerHTML = '';
+      
+      // Configuração do widget TradingView
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        "autosize": true,
+        "symbol": symbol,
+        "interval": timeframe === '1D' ? '60' : timeframe === '1W' ? 'D' : 'D',
+        "timezone": "America/Sao_Paulo",
+        "theme": "dark",
+        "style": "1",
+        "locale": "br",
+        "enable_publishing": false,
+        "allow_symbol_change": true,
+        "container_id": "tradingview_chart",
+        "height": "100%",
+        "width": "100%"
+      });
+      
+      script.onload = function() {
+        setTimeout(() => {
           chartLoading.style.display = 'none';
-          priceChart.style.display = 'block';
-        } catch (error) {
-          console.error('Erro ao carregar gráfico:', error);
-          chartLoading.style.display = 'none';
-          chartError.style.display = 'flex';
-          chartError.textContent = 'Erro ao carregar dados do gráfico';
-        }
-      }, 1000);
+          tradingviewChart.style.display = 'block';
+        }, 1000);
+      };
+      
+      script.onerror = function() {
+        chartLoading.style.display = 'none';
+        chartError.style.display = 'flex';
+        chartError.textContent = 'Erro ao carregar gráfico TradingView';
+      };
+      
+      tradingviewChart.appendChild(script);
     }
 
     // Função para configurar botões de timeframe
@@ -1371,9 +1277,22 @@
           this.classList.add('active');
           
           currentTimeframe = this.dataset.timeframe;
-          loadChart(tokenContract, currentTimeframe);
+          
+          // Para tokens BSC, você pode usar um símbolo padrão ou mapear o contrato
+          const symbol = tokenContract ? `BINANCE:${getTokenSymbol(tokenContract)}USDT` : "BINANCE:BTCUSDT";
+          loadTradingViewChart(symbol, currentTimeframe);
         });
       });
+    }
+
+    // Função auxiliar para obter símbolo do token (exemplo)
+    function getTokenSymbol(contractAddress) {
+      // Aqui você pode mapear contratos para símbolos conhecidos
+      const tokenMap = {
+        "0x3C6581Ae982CA058CB726B6C1Bc14917FB4F0672": "FOMO",
+        // Adicione mais mapeamentos conforme necessário
+      };
+      return tokenMap[contractAddress] || "BTC";
     }
 
     // Função para atualizar meta tags
@@ -1407,7 +1326,7 @@
         // Mostrar gráfico para projetos com contrato
         chartSection.style.display = 'block';
         setupTimeframeButtons(profileData.tokenContract);
-        loadChart(profileData.tokenContract, currentTimeframe);
+        loadTradingViewChart(`BINANCE:${getTokenSymbol(profileData.tokenContract)}USDT`, currentTimeframe);
       } else {
         tokenContractSection.style.display = 'none';
         chartSection.style.display = 'none';
