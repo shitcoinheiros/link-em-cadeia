@@ -1184,6 +1184,31 @@
     let currentTimeframe = '1D';
     let chartInstance = null;
 
+    // Função para converter notação científica para decimal
+    function scientificToDecimal(num) {
+        const sign = Math.sign(num);
+        // Para números muito pequenos em notação científica
+        if (Math.abs(num) < 1e-6) {
+            const numStr = num.toFixed(20);
+            const decimalPart = numStr.split('.')[1];
+            if (decimalPart) {
+                // Encontrar o primeiro dígito não zero
+                let firstNonZero = 0;
+                for (let i = 0; i < decimalPart.length; i++) {
+                    if (decimalPart[i] !== '0') {
+                        firstNonZero = i;
+                        break;
+                    }
+                }
+                // Manter 6 dígitos significativos após os zeros
+                const significantDigits = decimalPart.substring(firstNonZero, firstNonZero + 6);
+                const zeros = '0'.repeat(firstNonZero);
+                return `0.${zeros}${significantDigits}`;
+            }
+        }
+        return num.toString();
+    }
+
     // Função para quebrar texto a cada 40 caracteres e justificar centralizado
     function formatDescription(text) {
         if (!text || text.trim() === '') {
@@ -1278,14 +1303,12 @@
             return (num / 1000000).toFixed(2) + 'M';
         } else if (num >= 1000) {
             return (num / 1000).toFixed(2) + 'K';
-        } else if (num < 0.0001) {
-            return num.toExponential(2);
         } else {
             return num.toFixed(decimals);
         }
     }
 
-    // Função para formatar preço em USD - VERSÃO CORRIGIDA
+    // Função para formatar preço em USD - VERSÃO DEFINITIVA
     function formatPrice(price) {
         if (price === null || price === undefined) return '—';
         
@@ -1295,28 +1318,22 @@
         // Verificar se é um número válido
         if (isNaN(numPrice)) return '—';
         
-        // Para números muito pequenos, usar formatação manual
-        if (numPrice < 0.000001) {
-            // Converter para string e garantir que não use notação científica
-            const priceStr = numPrice.toFixed(20);
-            // Encontrar a posição do primeiro dígito significativo
-            const match = priceStr.match(/0\.(0*)([1-9]\d*)/);
-            if (match) {
-                const zeros = match[1];
-                const significantDigits = match[2].substring(0, 8); // Limitar a 8 dígitos significativos
-                return `$0.${zeros}${significantDigits}`;
-            }
+        // Para números muito pequenos (notação científica)
+        if (Math.abs(numPrice) < 0.0001) {
+            // Usar toFixed com muitas casas decimais e depois limpar zeros
+            const fixedString = numPrice.toFixed(12);
+            // Remover zeros desnecessários no final
+            let cleaned = fixedString.replace(/0+$/, '');
+            // Se terminar com ponto decimal, remover também
+            cleaned = cleaned.replace(/\.$/, '');
+            return '$' + cleaned;
         }
         
         // Para outros casos, usar formatação normal
-        if (numPrice < 0.0001) {
-            return '$' + numPrice.toFixed(8).replace(/\.?0+$/, '');
-        } else if (numPrice < 0.001) {
-            return '$' + numPrice.toFixed(6).replace(/\.?0+$/, '');
-        } else if (numPrice < 1) {
-            return '$' + numPrice.toFixed(4).replace(/\.?0+$/, '');
+        if (numPrice < 1) {
+            return '$' + numPrice.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
         } else if (numPrice < 10) {
-            return '$' + numPrice.toFixed(3);
+            return '$' + numPrice.toFixed(4);
         } else if (numPrice < 1000) {
             return '$' + numPrice.toFixed(2);
         } else {
@@ -1349,7 +1366,8 @@
         // Debug para verificar o preço
         console.log('Preço bruto da API:', tokenData.attributes.base_token_price_usd);
         console.log('Preço convertido:', currentPriceValue);
-        console.log('Preço formatado:', formatPrice(currentPriceValue));
+        console.log('Tipo do preço:', typeof currentPriceValue);
+        console.log('É notação científica?', currentPriceValue.toString().includes('e'));
         
         // Atualizar informações de preço
         currentPrice.textContent = formatPrice(currentPriceValue);
