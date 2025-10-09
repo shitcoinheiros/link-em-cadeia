@@ -1127,8 +1127,7 @@
       </div>
     </div>
   </main>
-
-  <script type="module">
+<script type="module">
     import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
 
     const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
@@ -1136,21 +1135,21 @@
 
     // CONFIGURAÇÃO DO TOKEN PARA VERIFICAÇÃO
     const TOKEN_CONFIG = {
-      address: "0x3C6581Ae982CA058CB726B6C1Bc14917FB4F0672",
-      minBalance: "1",
-      decimals: 0,
-      name: "FOMO SOCIAL"
+        address: "0x3C6581Ae982CA058CB726B6C1Bc14917FB4F0672",
+        minBalance: "1",
+        decimals: 0,
+        name: "FOMO SOCIAL"
     };
 
     const ABI = [
-      "function getProfile(address user) public view returns (string memory)"
+        "function getProfile(address user) public view returns (string memory)"
     ];
 
     // ABI PARA TOKENS BEP-20/ERC-20
     const TOKEN_ABI = [
-      "function balanceOf(address account) public view returns (uint256)",
-      "function decimals() public view returns (uint8)",
-      "function name() public view returns (string memory)"
+        "function balanceOf(address account) public view returns (uint256)",
+        "function decimals() public view returns (uint8)",
+        "function name() public view returns (string memory)"
     ];
 
     const el = (id)=>document.getElementById(id);
@@ -1177,460 +1176,481 @@
 
     // Variáveis globais
     let currentProfileData = {
-      name: '',
-      description: '',
-      photo: '',
-      address: ''
+        name: '',
+        description: '',
+        photo: '',
+        address: ''
     };
     let currentTimeframe = '1D';
     let chartInstance = null;
 
     // Função para quebrar texto a cada 40 caracteres e justificar centralizado
     function formatDescription(text) {
-      if (!text || text.trim() === '') {
-        return 'Nenhuma descrição fornecida.';
-      }
-      
-      const words = text.split(' ');
-      let lines = [];
-      let currentLine = '';
-      
-      for (let word of words) {
-        if ((currentLine + ' ' + word).length > 40) {
-          if (currentLine !== '') {
-            lines.push(currentLine);
-          }
-          currentLine = word;
-        } else {
-          if (currentLine === '') {
-            currentLine = word;
-          } else {
-            currentLine += ' ' + word;
-          }
+        if (!text || text.trim() === '') {
+            return 'Nenhuma descrição fornecida.';
         }
-      }
-      
-      if (currentLine !== '') {
-        lines.push(currentLine);
-      }
-      
-      return lines.map(line => 
-        `<span class="description-line">${line}</span>`
-      ).join('');
+        
+        const words = text.split(' ');
+        let lines = [];
+        let currentLine = '';
+        
+        for (let word of words) {
+            if ((currentLine + ' ' + word).length > 40) {
+                if (currentLine !== '') {
+                    lines.push(currentLine);
+                }
+                currentLine = word;
+            } else {
+                if (currentLine === '') {
+                    currentLine = word;
+                } else {
+                    currentLine += ' ' + word;
+                }
+            }
+        }
+        
+        if (currentLine !== '') {
+            lines.push(currentLine);
+        }
+        
+        return lines.map(line => 
+            `<span class="description-line">${line}</span>`
+        ).join('');
     }
 
     // Função para verificar se o endereço possui o token
     async function checkTokenBalance(userAddress) {
-      try {
-        const provider = new ethers.JsonRpcProvider(RPC_URL);
-        const tokenContract = new ethers.Contract(TOKEN_CONFIG.address, TOKEN_ABI, provider);
-        
-        const balance = await tokenContract.balanceOf(userAddress);
-        const decimals = await tokenContract.decimals();
-        
-        const formattedBalance = ethers.formatUnits(balance, decimals);
-        
-        console.log(`Balance do token ${TOKEN_CONFIG.name}:`, formattedBalance);
-        
-        const hasToken = parseFloat(formattedBalance) >= parseFloat(TOKEN_CONFIG.minBalance);
-        
-        return hasToken;
-        
-      } catch (error) {
-        console.error('Erro ao verificar balance do token:', error);
-        return false;
-      }
+        try {
+            const provider = new ethers.JsonRpcProvider(RPC_URL);
+            const tokenContract = new ethers.Contract(TOKEN_CONFIG.address, TOKEN_ABI, provider);
+            
+            const balance = await tokenContract.balanceOf(userAddress);
+            const decimals = await tokenContract.decimals();
+            
+            const formattedBalance = ethers.formatUnits(balance, decimals);
+            
+            console.log(`Balance do token ${TOKEN_CONFIG.name}:`, formattedBalance);
+            
+            const hasToken = parseFloat(formattedBalance) >= parseFloat(TOKEN_CONFIG.minBalance);
+            
+            return hasToken;
+            
+        } catch (error) {
+            console.error('Erro ao verificar balance do token:', error);
+            return false;
+        }
     }
 
     // Função para copiar contrato
     function setupCopyContractButton() {
-      copyContractBtn.addEventListener('click', async function() {
-        const contractAddress = tokenContractAddress.textContent;
-        
-        try {
-          await navigator.clipboard.writeText(contractAddress);
-          
-          // Feedback visual
-          const originalHTML = this.innerHTML;
-          this.innerHTML = `
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
-            </svg>
-          `;
-          this.classList.add('copied');
-          
-          setTimeout(() => {
-            this.innerHTML = originalHTML;
-            this.classList.remove('copied');
-          }, 2000);
-          
-        } catch (err) {
-          console.error('Erro ao copiar:', err);
-          alert('Erro ao copiar endereço do contrato');
-        }
-      });
+        copyContractBtn.addEventListener('click', async function() {
+            const contractAddress = tokenContractAddress.textContent;
+            
+            try {
+                await navigator.clipboard.writeText(contractAddress);
+                
+                // Feedback visual
+                const originalHTML = this.innerHTML;
+                this.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
+                    </svg>
+                `;
+                this.classList.add('copied');
+                
+                setTimeout(() => {
+                    this.innerHTML = originalHTML;
+                    this.classList.remove('copied');
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Erro ao copiar:', err);
+                alert('Erro ao copiar endereço do contrato');
+            }
+        });
     }
 
     // Função para formatar números
     function formatNumber(num, decimals = 4) {
-      if (num === null || num === undefined) return '—';
-      
-      if (num >= 1000000) {
-        return (num / 1000000).toFixed(2) + 'M';
-      } else if (num >= 1000) {
-        return (num / 1000).toFixed(2) + 'K';
-      } else if (num < 0.0001) {
-        return num.toExponential(2);
-      } else {
-        return num.toFixed(decimals);
-      }
+        if (num === null || num === undefined) return '—';
+        
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(2) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(2) + 'K';
+        } else if (num < 0.0001) {
+            return num.toExponential(2);
+        } else {
+            return num.toFixed(decimals);
+        }
     }
 
-    // Função para formatar preço em USD CORRIGIDA
+    // Função para formatar preço em USD - VERSÃO CORRIGIDA
     function formatPrice(price) {
-      if (price === null || price === undefined) return '—';
-      
-      // Para preços muito pequenos (menos que 0.0001), usar mais casas decimais
-      if (price < 0.0001) {
-        // Formatar com 9 casas decimais para preços muito baixos
-        return '$' + price.toFixed(9);
-      } else if (price < 1) {
-        // Para preços entre 0.0001 e 1, usar 6 casas decimais
-        return '$' + price.toFixed(6);
-      } else if (price < 10) {
-        // Para preços entre 1 e 10, usar 4 casas decimais
-        return '$' + price.toFixed(4);
-      } else if (price < 1000) {
-        // Para preços entre 10 e 1000, usar 2 casas decimais
-        return '$' + price.toFixed(2);
-      } else {
-        // Para preços acima de 1000, usar formatação compacta
-        return '$' + formatNumber(price, 2);
-      }
+        if (price === null || price === undefined) return '—';
+        
+        // Converter para número se for string
+        const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+        
+        // Verificar se é um número válido
+        if (isNaN(numPrice)) return '—';
+        
+        // Para números muito pequenos, usar formatação manual
+        if (numPrice < 0.000001) {
+            // Converter para string e garantir que não use notação científica
+            const priceStr = numPrice.toFixed(20);
+            // Encontrar a posição do primeiro dígito significativo
+            const match = priceStr.match(/0\.(0*)([1-9]\d*)/);
+            if (match) {
+                const zeros = match[1];
+                const significantDigits = match[2].substring(0, 8); // Limitar a 8 dígitos significativos
+                return `$0.${zeros}${significantDigits}`;
+            }
+        }
+        
+        // Para outros casos, usar formatação normal
+        if (numPrice < 0.0001) {
+            return '$' + numPrice.toFixed(8).replace(/\.?0+$/, '');
+        } else if (numPrice < 0.001) {
+            return '$' + numPrice.toFixed(6).replace(/\.?0+$/, '');
+        } else if (numPrice < 1) {
+            return '$' + numPrice.toFixed(4).replace(/\.?0+$/, '');
+        } else if (numPrice < 10) {
+            return '$' + numPrice.toFixed(3);
+        } else if (numPrice < 1000) {
+            return '$' + numPrice.toFixed(2);
+        } else {
+            return '$' + formatNumber(numPrice, 2);
+        }
     }
 
     // Função para criar gráfico personalizado
     function createCustomChart(tokenData) {
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
-
-      const ctx = priceChartCanvas.getContext('2d');
-      
-      // Dados simulados para o gráfico (baseados nos dados da API)
-      const priceChanges = tokenData.attributes.price_change_percentage;
-      const timeframes = ['m5', 'm15', 'm30', 'h1', 'h6', 'h24'];
-      const labels = ['5m', '15m', '30m', '1h', '6h', '24h'];
-      
-      const data = timeframes.map(tf => {
-        const change = priceChanges[tf];
-        return change ? parseFloat(change) : 0;
-      });
-
-      // BUSCAR COTAÇÃO DO TOKEN EM base_token_price_usd
-      const currentPriceValue = parseFloat(tokenData.attributes.base_token_price_usd);
-      const price24hChange = priceChanges.h24 ? parseFloat(priceChanges.h24) : 0;
-      
-      // Atualizar informações de preço
-      currentPrice.textContent = formatPrice(currentPriceValue);
-      
-      if (price24hChange !== 0) {
-        priceChange.textContent = `${price24hChange > 0 ? '+' : ''}${price24hChange.toFixed(2)}%`;
-        priceChange.className = `price-change ${price24hChange >= 0 ? 'positive' : 'negative'}`;
-      } else {
-        priceChange.textContent = '0.00%';
-        priceChange.className = 'price-change';
-      }
-
-      // Criar gradiente para o gráfico
-      const gradient = ctx.createLinearGradient(0, 0, 0, 180);
-      if (price24hChange >= 0) {
-        gradient.addColorStop(0, 'rgba(14, 203, 129, 0.3)');
-        gradient.addColorStop(1, 'rgba(14, 203, 129, 0.05)');
-      } else {
-        gradient.addColorStop(0, 'rgba(246, 70, 93, 0.3)');
-        gradient.addColorStop(1, 'rgba(246, 70, 93, 0.05)');
-      }
-
-      chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Variação de Preço (%)',
-            data: data,
-            borderColor: price24hChange >= 0 ? '#0ECB81' : '#F6465D',
-            backgroundColor: gradient,
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: price24hChange >= 0 ? '#0ECB81' : '#F6465D',
-            pointBorderColor: '#0B0E11',
-            pointBorderWidth: 2,
-            pointRadius: 4,
-            pointHoverRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              backgroundColor: 'rgba(22, 26, 30, 0.9)',
-              titleColor: '#EAECEF',
-              bodyColor: '#EAECEF',
-              borderColor: 'rgba(240, 185, 11, 0.3)',
-              borderWidth: 1,
-              callbacks: {
-                label: function(context) {
-                  return `Variação: ${context.parsed.y.toFixed(2)}%`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: {
-                color: 'rgba(240, 185, 11, 0.1)',
-                borderColor: 'rgba(240, 185, 11, 0.2)'
-              },
-              ticks: {
-                color: '#B7BDC6'
-              }
-            },
-            y: {
-              grid: {
-                color: 'rgba(240, 185, 11, 0.1)',
-                borderColor: 'rgba(240, 185, 11, 0.2)'
-              },
-              ticks: {
-                color: '#B7BDC6',
-                callback: function(value) {
-                  return value + '%';
-                }
-              }
-            }
-          }
+        if (chartInstance) {
+            chartInstance.destroy();
         }
-      });
+
+        const ctx = priceChartCanvas.getContext('2d');
+        
+        // Dados simulados para o gráfico (baseados nos dados da API)
+        const priceChanges = tokenData.attributes.price_change_percentage;
+        const timeframes = ['m5', 'm15', 'm30', 'h1', 'h6', 'h24'];
+        const labels = ['5m', '15m', '30m', '1h', '6h', '24h'];
+        
+        const data = timeframes.map(tf => {
+            const change = priceChanges[tf];
+            return change ? parseFloat(change) : 0;
+        });
+
+        // BUSCAR COTAÇÃO DO TOKEN EM base_token_price_usd
+        const currentPriceValue = parseFloat(tokenData.attributes.base_token_price_usd);
+        const price24hChange = priceChanges.h24 ? parseFloat(priceChanges.h24) : 0;
+        
+        // Debug para verificar o preço
+        console.log('Preço bruto da API:', tokenData.attributes.base_token_price_usd);
+        console.log('Preço convertido:', currentPriceValue);
+        console.log('Preço formatado:', formatPrice(currentPriceValue));
+        
+        // Atualizar informações de preço
+        currentPrice.textContent = formatPrice(currentPriceValue);
+        
+        if (price24hChange !== 0) {
+            priceChange.textContent = `${price24hChange > 0 ? '+' : ''}${price24hChange.toFixed(2)}%`;
+            priceChange.className = `price-change ${price24hChange >= 0 ? 'positive' : 'negative'}`;
+        } else {
+            priceChange.textContent = '0.00%';
+            priceChange.className = 'price-change';
+        }
+
+        // Criar gradiente para o gráfico
+        const gradient = ctx.createLinearGradient(0, 0, 0, 180);
+        if (price24hChange >= 0) {
+            gradient.addColorStop(0, 'rgba(14, 203, 129, 0.3)');
+            gradient.addColorStop(1, 'rgba(14, 203, 129, 0.05)');
+        } else {
+            gradient.addColorStop(0, 'rgba(246, 70, 93, 0.3)');
+            gradient.addColorStop(1, 'rgba(246, 70, 93, 0.05)');
+        }
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Variação de Preço (%)',
+                    data: data,
+                    borderColor: price24hChange >= 0 ? '#0ECB81' : '#F6465D',
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: price24hChange >= 0 ? '#0ECB81' : '#F6465D',
+                    pointBorderColor: '#0B0E11',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(22, 26, 30, 0.9)',
+                        titleColor: '#EAECEF',
+                        bodyColor: '#EAECEF',
+                        borderColor: 'rgba(240, 185, 11, 0.3)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return `Variação: ${context.parsed.y.toFixed(2)}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(240, 185, 11, 0.1)',
+                            borderColor: 'rgba(240, 185, 11, 0.2)'
+                        },
+                        ticks: {
+                            color: '#B7BDC6'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(240, 185, 11, 0.1)',
+                            borderColor: 'rgba(240, 185, 11, 0.2)'
+                        },
+                        ticks: {
+                            color: '#B7BDC6',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // Função para carregar dados do GeckoTerminal
     async function loadGeckoTerminalData(contractAddress) {
-      try {
-        chartLoading.style.display = 'flex';
-        chartError.style.display = 'none';
-        customChart.style.display = 'none';
-        
-        // Verifica se temos um contrato válido
-        if (!contractAddress || contractAddress === '—' || !ethers.isAddress(contractAddress)) {
-          throw new Error('Endereço de contrato inválido');
-        }
+        try {
+            chartLoading.style.display = 'flex';
+            chartError.style.display = 'none';
+            customChart.style.display = 'none';
+            
+            // Verifica se temos um contrato válido
+            if (!contractAddress || contractAddress === '—' || !ethers.isAddress(contractAddress)) {
+                throw new Error('Endereço de contrato inválido');
+            }
 
-        // Busca dados da API do GeckoTerminal
-        const response = await fetch(`https://api.geckoterminal.com/api/v2/networks/bsc/tokens/${contractAddress}/pools?page=1`);
-        
-        if (!response.ok) {
-          throw new Error('Token não encontrado na GeckoTerminal');
-        }
+            // Busca dados da API do GeckoTerminal
+            const response = await fetch(`https://api.geckoterminal.com/api/v2/networks/bsc/tokens/${contractAddress}/pools?page=1`);
+            
+            if (!response.ok) {
+                throw new Error('Token não encontrado na GeckoTerminal');
+            }
 
-        const data = await response.json();
-        
-        if (data.data && data.data.length > 0) {
-          const tokenData = data.data[0];
-          
-          // Mostrar o gráfico personalizado
-          chartLoading.style.display = 'none';
-          customChart.style.display = 'block';
-          
-          // Criar gráfico com os dados
-          createCustomChart(tokenData);
-          
-        } else {
-          throw new Error('Nenhum pool encontrado para este token');
+            const data = await response.json();
+            
+            if (data.data && data.data.length > 0) {
+                const tokenData = data.data[0];
+                
+                // Mostrar o gráfico personalizado
+                chartLoading.style.display = 'none';
+                customChart.style.display = 'block';
+                
+                // Criar gráfico com os dados
+                createCustomChart(tokenData);
+                
+            } else {
+                throw new Error('Nenhum pool encontrado para este token');
+            }
+            
+        } catch (error) {
+            console.error('Erro ao carregar dados do GeckoTerminal:', error);
+            chartLoading.style.display = 'none';
+            chartError.style.display = 'flex';
+            chartError.innerHTML = `
+                ${error.message}<br>
+                <small style="font-size: 12px; margin-top: 8px; display: block;">
+                    <a href="https://www.geckoterminal.com/bsc/tokens/${contractAddress}" 
+                    target="_blank" 
+                    style="color: var(--accent-primary); text-decoration: underline;">
+                        Ver token no GeckoTerminal
+                    </a>
+                </small>
+            `;
         }
-        
-      } catch (error) {
-        console.error('Erro ao carregar dados do GeckoTerminal:', error);
-        chartLoading.style.display = 'none';
-        chartError.style.display = 'flex';
-        chartError.innerHTML = `
-          ${error.message}<br>
-          <small style="font-size: 12px; margin-top: 8px; display: block;">
-            <a href="https://www.geckoterminal.com/bsc/tokens/${contractAddress}" 
-               target="_blank" 
-               style="color: var(--accent-primary); text-decoration: underline;">
-              Ver token no GeckoTerminal
-            </a>
-          </small>
-        `;
-      }
     }
 
     // Função para configurar botões de timeframe
     function setupTimeframeButtons(tokenContract) {
-      const timeframeBtns = document.querySelectorAll('.timeframe-btn');
-      
-      timeframeBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          timeframeBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          
-          currentTimeframe = this.dataset.timeframe;
-          
-          // Recarrega os dados
-          loadGeckoTerminalData(tokenContract);
+        const timeframeBtns = document.querySelectorAll('.timeframe-btn');
+        
+        timeframeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                timeframeBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentTimeframe = this.dataset.timeframe;
+                
+                // Recarrega os dados
+                loadGeckoTerminalData(tokenContract);
+            });
         });
-      });
     }
 
     // Função para atualizar meta tags
     function updateMetaTags(profileData) {
-      const currentUrl = window.location.href;
-      const title = `${profileData.name} - Linkchain Profile`;
-      const description = profileData.description || 'Confira este perfil na Linkchain';
-      
-      document.getElementById('ogTitle').content = title;
-      document.getElementById('ogDescription').content = description;
-      document.getElementById('ogImage').content = profileData.photo || '';
-      document.getElementById('ogUrl').content = currentUrl;
-      
-      document.getElementById('twitterTitle').content = title;
-      document.getElementById('twitterDescription').content = description;
-      document.getElementById('twitterImage').content = profileData.photo || '';
-      
-      document.title = title;
+        const currentUrl = window.location.href;
+        const title = `${profileData.name} - Linkchain Profile`;
+        const description = profileData.description || 'Confira este perfil na Linkchain';
+        
+        document.getElementById('ogTitle').content = title;
+        document.getElementById('ogDescription').content = description;
+        document.getElementById('ogImage').content = profileData.photo || '';
+        document.getElementById('ogUrl').content = currentUrl;
+        
+        document.getElementById('twitterTitle').content = title;
+        document.getElementById('twitterDescription').content = description;
+        document.getElementById('twitterImage').content = profileData.photo || '';
+        
+        document.title = title;
     }
 
     // Função para exibir informações baseadas no tipo de perfil (sem mostrar o tipo)
     function displayProfileFeatures(profileData) {
-      // SEMPRE ocultar a informação do tipo de perfil no frontend público
-      
-      // Mostrar contrato de token se existir (para projetos)
-      if (profileData.tokenContract && ethers.isAddress(profileData.tokenContract)) {
-        tokenContractSection.style.display = 'block';
-        tokenContractAddress.textContent = profileData.tokenContract;
-        setupCopyContractButton();
+        // SEMPRE ocultar a informação do tipo de perfil no frontend público
         
-        // Mostrar gráfico para projetos com contrato
-        chartSection.style.display = 'block';
-        setupTimeframeButtons(profileData.tokenContract);
-        loadGeckoTerminalData(profileData.tokenContract);
+        // Mostrar contrato de token se existir (para projetos)
+        if (profileData.tokenContract && ethers.isAddress(profileData.tokenContract)) {
+            tokenContractSection.style.display = 'block';
+            tokenContractAddress.textContent = profileData.tokenContract;
+            setupCopyContractButton();
+            
+            // Mostrar gráfico para projetos com contrato
+            chartSection.style.display = 'block';
+            setupTimeframeButtons(profileData.tokenContract);
+            loadGeckoTerminalData(profileData.tokenContract);
+            
+        } else if (profileData.tokenContract) {
+            // Contrato inválido
+            tokenContractSection.style.display = 'block';
+            tokenContractAddress.textContent = 'Contrato inválido';
+            tokenContractAddress.style.color = 'var(--danger)';
+            chartSection.style.display = 'none';
+        } else {
+            tokenContractSection.style.display = 'none';
+            chartSection.style.display = 'none';
+        }
         
-      } else if (profileData.tokenContract) {
-        // Contrato inválido
-        tokenContractSection.style.display = 'block';
-        tokenContractAddress.textContent = 'Contrato inválido';
-        tokenContractAddress.style.color = 'var(--danger)';
-        chartSection.style.display = 'none';
-      } else {
-        tokenContractSection.style.display = 'none';
-        chartSection.style.display = 'none';
-      }
-      
-      // Mostrar badges de cargos se existirem (para perfis pessoais)
-      if (profileData.roles && profileData.roles.length > 0) {
-        badgesSection.style.display = 'flex';
-        badgesSection.innerHTML = '';
-        
-        profileData.roles.forEach(role => {
-          const badge = document.createElement("div");
-          badge.className = `badge ${role}`;
-          
-          let icon = "";
-          switch(role) {
-            case "ceo":
-              icon = "👑";
-              break;
-            case "coo":
-              icon = "⚙️";
-              break;
-            case "cto":
-              icon = "💻";
-              break;
-            case "cfo":
-              icon = "💰";
-              break;
-            case "cmo":
-              icon = "📢";
-              break;
-            case "dev":
-              icon = "🔧";
-              break;
-          }
-          
-          badge.innerHTML = `${icon} ${role.toUpperCase()}`;
-          badgesSection.appendChild(badge);
-        });
-      } else {
-        badgesSection.style.display = 'none';
-      }
+        // Mostrar badges de cargos se existirem (para perfis pessoais)
+        if (profileData.roles && profileData.roles.length > 0) {
+            badgesSection.style.display = 'flex';
+            badgesSection.innerHTML = '';
+            
+            profileData.roles.forEach(role => {
+                const badge = document.createElement("div");
+                badge.className = `badge ${role}`;
+                
+                let icon = "";
+                switch(role) {
+                    case "ceo":
+                        icon = "👑";
+                        break;
+                    case "coo":
+                        icon = "⚙️";
+                        break;
+                    case "cto":
+                        icon = "💻";
+                        break;
+                    case "cfo":
+                        icon = "💰";
+                        break;
+                    case "cmo":
+                        icon = "📢";
+                        break;
+                    case "dev":
+                        icon = "🔧";
+                        break;
+                }
+                
+                badge.innerHTML = `${icon} ${role.toUpperCase()}`;
+                badgesSection.appendChild(badge);
+            });
+        } else {
+            badgesSection.style.display = 'none';
+        }
     }
 
     // Função para compartilhar
     function shareProfile(platform) {
-      const currentUrl = window.location.href;
-      const title = `Confira o perfil de ${currentProfileData.name} na Linkchain`;
-      const text = currentProfileData.description || 'Perfil criado na plataforma Linkchain';
-      
-      let shareUrl = '';
-      
-      switch(platform) {
-        case 'whatsapp':
-          shareUrl = `https://wa.me/?text=${encodeURIComponent(title + '\n\n' + text + '\n\n' + currentUrl)}`;
-          break;
-        case 'facebook':
-          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
-          break;
-        case 'twitter':
-          shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`;
-          break;
-        case 'linkedin':
-          shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
-          break;
-        case 'telegram':
-          shareUrl = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(title)}`;
-          break;
-        case 'copy':
-          navigator.clipboard.writeText(currentUrl).then(() => {
-            alert('Link copiado para a área de transferência!');
-          });
-          return;
-        default:
-          return;
-      }
-      
-      if (shareUrl && platform !== 'copy') {
-        window.open(shareUrl, '_blank', 'width=600,height=400');
-      }
+        const currentUrl = window.location.href;
+        const title = `Confira o perfil de ${currentProfileData.name} na Linkchain`;
+        const text = currentProfileData.description || 'Perfil criado na plataforma Linkchain';
+        
+        let shareUrl = '';
+        
+        switch(platform) {
+            case 'whatsapp':
+                shareUrl = `https://wa.me/?text=${encodeURIComponent(title + '\n\n' + text + '\n\n' + currentUrl)}`;
+                break;
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`;
+                break;
+            case 'linkedin':
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
+                break;
+            case 'telegram':
+                shareUrl = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(title)}`;
+                break;
+            case 'copy':
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    alert('Link copiado para a área de transferência!');
+                });
+                return;
+            default:
+                return;
+        }
+        
+        if (shareUrl && platform !== 'copy') {
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
     }
 
     // Event listeners para compartilhamento
     shareButton.addEventListener('click', function(e) {
-      e.stopPropagation();
-      shareOptions.style.display = shareOptions.style.display === 'flex' ? 'none' : 'flex';
+        e.stopPropagation();
+        shareOptions.style.display = shareOptions.style.display === 'flex' ? 'none' : 'flex';
     });
 
     document.addEventListener('click', function() {
-      shareOptions.style.display = 'none';
+        shareOptions.style.display = 'none';
     });
 
     shareOptions.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const platform = e.target.closest('.share-option').dataset.platform;
-      shareProfile(platform);
-      shareOptions.style.display = 'none';
+        e.stopPropagation();
+        const platform = e.target.closest('.share-option').dataset.platform;
+        shareProfile(platform);
+        shareOptions.style.display = 'none';
     });
 
     const params = new URLSearchParams(window.location.search);
     const userAddress = params.get('addr');
     if (!userAddress) {
-      profileName.textContent = "Endereço inválido";
-      profileAddr.textContent = "—";
-      throw new Error("Endereço não fornecido na URL. Ex: profile.html?addr=0x1234...");
+        profileName.textContent = "Endereço inválido";
+        profileAddr.textContent = "—";
+        throw new Error("Endereço não fornecido na URL. Ex: profile.html?addr=0x1234...");
     }
 
     // Formatar endereço para exibição
@@ -1638,107 +1658,108 @@
     profileAddr.textContent = formattedAddress;
 
     async function loadProfile() {
-      try {
-        const provider = new ethers.JsonRpcProvider(RPC_URL);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-        const json = await contract.getProfile(userAddress);
+        try {
+            const provider = new ethers.JsonRpcProvider(RPC_URL);
+            const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+            const json = await contract.getProfile(userAddress);
 
-        if (json) {
-          const obj = JSON.parse(json);
+            if (json) {
+                const obj = JSON.parse(json);
 
-          profileName.textContent = obj.name || 'Sem nome definido';
-          
-          // Salvar dados para compartilhamento
-          currentProfileData = {
-            name: obj.name || 'Sem nome definido',
-            description: obj.description || 'Perfil criado na plataforma Linkchain',
-            photo: obj.photo || '',
-            address: userAddress,
-            profileType: obj.profileType,
-            tokenContract: obj.tokenContract,
-            roles: obj.roles
-          };
-          
-          // Atualizar meta tags
-          updateMetaTags(currentProfileData);
-          
-          // Atualizar descrição com formatação
-          if (obj.description && obj.description.trim() !== '') {
-            const formattedDesc = formatDescription(obj.description);
-            profileDescription.innerHTML = formattedDesc;
-          } else {
-            profileDescription.textContent = 'Nenhuma descrição fornecida.';
-            profileDescription.style.color = 'var(--text-muted)';
-            profileDescription.style.fontStyle = 'italic';
-          }
-          
-          // Atualizar avatar
-          if (obj.photo) {
-            avatarImg.src = obj.photo;
-            avatarImg.style.display = 'block';
-            avatarPlaceholder.style.display = 'none';
-          } else {
-            avatarImg.style.display = 'none';
-            avatarPlaceholder.style.display = 'block';
-          }
-          
-          // Exibir features baseadas no tipo de perfil (SEM mostrar o tipo)
-          displayProfileFeatures(obj);
-          
-          // VERIFICAR SE TEM O TOKEN E MOSTRAR BADGE
-          if (TOKEN_CONFIG.address && TOKEN_CONFIG.address !== "0xYourTokenAddressHere") {
-            const hasToken = await checkTokenBalance(userAddress);
-            if (hasToken) {
-              verifiedBadge.classList.add('show');
-              verifiedBadge.setAttribute('title', `Holder de ${TOKEN_CONFIG.name}`);
+                profileName.textContent = obj.name || 'Sem nome definido';
+                
+                // Salvar dados para compartilhamento
+                currentProfileData = {
+                    name: obj.name || 'Sem nome definido',
+                    description: obj.description || 'Perfil criado na plataforma Linkchain',
+                    photo: obj.photo || '',
+                    address: userAddress,
+                    profileType: obj.profileType,
+                    tokenContract: obj.tokenContract,
+                    roles: obj.roles
+                };
+                
+                // Atualizar meta tags
+                updateMetaTags(currentProfileData);
+                
+                // Atualizar descrição com formatação
+                if (obj.description && obj.description.trim() !== '') {
+                    const formattedDesc = formatDescription(obj.description);
+                    profileDescription.innerHTML = formattedDesc;
+                } else {
+                    profileDescription.textContent = 'Nenhuma descrição fornecida.';
+                    profileDescription.style.color = 'var(--text-muted)';
+                    profileDescription.style.fontStyle = 'italic';
+                }
+                
+                // Atualizar avatar
+                if (obj.photo) {
+                    avatarImg.src = obj.photo;
+                    avatarImg.style.display = 'block';
+                    avatarPlaceholder.style.display = 'none';
+                } else {
+                    avatarImg.style.display = 'none';
+                    avatarPlaceholder.style.display = 'block';
+                }
+                
+                // Exibir features baseadas no tipo de perfil (SEM mostrar o tipo)
+                displayProfileFeatures(obj);
+                
+                // VERIFICAR SE TEM O TOKEN E MOSTRAR BADGE
+                if (TOKEN_CONFIG.address && TOKEN_CONFIG.address !== "0xYourTokenAddressHere") {
+                    const hasToken = await checkTokenBalance(userAddress);
+                    if (hasToken) {
+                        verifiedBadge.classList.add('show');
+                        verifiedBadge.setAttribute('title', `Holder de ${TOKEN_CONFIG.name}`);
+                    }
+                }
+                
+                // Atualizar links
+                profileLinks.innerHTML = '';
+                if(obj.links && obj.links.length > 0){
+                    obj.links.forEach(l=>{
+                        const a = document.createElement('a');
+                        a.href = l.url;
+                        a.className = 'link-item';
+                        a.innerHTML = `<span>${l.label}</span>`;
+                        a.target='_blank';
+                        profileLinks.appendChild(a);
+                    });
+                } else {
+                    profileLinks.innerHTML = `
+                        <div style="text-align: center; color: var(--text-muted); padding: 20px;">
+                            Nenhum link cadastrado
+                        </div>
+                    `;
+                }
+
+            } else {
+                profileName.textContent = "Perfil não encontrado";
+                profileDescription.textContent = "Este endereço ainda não possui um perfil Linkchain cadastrado.";
+                profileDescription.style.color = 'var(--text-muted)';
+                profileLinks.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 20px;">
+                        Este endereço ainda não possui um perfil Linkchain
+                    </div>
+                `;
             }
-          }
-          
-          // Atualizar links
-          profileLinks.innerHTML = '';
-          if(obj.links && obj.links.length > 0){
-            obj.links.forEach(l=>{
-              const a = document.createElement('a');
-              a.href = l.url;
-              a.className = 'link-item';
-              a.innerHTML = `<span>${l.label}</span>`;
-              a.target='_blank';
-              profileLinks.appendChild(a);
-            });
-          } else {
+        } catch(e) {
+            profileName.textContent = "Erro ao carregar perfil";
+            profileDescription.textContent = "Ocorreu um erro ao tentar carregar as informações do perfil.";
+            profileDescription.style.color = 'var(--text-muted)';
             profileLinks.innerHTML = `
-              <div style="text-align: center; color: var(--text-muted); padding: 20px;">
-                Nenhum link cadastrado
-              </div>
+                <div style="text-align: center; color: var(--text-muted); padding: 20px;">
+                    Erro ao carregar informações do perfil
+                </div>
             `;
-          }
-
-        } else {
-          profileName.textContent = "Perfil não encontrado";
-          profileDescription.textContent = "Este endereço ainda não possui um perfil Linkchain cadastrado.";
-          profileDescription.style.color = 'var(--text-muted)';
-          profileLinks.innerHTML = `
-            <div style="text-align: center; color: var(--text-muted); padding: 20px;">
-              Este endereço ainda não possui um perfil Linkchain
-            </div>
-          `;
+            console.error(e);
         }
-      } catch(e) {
-        profileName.textContent = "Erro ao carregar perfil";
-        profileDescription.textContent = "Ocorreu um erro ao tentar carregar as informações do perfil.";
-        profileDescription.style.color = 'var(--text-muted)';
-        profileLinks.innerHTML = `
-          <div style="text-align: center; color: var(--text-muted); padding: 20px;">
-            Erro ao carregar informações do perfil
-          </div>
-        `;
-        console.error(e);
-      }
     }
 
     // Iniciar carregamento
     loadProfile();
-  </script>
+</script>
+ 
   <!-- Chart.js Library -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
