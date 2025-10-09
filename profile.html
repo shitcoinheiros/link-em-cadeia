@@ -403,20 +403,7 @@
     background: var(--success);
   }
 
-  /* Novos estilos para tipo de perfil e cargos */
-  .profile-type-badge {
-    display: inline-block;
-    background: rgba(240, 185, 11, 0.1);
-    color: var(--accent-primary);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    margin: 8px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
+  /* Estilos para o contrato de token */
   .token-contract-section {
     margin: 16px 0;
     padding: 12px 16px;
@@ -707,23 +694,23 @@
     animation: pulse 2s infinite;
   }
 
-  /* RESPONSIVIDADE - AJUSTES ESPECÍFICOS PARA O SELO E AVATAR CENTRALIZADO */
+  /* RESPONSIVIDADE */
   @media (max-width: 880px) {
     .main-header {
       padding: 12px 20px;
     }
 
     .header-content {
-      flex-direction: row; /* MANTÉM EM LINHA EM VEZ DE COLUNA */
-      justify-content: space-between; /* DISTRIBUI ENTRE ESQUERDA E DIREITA */
+      flex-direction: row;
+      justify-content: space-between;
       align-items: center;
       gap: 16px;
       width: 100%;
     }
 
     .logo-section {
-      width: auto; /* REMOVE A LARGURA TOTAL */
-      justify-content: flex-start; /* ALINHA À ESQUERDA */
+      width: auto;
+      justify-content: flex-start;
     }
 
     .nav-links {
@@ -743,10 +730,9 @@
       height: 120px;
     }
 
-    /* SELO EM DISPOSITIVOS MÓVEIS - CENTRALIZADO */
     .verified-badge {
       bottom: -8px;
-      right: calc(50% - 50px); /* Ajuste proporcional para 120px */
+      right: calc(50% - 50px);
       width: 28px;
       height: 28px;
       font-size: 14px;
@@ -786,10 +772,9 @@
       height: 100px;
     }
 
-    /* SELO EM TELAS PEQUENAS - CENTRALIZADO */
     .verified-badge {
       bottom: -6px;
-      right: calc(50% - 40px); /* Ajuste proporcional para 100px */
+      right: calc(50% - 40px);
       width: 24px;
       height: 24px;
       font-size: 12px;
@@ -828,9 +813,8 @@
       min-width: 140px;
     }
 
-    /* GARANTIR QUE O BOTÃO FIQUE À ESQUERDA EM MOBILE */
     .back-button {
-      margin-right: auto; /* EMPURRA O BOTÃO PARA A ESQUERDA */
+      margin-right: auto;
     }
 
     .badges-container {
@@ -871,10 +855,9 @@
       height: 80px;
     }
 
-    /* SELO EM TELAS MUITO PEQUENAS - CENTRALIZADO */
     .verified-badge {
       bottom: -4px;
-      right: calc(50% - 30px); /* Ajuste proporcional para 80px */
+      right: calc(50% - 30px);
       width: 20px;
       height: 20px;
       font-size: 10px;
@@ -894,7 +877,6 @@
       font-size: 13px;
     }
 
-    /* AJUSTES ADICIONAIS PARA TELAS MUITO PEQUENAS */
     .header-content {
       padding: 0 10px;
     }
@@ -941,7 +923,7 @@
   <!-- Header -->
   <header class="main-header">
     <div class="header-content">
-      <a href="profile.html?addr=0x7bE52a5752D04E20562df579E7085d83cd7bf100" class="back-button">
+      <a href="index.html" class="back-button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z" fill="currentColor"/>
         </svg>
@@ -1005,7 +987,6 @@
           <div class="avatar-placeholder" id="avatarPlaceholder">Sem imagem</div>
           <img id="avatarImg" src="" alt="Avatar" style="display: none;">
         </div>
-        <!-- SELO AGORA ESTÁ POSICIONADO RELATIVO AO CENTRO - INICIALMENTE OCULTO -->
         <div class="verified-badge" id="verifiedBadge" title="Holder de Token VIP">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
@@ -1015,9 +996,6 @@
 
       <div class="profile-info">
         <div class="name" id="profileName">Carregando...</div>
-        
-        <!-- Badge do Tipo de Perfil -->
-        <div id="profileTypeBadge" class="profile-type-badge" style="display: none;"></div>
         
         <div class="description" id="profileDescription">
           <!-- A descrição será inserida aqui via JavaScript -->
@@ -1087,11 +1065,10 @@
 
     // CONFIGURAÇÃO DO TOKEN PARA VERIFICAÇÃO
     const TOKEN_CONFIG = {
-      // EXEMPLO: Token BEP-20 na BSC Testnet - SUBSTITUA PELO SEU TOKEN
-      address: "0x3C6581Ae982CA058CB726B6C1Bc14917FB4F0672", // ENDEREÇO DO SEU TOKEN
-      minBalance: "1", // BALANCE MÍNIMO REQUERIDO (em wei)
-      decimals: 0, // DECIMAIS DO TOKEN (geralmente 18 para maioria dos tokens)
-      name: "FOMO SOCIAL" // NOME DO TOKEN PARA DISPLAY
+      address: "0x3C6581Ae982CA058CB726B6C1Bc14917FB4F0672",
+      minBalance: "1",
+      decimals: 0,
+      name: "FOMO SOCIAL"
     };
 
     const ABI = [
@@ -1115,7 +1092,6 @@
     const shareButton = el('shareButton');
     const shareOptions = el('shareOptions');
     const verifiedBadge = el('verifiedBadge');
-    const profileTypeBadge = el('profileTypeBadge');
     const tokenContractSection = el('tokenContractSection');
     const tokenContractAddress = el('tokenContractAddress');
     const copyContractBtn = el('copyContractBtn');
@@ -1146,7 +1122,6 @@
       let currentLine = '';
       
       for (let word of words) {
-        // Se adicionar esta palavra ultrapassar 40 caracteres, quebra a linha
         if ((currentLine + ' ' + word).length > 40) {
           if (currentLine !== '') {
             lines.push(currentLine);
@@ -1161,12 +1136,10 @@
         }
       }
       
-      // Adiciona a última linha
       if (currentLine !== '') {
         lines.push(currentLine);
       }
       
-      // Cria spans para cada linha com justificação centralizada
       return lines.map(line => 
         `<span class="description-line">${line}</span>`
       ).join('');
@@ -1178,16 +1151,13 @@
         const provider = new ethers.JsonRpcProvider(RPC_URL);
         const tokenContract = new ethers.Contract(TOKEN_CONFIG.address, TOKEN_ABI, provider);
         
-        // Verifica o balance do token
         const balance = await tokenContract.balanceOf(userAddress);
         const decimals = await tokenContract.decimals();
         
-        // Converte o balance para unidades humanas
         const formattedBalance = ethers.formatUnits(balance, decimals);
         
         console.log(`Balance do token ${TOKEN_CONFIG.name}:`, formattedBalance);
         
-        // Verifica se tem o balance mínimo requerido
         const hasToken = parseFloat(formattedBalance) >= parseFloat(TOKEN_CONFIG.minBalance);
         
         return hasToken;
@@ -1227,16 +1197,15 @@
       });
     }
 
-    // Função para gerar dados de candlestick fictícios (simulação)
+    // Função para gerar dados de candlestick fictícios
     function generateMockCandlestickData(timeframe) {
       const data = [];
-      let basePrice = 100; // Preço base
+      let basePrice = 100;
       const now = new Date();
       
-      // Define número de pontos baseado no timeframe
-      let points = 24; // 1D - 24 horas
-      if (timeframe === '1W') points = 7; // 1W - 7 dias
-      if (timeframe === '1M') points = 30; // 1M - 30 dias
+      let points = 24;
+      if (timeframe === '1W') points = 7;
+      if (timeframe === '1M') points = 30;
       
       for (let i = points - 1; i >= 0; i--) {
         const date = new Date(now);
@@ -1246,8 +1215,7 @@
           date.setDate(now.getDate() - i);
         }
         
-        // Gera variação de preço realista
-        const volatility = 0.02; // 2% de volatilidade
+        const volatility = 0.02;
         const change = (Math.random() - 0.5) * 2 * volatility;
         const newPrice = basePrice * (1 + change);
         
@@ -1280,7 +1248,6 @@
       
       const ctx = priceChart.getContext('2d');
       
-      // Prepara dados para o Chart.js
       const labels = data.map(item => {
         const date = new Date(item.timestamp);
         if (timeframe === '1D') {
@@ -1375,7 +1342,6 @@
       chartError.style.display = 'none';
       priceChart.style.display = 'none';
       
-      // Simulação de carregamento
       setTimeout(() => {
         try {
           const mockData = generateMockCandlestickData(timeframe);
@@ -1397,9 +1363,7 @@
       
       timeframeBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-          // Remove classe active de todos os botões
           timeframeBtns.forEach(b => b.classList.remove('active'));
-          // Adiciona classe active ao botão clicado
           this.classList.add('active');
           
           currentTimeframe = this.dataset.timeframe;
@@ -1414,7 +1378,6 @@
       const title = `${profileData.name} - Linkchain Profile`;
       const description = profileData.description || 'Confira este perfil na Linkchain';
       
-      // Atualizar meta tags
       document.getElementById('ogTitle').content = title;
       document.getElementById('ogDescription').content = description;
       document.getElementById('ogImage').content = profileData.photo || '';
@@ -1424,85 +1387,63 @@
       document.getElementById('twitterDescription').content = description;
       document.getElementById('twitterImage').content = profileData.photo || '';
       
-      // Atualizar título da página
       document.title = title;
     }
 
-    // Função para exibir informações do tipo de perfil
-    function displayProfileType(profileData) {
-      if (profileData.profileType) {
-        profileTypeBadge.style.display = 'inline-block';
+    // Função para exibir informações baseadas no tipo de perfil (sem mostrar o tipo)
+    function displayProfileFeatures(profileData) {
+      // SEMPRE ocultar a informação do tipo de perfil no frontend público
+      
+      // Mostrar contrato de token se existir (para projetos)
+      if (profileData.tokenContract) {
+        tokenContractSection.style.display = 'block';
+        tokenContractAddress.textContent = profileData.tokenContract;
+        setupCopyContractButton();
         
-        if (profileData.profileType === 'project') {
-          profileTypeBadge.textContent = 'Projeto';
-          
-          // Mostrar contrato de token se existir
-          if (profileData.tokenContract) {
-            tokenContractSection.style.display = 'block';
-            tokenContractAddress.textContent = profileData.tokenContract;
-            
-            // Configurar botão de copiar
-            setupCopyContractButton();
-            
-            // Mostrar gráfico
-            chartSection.style.display = 'block';
-            setupTimeframeButtons(profileData.tokenContract);
-            loadChart(profileData.tokenContract, currentTimeframe);
-          }
-          
-          // Ocultar badges de cargos
-          badgesSection.style.display = 'none';
-        } else {
-          profileTypeBadge.textContent = 'Pessoal';
-          
-          // Ocultar contrato de token e gráfico
-          tokenContractSection.style.display = 'none';
-          chartSection.style.display = 'none';
-          
-          // Mostrar badges de cargos se existirem
-          if (profileData.roles && profileData.roles.length > 0) {
-            badgesSection.style.display = 'flex';
-            badgesSection.innerHTML = '';
-            
-            profileData.roles.forEach(role => {
-              const badge = document.createElement("div");
-              badge.className = `badge ${role}`;
-              
-              // Adicionar ícone específico para cada cargo
-              let icon = "";
-              switch(role) {
-                case "ceo":
-                  icon = "👑";
-                  break;
-                case "coo":
-                  icon = "⚙️";
-                  break;
-                case "cto":
-                  icon = "💻";
-                  break;
-                case "cfo":
-                  icon = "💰";
-                  break;
-                case "cmo":
-                  icon = "📢";
-                  break;
-                case "dev":
-                  icon = "🔧";
-                  break;
-              }
-              
-              badge.innerHTML = `${icon} ${role.toUpperCase()}`;
-              badgesSection.appendChild(badge);
-            });
-          } else {
-            badgesSection.style.display = 'none';
-          }
-        }
+        // Mostrar gráfico para projetos com contrato
+        chartSection.style.display = 'block';
+        setupTimeframeButtons(profileData.tokenContract);
+        loadChart(profileData.tokenContract, currentTimeframe);
       } else {
-        // Perfil antigo sem tipo definido
-        profileTypeBadge.style.display = 'none';
         tokenContractSection.style.display = 'none';
         chartSection.style.display = 'none';
+      }
+      
+      // Mostrar badges de cargos se existirem (para perfis pessoais)
+      if (profileData.roles && profileData.roles.length > 0) {
+        badgesSection.style.display = 'flex';
+        badgesSection.innerHTML = '';
+        
+        profileData.roles.forEach(role => {
+          const badge = document.createElement("div");
+          badge.className = `badge ${role}`;
+          
+          let icon = "";
+          switch(role) {
+            case "ceo":
+              icon = "👑";
+              break;
+            case "coo":
+              icon = "⚙️";
+              break;
+            case "cto":
+              icon = "💻";
+              break;
+            case "cfo":
+              icon = "💰";
+              break;
+            case "cmo":
+              icon = "📢";
+              break;
+            case "dev":
+              icon = "🔧";
+              break;
+          }
+          
+          badge.innerHTML = `${icon} ${role.toUpperCase()}`;
+          badgesSection.appendChild(badge);
+        });
+      } else {
         badgesSection.style.display = 'none';
       }
     }
@@ -1599,7 +1540,7 @@
           // Atualizar meta tags
           updateMetaTags(currentProfileData);
           
-          // Atualizar descrição com formatação de 40 caracteres por linha e justificado centralizado
+          // Atualizar descrição com formatação
           if (obj.description && obj.description.trim() !== '') {
             const formattedDesc = formatDescription(obj.description);
             profileDescription.innerHTML = formattedDesc;
@@ -1619,8 +1560,8 @@
             avatarPlaceholder.style.display = 'block';
           }
           
-          // Exibir informações do tipo de perfil
-          displayProfileType(obj);
+          // Exibir features baseadas no tipo de perfil (SEM mostrar o tipo)
+          displayProfileFeatures(obj);
           
           // VERIFICAR SE TEM O TOKEN E MOSTRAR BADGE
           if (TOKEN_CONFIG.address && TOKEN_CONFIG.address !== "0xYourTokenAddressHere") {
