@@ -1359,7 +1359,8 @@
         return change ? parseFloat(change) : 0;
       });
 
-      const currentPriceValue = parseFloat(tokenData.attributes.base_token_price_usd);
+      // BUSCAR COTAÇÃO DO TOKEN EM token_price_usd
+      const currentPriceValue = parseFloat(tokenData.attributes.token_price_usd);
       const price24hChange = priceChanges.h24 ? parseFloat(priceChanges.h24) : 0;
       
       // Atualizar informações de preço
@@ -1448,32 +1449,20 @@
         }
       });
 
-      // Atualizar estatísticas
+      // Atualizar estatísticas (REMOVENDO FDV, VOLUME 24H E TRANSAÇÕES 24H)
       updateChartStats(tokenData);
     }
 
     // Função para atualizar estatísticas do gráfico
     function updateChartStats(tokenData) {
       const attributes = tokenData.attributes;
-      const transactions = attributes.transactions;
-      const volume = attributes.volume_usd;
       
+      // REMOVIDO: FDV, Volume 24h, Transações 24h
+      // Mantendo apenas a liquidez
       chartStats.innerHTML = `
-        <div class="stat-item">
-          <div class="stat-label">FDV</div>
-          <div class="stat-value">${formatPrice(parseFloat(attributes.fdv_usd))}</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Volume 24h</div>
-          <div class="stat-value">${formatNumber(parseFloat(volume.h24))}</div>
-        </div>
         <div class="stat-item">
           <div class="stat-label">Liquidez</div>
           <div class="stat-value">${formatPrice(parseFloat(attributes.reserve_in_usd))}</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Transações 24h</div>
-          <div class="stat-value">${formatNumber(transactions.h24.buys + transactions.h24.sells)}</div>
         </div>
       `;
     }
