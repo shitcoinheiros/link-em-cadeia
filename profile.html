@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CHART IN BIO</title>
-    <link rel="icon" type="https://i.postimg.cc/kG5V5Qk4/Picsart-25-10-09-15-34-05-434.png">
+<link rel="icon" type="https://i.postimg.cc/kG5V5Qk4/Picsart-25-10-09-15-34-05-434.png">
 
 
 <!-- Meta Tags para Redes Sociais -->
@@ -17,8 +17,8 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" id="twitterTitle" content="Linkchain — Perfil Onchain">
-<meta name="twitter:description" id="twitterDescription" content="Confira o meu perfil de links Onchain">
+<meta name="twitter:title" id="twitterTitle" content="Chart in Bio">
+<meta name="twitter:description" id="twitterDescription" content="Look at our on-chain link profile in the chart in bio">
 <meta name="twitter:image" id="twitterImage" content="">
 
 <!-- WhatsApp -->
@@ -1285,7 +1285,7 @@
     // Função para quebrar texto a cada 40 caracteres e justificar centralizado
     function formatDescription(text) {
         if (!text || text.trim() === '') {
-            return 'Nenhuma descrição fornecida.';
+            return 'No description provided.';
         }
         
         const words = text.split(' ');
@@ -1334,7 +1334,7 @@
             return hasToken;
             
         } catch (error) {
-            console.error('Erro ao verificar balance do token:', error);
+            console.error('Error checking token balance:', error);
             return false;
         }
     }
@@ -1362,8 +1362,8 @@
                 }, 2000);
                 
             } catch (err) {
-                console.error('Erro ao copiar:', err);
-                alert('Erro ao copiar endereço do contrato');
+                console.error('Error copying:', err);
+                alert('Error copying contract address');
             }
         });
     }
@@ -1468,7 +1468,7 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Variação de Preço (%)',
+                    label: 'Price Variation (%)',
                     data: data,
                     borderColor: price24hChange >= 0 ? '#0ECB81' : '#F6465D',
                     backgroundColor: gradient,
@@ -1497,7 +1497,7 @@
                         borderWidth: 1,
                         callbacks: {
                             label: function(context) {
-                                return `Variação: ${context.parsed.y.toFixed(2)}%`;
+                                return `Variation: ${context.parsed.y.toFixed(2)}%`;
                             }
                         }
                     }
@@ -1538,14 +1538,14 @@
             
             // Verifica se temos um contrato válido
             if (!contractAddress || contractAddress === '—' || !ethers.isAddress(contractAddress)) {
-                throw new Error('Endereço de contrato inválido');
+                throw new Error('Invalid contract address');
             }
 
             // Busca dados da API do GeckoTerminal
             const response = await fetch(`https://api.geckoterminal.com/api/v2/networks/bsc/tokens/${contractAddress}/pools?page=1`);
             
             if (!response.ok) {
-                throw new Error('Token não encontrado na GeckoTerminal');
+                throw new Error('Token not found');
             }
 
             const data = await response.json();
@@ -1561,11 +1561,11 @@
                 createCustomChart(tokenData);
                 
             } else {
-                throw new Error('Nenhum pool encontrado para este token');
+                throw new Error('No pool found for this token');
             }
             
         } catch (error) {
-            console.error('Erro ao carregar dados do GeckoTerminal:', error);
+            console.error('Error loading data:', error);
             chartLoading.style.display = 'none';
             chartError.style.display = 'flex';
             chartError.innerHTML = `
@@ -1574,7 +1574,7 @@
                     <a href="https://www.geckoterminal.com/bsc/tokens/${contractAddress}" 
                     target="_blank" 
                     style="color: var(--accent-primary); text-decoration: underline;">
-                        Ver token no GeckoTerminal
+                        Ver token no terminal
                     </a>
                 </small>
             `;
@@ -1601,8 +1601,8 @@
     // Função para atualizar meta tags
     function updateMetaTags(profileData) {
         const currentUrl = window.location.href;
-        const title = `${profileData.name} - Linkchain Profile`;
-        const description = profileData.description || 'Confira este perfil na Linkchain';
+        const title = `${profileData.name} - Chart in bio`;
+        const description = profileData.description || 'Check out our profile on Chart in Bio';
         
         document.getElementById('ogTitle').content = title;
         document.getElementById('ogDescription').content = description;
@@ -1634,7 +1634,7 @@
         } else if (profileData.tokenContract) {
             // Contrato inválido
             tokenContractSection.style.display = 'block';
-            tokenContractAddress.textContent = 'Contrato inválido';
+            tokenContractAddress.textContent = 'Invalid contract';
             tokenContractAddress.style.color = 'var(--danger)';
             chartSection.style.display = 'none';
         } else {
@@ -1684,8 +1684,8 @@
     // Função para compartilhar
     function shareProfile(platform) {
         const currentUrl = window.location.href;
-        const title = `Confira o perfil de ${currentProfileData.name} na Linkchain`;
-        const text = currentProfileData.description || 'Perfil criado na plataforma Linkchain';
+        const title = `See the profile of ${currentProfileData.name} in Chart in Bio`;
+        const text = currentProfileData.description || 'Profile created on the Chart in Bio platform';
         
         let shareUrl = '';
         
@@ -1707,7 +1707,7 @@
                 break;
             case 'copy':
                 navigator.clipboard.writeText(currentUrl).then(() => {
-                    alert('Link copiado para a área de transferência!');
+                    alert('Link copied to the clipboard!');
                 });
                 return;
             default:
@@ -1739,9 +1739,9 @@
     const params = new URLSearchParams(window.location.search);
     const userAddress = params.get('addr');
     if (!userAddress) {
-        profileName.textContent = "Endereço inválido";
+        profileName.textContent = "Invalid address";
         profileAddr.textContent = "—";
-        throw new Error("Endereço não fornecido na URL. Ex: profile.html?addr=0x1234...");
+        throw new Error("Address not provided in the URL. Ex: profile.html?addr=0x1234...");
     }
 
     // Formatar endereço para exibição
@@ -1757,12 +1757,12 @@
             if (json) {
                 const obj = JSON.parse(json);
 
-                profileName.textContent = obj.name || 'Sem nome definido';
+                profileName.textContent = obj.name || 'No name defined';
                 
                 // Salvar dados para compartilhamento
                 currentProfileData = {
-                    name: obj.name || 'Sem nome definido',
-                    description: obj.description || 'Perfil criado na plataforma Linkchain',
+                    name: obj.name || 'No name defined',
+                    description: obj.description || 'Profile created on the Chart in Bio platform',
                     photo: obj.photo || '',
                     address: userAddress,
                     profileType: obj.profileType,
@@ -1825,8 +1825,8 @@
                 }
 
             } else {
-                profileName.textContent = "Perfil não encontrado";
-                profileDescription.textContent = "Este endereço ainda não possui um perfil Linkchain cadastrado.";
+                profileName.textContent = "Profile not found";
+                profileDescription.textContent = "This address does not yet have a registered Chart in Bio profile.";
                 profileDescription.style.color = 'var(--text-muted)';
                 profileLinks.innerHTML = `
                     <div style="text-align: center; color: var(--text-muted); padding: 20px;">
@@ -1835,12 +1835,12 @@
                 `;
             }
         } catch(e) {
-            profileName.textContent = "Erro ao carregar perfil";
-            profileDescription.textContent = "Ocorreu um erro ao tentar carregar as informações do perfil.";
+            profileName.textContent = "Error loading profile";
+            profileDescription.textContent = "An error occurred while trying to load the profile information.";
             profileDescription.style.color = 'var(--text-muted)';
             profileLinks.innerHTML = `
                 <div style="text-align: center; color: var(--text-muted); padding: 20px;">
-                    Erro ao carregar informações do perfil
+                   Error loading profile information
                 </div>
             `;
             console.error(e);
