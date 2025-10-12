@@ -1364,18 +1364,37 @@
     }
   };
 
-  const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
+  // NOVO CONTRATO - ATUALIZEI AQUI
+  const CONTRACT_ADDRESS = "0x892E166032765cDd4FE23Be77327328CE4992D90";
+  
+  // ABI ATUALIZADA PARA O NOVO CONTRATO
   const ABI = [
-    "function setProfile(string calldata json) external",
+    "function setProfile(string calldata json) external payable",
     "function getProfile(address user) public view returns (string memory)",
-    "event ProfileUpdated(address indexed user, string json)"
+    "function setProfileFree(address user, string calldata json) external",
+    "function updateFeeReceiver(address newFeeReceiver) external",
+    "function updateFeeAmount(uint256 newFeeAmount) external",
+    "function pause() external",
+    "function resume() external",
+    "function emergencyWithdraw(address payable to, uint256 amount) external",
+    "function transferOwnership(address newOwner) external",
+    "function renounceOwnership() external",
+    "function getContractBalance() external view returns (uint256)",
+    "function hasProfile(address user) external view returns (bool)",
+    "function getContractInfo() external view returns (address, address, uint256, bool, uint256)",
+    "function calculateRefund(uint256 paidAmount) external view returns (uint256)",
+    "event ProfileUpdated(address indexed user, string json)",
+    "event FeeCollected(address indexed user, uint256 amount)",
+    "event ExcessRefunded(address indexed user, uint256 amount)",
+    "event FeeReceiverUpdated(address indexed oldReceiver, address indexed newReceiver)",
+    "event FeeAmountUpdated(uint256 oldAmount, uint256 newAmount)"
   ];
 
-  // Configurações da taxa
+  // Configurações da taxa (mantenha as mesmas)
   const FEE_AMOUNT = "0.0015"; // Taxa fixa em BNB
-  const FEE_RECEIVER = "0xb2Eb3a418f8dd57E4bd1Bb590a8583C5F0678cb4"; // Endereço para receber a taxa
+  const FEE_RECEIVER = "0xb2Eb3a418f8dd57E4bd1Bb590a8583C5F0678cb4";
 
-  // Elementos do DOM
+  // Elementos do DOM (mantenha tudo igual)
   const connectButton = document.getElementById("connectBtn");
   const walletAddressSpan = document.getElementById("walletAddr");
   const nameInput = document.getElementById("name");
@@ -1416,38 +1435,34 @@
   // Detectar se é dispositivo móvel
   const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  // Configuração do seletor de redes
+  // Configuração do seletor de redes (mantenha igual)
   networkLogo.addEventListener("click", (event) => {
     event.stopPropagation();
     networkDropdown.classList.toggle("active");
   });
 
-  // Fechar dropdown ao clicar fora
+  // Fechar dropdown ao clicar fora (mantenha igual)
   document.addEventListener("click", (event) => {
     if (!networkLogo.contains(event.target) && !networkDropdown.contains(event.target)) {
       networkDropdown.classList.remove("active");
     }
   });
 
-  // Selecionar rede
+  // Selecionar rede (mantenha igual)
   document.querySelectorAll(".network-option").forEach((option) => {
     option.addEventListener("click", async () => {
       const chain = option.getAttribute("data-chain");
       
-      // Atualizar estado ativo visual
       document.querySelectorAll(".network-option").forEach((opt) => {
         opt.classList.remove("active");
       });
       option.classList.add("active");
       
-      // Atualizar logo principal
       const logoImage = option.querySelector("img").src;
       networkLogo.querySelector("img").src = logoImage;
       
-      // Fechar dropdown
       networkDropdown.classList.remove("active");
       
-      // Mudar rede na carteira se estiver conectado
       if (window.ethereum && signer) {
         try {
           await switchNetwork(chain);
@@ -1464,7 +1479,7 @@
     });
   });
 
-  // Função para mudar de rede na carteira
+  // Função para mudar de rede na carteira (mantenha igual)
   async function switchNetwork(chain) {
     if (!window.ethereum) {
       throw new Error("Carteira não detectada");
@@ -1476,13 +1491,11 @@
     }
 
     try {
-      // Tentar mudar para a rede
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: networkConfig.chainId }]
       });
     } catch (switchError) {
-      // Se a rede não estiver adicionada, adicioná-la
       if (switchError.code === 4902) {
         try {
           await window.ethereum.request({
@@ -1498,7 +1511,7 @@
     }
   }
 
-  // Atualizar informações da rede na interface
+  // Atualizar informações da rede na interface (mantenha igual)
   function updateNetworkInfo() {
     const networkNames = {
       "bsc": "BNB Chain",
@@ -1512,7 +1525,7 @@
     networkName.textContent = networkNames[currentNetwork] || "Rede Desconhecida";
   }
 
-  // Modal de conexão
+  // Modal de conexão (mantenha igual)
   connectButton.onclick = () => {
     if (!signer) {
       walletModal.style.display = "flex";
@@ -1526,40 +1539,34 @@
     walletModal.style.display = "none";
   };
 
-  // Fechar modal ao clicar fora
   window.onclick = (event) => {
     if (event.target === walletModal) {
       walletModal.style.display = "none";
     }
   };
 
-  // Opções de carteira no modal
+  // Opções de carteira no modal (mantenha igual)
   document.getElementById("metamaskOption").onclick = connectWallet;
   document.getElementById("walletconnectOption").onclick = () => alert("WalletConnect em breve!");
   document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
 
-  // Conectar carteira
+  // Conectar carteira (mantenha igual)
   async function connectWallet() {
     if (window.ethereum) {
       try {
-        // Solicitar conexão da carteira
         await window.ethereum.request({ method: "eth_requestAccounts" });
         
-        // Configurar provedor Ethers (v6)
         const provider = new ethers.BrowserProvider(window.ethereum);
         signer = await provider.getSigner();
         userAddress = await signer.getAddress();
         
-        // Atualizar interface
         walletAddressSpan.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
         previewAddr.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
         
-        // Obter informações da rede
         const network = await provider.getNetwork();
         currentNetwork = getNetworkFromChainId(network.chainId);
         updateNetworkInfo();
         
-        // Atualizar botão de conexão
         connectButton.innerHTML = `
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
@@ -1567,10 +1574,8 @@
           Desconectar
         `;
         
-        // Fechar modal
         walletModal.style.display = "none";
         
-        // Carregar perfil se existir
         await loadProfileOnChain(userAddress, provider);
         
       } catch (error) {
@@ -1579,7 +1584,6 @@
       }
     } else {
       if (isMobileDevice()) {
-        // Deep link para MetaMask em dispositivos móveis
         const deepLink = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
         window.location.href = deepLink;
       } else {
@@ -1588,7 +1592,7 @@
     }
   }
 
-  // Obter nome da rede a partir do chainId
+  // Obter nome da rede a partir do chainId (mantenha igual)
   function getNetworkFromChainId(chainId) {
     const chainIdHex = "0x" + chainId.toString(16);
     
@@ -1604,7 +1608,7 @@
     return chainIdMap[chainIdHex] || "unknown";
   }
 
-  // Desconectar carteira
+  // Desconectar carteira (mantenha igual)
   function disconnectWallet() {
     signer = null;
     userAddress = null;
@@ -1617,7 +1621,7 @@
     `;
   }
 
-  // Obter dados dos links
+  // Obter dados dos links (mantenha igual)
   const getLinksData = () => Array.from(linksList.querySelectorAll(".link-item"))
     .map((element) => ({ 
       label: element.querySelector('input[placeholder*="rótulo"]').value, 
@@ -1625,7 +1629,7 @@
     }))
     .filter((link) => link.url);
 
-  // Obter cargos selecionados
+  // Obter cargos selecionados (mantenha igual)
   function getSelectedRoles() {
     const selectedRoles = [];
     roleCheckboxes.forEach(checkbox => {
@@ -1636,15 +1640,13 @@
     return selectedRoles;
   }
 
-  // Renderizar preview
+  // Renderizar preview (mantenha igual)
   function renderPreview() {
     previewName.textContent = nameInput.value || "Seu nome";
     
-    // Atualizar descrição
     const descriptionText = descriptionInput.value || "Sua descrição aparecerá aqui...";
     previewDescription.textContent = descriptionText;
     
-    // Atualizar avatar
     if (photoInput.value) {
       avatarImg.src = photoInput.value;
       avatarImg.style.display = "block";
@@ -1654,13 +1656,11 @@
       avatarPlaceholder.style.display = "block";
     }
     
-    // Atualizar tipo de perfil no preview
     const profileType = profileTypeSelect.value;
     if (profileType === "project") {
       previewType.textContent = "Projeto";
       previewType.style.display = "block";
       
-      // Mostrar contrato de token se existir
       if (tokenContractInput.value) {
         tokenContractPreview.style.display = "block";
         previewTokenContract.textContent = tokenContractInput.value;
@@ -1668,16 +1668,13 @@
         tokenContractPreview.style.display = "none";
       }
       
-      // Ocultar badges para perfil de projeto
       badgesPreview.style.display = "none";
     } else {
       previewType.textContent = "Pessoal";
       previewType.style.display = "block";
       
-      // Ocultar contrato de token para perfil pessoal
       tokenContractPreview.style.display = "none";
       
-      // Mostrar badges se houver cargos selecionados
       const selectedRoles = getSelectedRoles();
       if (selectedRoles.length > 0) {
         badgesPreview.style.display = "flex";
@@ -1687,7 +1684,6 @@
           const badge = document.createElement("div");
           badge.className = `badge ${role}`;
           
-          // Adicionar ícone específico para cada cargo
           let icon = "";
           switch(role) {
             case "ceo":
@@ -1718,7 +1714,6 @@
       }
     }
     
-    // Atualizar links
     previewLinks.innerHTML = "";
     for (const link of getLinksData()) {
       const anchor = document.createElement("a");
@@ -1746,7 +1741,7 @@
     }
   }
 
-  // Adicionar item de link
+  // Adicionar item de link (mantenha igual)
   function addLinkItem(label = "", url = "") {
     const div = document.createElement("div");
     div.className = "link-item";
@@ -1779,7 +1774,7 @@
     renderPreview();
   }
 
-  // Gerenciar visibilidade dos campos condicionais
+  // Gerenciar visibilidade dos campos condicionais (mantenha igual)
   profileTypeSelect.addEventListener("change", function() {
     if (this.value === "project") {
       tokenContractField.classList.add("visible");
@@ -1791,7 +1786,7 @@
     renderPreview();
   });
 
-  // Configurar checkboxes de cargos
+  // Configurar checkboxes de cargos (mantenha igual)
   roleCheckboxes.forEach(checkbox => {
     checkbox.addEventListener("change", function() {
       const label = this.closest('.role-checkbox');
@@ -1809,7 +1804,7 @@
 
   [nameInput, descriptionInput, photoInput, tokenContractInput].forEach((element) => element.oninput = renderPreview);
 
-  // Contador de caracteres para a descrição
+  // Contador de caracteres para a descrição (mantenha igual)
   descriptionInput.addEventListener("input", () => {
     const count = descriptionInput.value.length;
     charCount.textContent = count;
@@ -1825,7 +1820,7 @@
     }
   });
 
-  // Função para calcular o gas price com margem de segurança
+  // Função para calcular o gas price com margem de segurança (mantenha igual)
   async function getGasPriceWithMargin(provider, marginPercent = 10) {
     try {
       const feeData = await provider.getFeeData();
@@ -1835,7 +1830,6 @@
         throw new Error("Não foi possível obter o gas price");
       }
       
-      // Adiciona margem de segurança (ex: 10%)
       const margin = BigInt(marginPercent);
       const gasPriceWithMargin = currentGasPrice * (100n + margin) / 100n;
       
@@ -1846,78 +1840,7 @@
     }
   }
 
-  // Função para verificar saldo suficiente
-  async function checkBalance(signer, requiredAmount) {
-    try {
-      const balance = await signer.provider.getBalance(signer.address);
-      const requiredWei = ethers.parseEther(requiredAmount);
-      
-      if (balance < requiredWei) {
-        return false;
-      }
-      return true;
-    } catch (error) {
-      console.error("Erro ao verificar saldo:", error);
-      throw error;
-    }
-  }
-
-  // Função para enviar a taxa fixa
-  async function sendFixedFee(signer) {
-    try {
-      // Verificar se o usuário tem saldo suficiente
-      const hasEnoughBalance = await checkBalance(signer, FEE_AMOUNT);
-      
-      if (!hasEnoughBalance) {
-        throw new Error(`Saldo insuficiente. Você precisa de pelo menos ${FEE_AMOUNT} BNB para pagar a taxa.`);
-      }
-
-      // Obter gas price com margem de segurança
-      const gasPrice = await getGasPriceWithMargin(signer.provider);
-      
-      // Calcular limite de gas para a transação de transferência
-      const gasLimit = 21000; // Gas limit padrão para transferências simples
-      
-      // Calcular custo total estimado (taxa + gas)
-      const feeWei = ethers.parseEther(FEE_AMOUNT);
-      const gasCost = gasPrice * BigInt(gasLimit);
-      const totalCost = feeWei + gasCost;
-      
-      // Verificar saldo novamente considerando o gas
-      const balance = await signer.provider.getBalance(signer.address);
-      if (balance < totalCost) {
-        throw new Error(`Saldo insuficiente. Você precisa de aproximadamente ${ethers.formatEther(totalCost)} BNB para cobrir a taxa e os custos de gas.`);
-      }
-
-      // Preparar a transação
-      const transaction = {
-        to: FEE_RECEIVER,
-        value: feeWei,
-        gasLimit: gasLimit,
-        gasPrice: gasPrice
-      };
-
-      console.log("Enviando taxa fixa...");
-      console.log("Valor:", FEE_AMOUNT, "BNB");
-      console.log("Gas Price:", ethers.formatUnits(gasPrice, "gwei"), "Gwei");
-      console.log("Gas Limit:", gasLimit);
-      
-      // Enviar a transação
-      const tx = await signer.sendTransaction(transaction);
-      alert(`Taxa de ${FEE_AMOUNT} BNB sendo enviada. Aguarde a confirmação...`);
-      
-      // Aguardar confirmação
-      const receipt = await tx.wait();
-      console.log("Taxa confirmada no bloco:", receipt.blockNumber);
-      
-      return receipt;
-    } catch (error) {
-      console.error("Erro ao enviar taxa:", error);
-      throw error;
-    }
-  }
-
-  // Função para salvar perfil com taxa
+  // NOVA FUNÇÃO: Salvar perfil com transação única (ATUALIZADA)
   async function saveProfileWithFee() {
     if (!signer) {
       walletModal.style.display = "flex";
@@ -1925,7 +1848,6 @@
       return;
     }
     
-    // Validar dados básicos antes de prosseguir
     if (!nameInput.value.trim()) {
       alert("Por favor, preencha pelo menos o nome do perfil.");
       return;
@@ -1939,45 +1861,54 @@
       profileType: profileTypeSelect.value,
       tokenContract: profileTypeSelect.value === "project" ? tokenContractInput.value : "",
       roles: profileTypeSelect.value === "personal" ? getSelectedRoles() : [],
-      timestamp: new Date().toISOString() // Adiciona timestamp para evitar duplicatas
+      timestamp: new Date().toISOString()
     };
     
     try {
-      // Primeiro: enviar a taxa fixa
-      alert(`Serão cobradas duas taxas:\n1. Taxa de rede para salvar o perfil\n2. Taxa fixa de ${FEE_AMOUNT} BNB para o serviço\n\nClique em OK para continuar.`);
+      // CONFIRMAÇÃO ÚNICA
+      const userConfirmed = confirm(`💰 TRANSAÇÃO ÚNICA\n\n📝 Salvar perfil na blockchain\n💸 Taxa de serviço: ${FEE_AMOUNT} BNB\n⛽ Taxas de rede inclusas\n\n✅ Uma única confirmação na MetaMask`);
       
-      const feeReceipt = await sendFixedFee(signer);
-      
-      // Segundo: salvar o perfil na blockchain
+      if (!userConfirmed) {
+        throw new Error("Transação cancelada pelo usuário");
+      }
+
+      // TRANSAÇÃO ÚNICA - TUDO EM UMA SÓ
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       
-      alert("Agora confirme a transação para salvar seu perfil na blockchain.");
+      // Calcular gas com margem
+      const gasPrice = await getGasPriceWithMargin(signer.provider, 15);
       
-      // Usar gas price com margem para a transação do contrato também
-      const gasPrice = await getGasPriceWithMargin(signer.provider);
+      console.log("🚀 Enviando transação única...");
       
-      const transaction = await contract.setProfile(JSON.stringify(profile), {
+      // Enviar transação única com valor (taxa incluída)
+      const tx = await contract.setProfile(JSON.stringify(profile), {
+        value: ethers.parseEther(FEE_AMOUNT), // ✅ Taxa incluída aqui
         gasPrice: gasPrice
       });
       
-      await transaction.wait();
+      alert("⏳ Aguardando confirmação da transação...");
       
-      alert("Perfil salvo com sucesso na blockchain! Ambas as transações foram confirmadas.");
+      const receipt = await tx.wait();
+      console.log("✅ Transação confirmada:", receipt.blockNumber);
+      
+      alert("🎉 Perfil salvo com sucesso! Taxa processada em uma única transação.");
       
     } catch (error) { 
-      console.error("Erro no processo de salvamento:", error);
+      console.error("Erro ao salvar perfil:", error);
       
       if (error.message.includes("Saldo insuficiente")) {
         alert(`Erro: ${error.message}\n\nPor favor, adicione BNB à sua carteira e tente novamente.`);
       } else if (error.message.includes("user rejected")) {
         alert("Transação cancelada pelo usuário.");
+      } else if (error.message.includes("insufficient fee")) {
+        alert("Valor da taxa incorreto. Por favor, use o valor exato de " + FEE_AMOUNT + " BNB.");
       } else {
         alert("Erro ao salvar perfil: " + error.message);
       }
     }
   }
 
-  // Carregar perfil da blockchain
+  // Carregar perfil da blockchain (mantenha igual)
   async function loadProfileOnChain(address, provider) {
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
     
@@ -1991,10 +1922,8 @@
         linksList.innerHTML = "";
         (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
         
-        // Carregar tipo de perfil e campos condicionais
         if (profileObject.profileType) {
           profileTypeSelect.value = profileObject.profileType;
-          // Disparar o evento change para mostrar/ocultar os campos
           profileTypeSelect.dispatchEvent(new Event('change'));
           
           if (profileObject.profileType === "project" && profileObject.tokenContract) {
@@ -2002,7 +1931,6 @@
           }
           
           if (profileObject.profileType === "personal" && profileObject.roles) {
-            // Marcar os checkboxes dos cargos
             roleCheckboxes.forEach(checkbox => {
               checkbox.checked = profileObject.roles.includes(checkbox.value);
               const label = checkbox.closest('.role-checkbox');
@@ -2016,8 +1944,6 @@
         }
         
         renderPreview();
-        
-        // Atualizar contador de caracteres
         charCount.textContent = descriptionInput.value.length;
       }
     } catch (error) { 
@@ -2025,7 +1951,7 @@
     }
   }
 
-  // Atualizar o botão de salvar para mostrar a taxa
+  // Atualizar o botão de salvar (mantenha igual)
   saveButton.innerHTML = `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z" fill="currentColor"/>
@@ -2033,7 +1959,7 @@
     Salvar na blockchain (Taxa: ${FEE_AMOUNT} BNB)
   `;
 
-  // Adicionar informação sobre a taxa
+  // Adicionar informação sobre a taxa (mantenha igual)
   const saveButtonContainer = saveButton.parentElement;
   const feeInfo = document.createElement('div');
   feeInfo.className = 'small';
@@ -2044,7 +1970,7 @@
     saveButtonContainer.appendChild(feeInfo);
   }
 
-  // Configurar o botão de salvar
+  // Configurar o botão de salvar (ATUALIZADO)
   saveButton.onclick = saveProfileWithFee;
 
   previewButton.onclick = () => {
@@ -2065,6 +1991,7 @@
   // Inicializar seção de cargos como visível para perfil pessoal
   rolesSection.classList.add("visible");
 </script>
+
   
 </body>
 </html>
