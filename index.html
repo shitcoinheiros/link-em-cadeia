@@ -1315,9 +1315,8 @@
     </nav>
   </footer>
 
-  <script>
-import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
-
+ <script src="https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js"></script>
+<script>
 // Configurações das redes blockchain
 const NETWORKS = {
   bsc: {
@@ -2021,7 +2020,7 @@ async function loadProfileOnChain(address, provider) {
       charCount.textContent = descriptionInput.value.length;
     }
   } catch (error) { 
-    console.log("Erro ao carregar perfil:", error); 
+    console.log("Erro ao cargar perfil:", error); 
   }
 }
 
@@ -2040,7 +2039,9 @@ feeInfo.className = 'small';
 feeInfo.style.marginTop = '8px';
 feeInfo.style.color = 'var(--text-muted)';
 feeInfo.innerHTML = `Inclui taxa de serviço de ${FEE_AMOUNT} BNB + taxas de rede`;
-saveButtonContainer.appendChild(feeInfo);
+if (saveButtonContainer) {
+  saveButtonContainer.appendChild(feeInfo);
+}
 
 // Configurar o botão de salvar
 saveButton.onclick = saveProfileWithFee;
@@ -2062,7 +2063,6 @@ updateNetworkInfo();
 
 // Inicializar seção de cargos como visível para perfil pessoal
 rolesSection.classList.add("visible");
-
-    </script>   
+</script>
 </body>
 </html>
