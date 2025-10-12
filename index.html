@@ -1315,609 +1315,754 @@
     </nav>
   </footer>
 
-  <script type="module">
-    import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
+  <script>
+import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
 
-    // Configurações das redes blockchain
-    const NETWORKS = {
-      bsc: {
-        chainId: "0x38",
-        chainName: "Binance Smart Chain",
-        rpcUrls: ["https://bsc-dataseed.binance.org/"],
-        nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-        blockExplorerUrls: ["https://bscscan.com"]
-      },
-      bscTestnet: {
-        chainId: "0x61",
-        chainName: "Binance Smart Chain Testnet",
-        rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-        nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
-        blockExplorerUrls: ["https://testnet.bscscan.com"]
-      },
-      ethereum: {
-        chainId: "0x1",
-        chainName: "Ethereum Mainnet",
-        rpcUrls: ["https://mainnet.infura.io/v3/"],
-        nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-        blockExplorerUrls: ["https://etherscan.io"]
-      },
-      polygon: {
-        chainId: "0x89",
-        chainName: "Polygon Mainnet",
-        rpcUrls: ["https://polygon-rpc.com/"],
-        nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
-        blockExplorerUrls: ["https://polygonscan.com"]
-      },
-      base: {
-        chainId: "0x2105",
-        chainName: "Base Mainnet",
-        rpcUrls: ["https://mainnet.base.org/"],
-        nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-        blockExplorerUrls: ["https://basescan.org"]
-      },
-      avalanche: {
-        chainId: "0xA86A",
-        chainName: "Avalanche Mainnet",
-        rpcUrls: ["https://api.avax.network/ext/bc/C/rpc"],
-        nativeCurrency: { name: "AVAX", symbol: "AVAX", decimals: 18 },
-        blockExplorerUrls: ["https://snowtrace.io"]
-      }
-    };
+// Configurações das redes blockchain
+const NETWORKS = {
+  bsc: {
+    chainId: "0x38",
+    chainName: "Binance Smart Chain",
+    rpcUrls: ["https://bsc-dataseed.binance.org/"],
+    nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+    blockExplorerUrls: ["https://bscscan.com"]
+  },
+  bscTestnet: {
+    chainId: "0x61",
+    chainName: "Binance Smart Chain Testnet",
+    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+    nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
+    blockExplorerUrls: ["https://testnet.bscscan.com"]
+  },
+  ethereum: {
+    chainId: "0x1",
+    chainName: "Ethereum Mainnet",
+    rpcUrls: ["https://mainnet.infura.io/v3/"],
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    blockExplorerUrls: ["https://etherscan.io"]
+  },
+  polygon: {
+    chainId: "0x89",
+    chainName: "Polygon Mainnet",
+    rpcUrls: ["https://polygon-rpc.com/"],
+    nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
+    blockExplorerUrls: ["https://polygonscan.com"]
+  },
+  base: {
+    chainId: "0x2105",
+    chainName: "Base Mainnet",
+    rpcUrls: ["https://mainnet.base.org/"],
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    blockExplorerUrls: ["https://basescan.org"]
+  },
+  avalanche: {
+    chainId: "0xA86A",
+    chainName: "Avalanche Mainnet",
+    rpcUrls: ["https://api.avax.network/ext/bc/C/rpc"],
+    nativeCurrency: { name: "AVAX", symbol: "AVAX", decimals: 18 },
+    blockExplorerUrls: ["https://snowtrace.io"]
+  }
+};
 
-    const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
-    const ABI = [
-      "function setProfile(string calldata json) external",
-      "function getProfile(address user) public view returns (string memory)",
-      "event ProfileUpdated(address indexed user, string json)"
-    ];
+const CONTRACT_ADDRESS = "0xab93225dbf590478b4487bf1bf577db629aa6bee";
+const ABI = [
+  "function setProfile(string calldata json) external",
+  "function getProfile(address user) public view returns (string memory)",
+  "event ProfileUpdated(address indexed user, string json)"
+];
 
-    // Elementos do DOM
-    const connectButton = document.getElementById("connectBtn");
-    const walletAddressSpan = document.getElementById("walletAddr");
-    const nameInput = document.getElementById("name");
-    const descriptionInput = document.getElementById("description");
-    const photoInput = document.getElementById("photo");
-    const addLinkButton = document.getElementById("addLinkBtn");
-    const linksList = document.getElementById("linksList");
-    const previewName = document.getElementById("previewName");
-    const previewAddr = document.getElementById("previewAddr");
-    const previewDescription = document.getElementById("previewDescription");
-    const avatarImg = document.getElementById("avatarImg");
-    const previewLinks = document.getElementById("previewLinks");
-    const saveButton = document.getElementById("saveBtn");
-    const networkName = document.getElementById("networkName");
-    const previewButton = document.getElementById("previewBtn");
-    const avatarPlaceholder = document.getElementById("avatarPlaceholder");
-    const charCount = document.getElementById("charCount");
-    const walletModal = document.getElementById("walletModal");
-    const closeModal = document.getElementById("closeModal");
-    const networkLogo = document.getElementById("networkLogo");
-    const networkDropdown = document.getElementById("networkDropdown");
+// Configurações da taxa
+const FEE_AMOUNT = "0.0015"; // Taxa fixa em BNB
+const FEE_RECEIVER = "0xb2Eb3a418f8dd57E4bd1Bb590a8583C5F0678cb4"; // Endereço para receber a taxa
+
+// Elementos do DOM
+const connectButton = document.getElementById("connectBtn");
+const walletAddressSpan = document.getElementById("walletAddr");
+const nameInput = document.getElementById("name");
+const descriptionInput = document.getElementById("description");
+const photoInput = document.getElementById("photo");
+const addLinkButton = document.getElementById("addLinkBtn");
+const linksList = document.getElementById("linksList");
+const previewName = document.getElementById("previewName");
+const previewAddr = document.getElementById("previewAddr");
+const previewDescription = document.getElementById("previewDescription");
+const avatarImg = document.getElementById("avatarImg");
+const previewLinks = document.getElementById("previewLinks");
+const saveButton = document.getElementById("saveBtn");
+const networkName = document.getElementById("networkName");
+const previewButton = document.getElementById("previewBtn");
+const avatarPlaceholder = document.getElementById("avatarPlaceholder");
+const charCount = document.getElementById("charCount");
+const walletModal = document.getElementById("walletModal");
+const closeModal = document.getElementById("closeModal");
+const networkLogo = document.getElementById("networkLogo");
+const networkDropdown = document.getElementById("networkDropdown");
+
+// Novos elementos para tipo de perfil
+const profileTypeSelect = document.getElementById("profileType");
+const tokenContractField = document.getElementById("tokenContractField");
+const tokenContractInput = document.getElementById("tokenContract");
+const previewType = document.getElementById("previewType");
+const rolesSection = document.getElementById("rolesSection");
+const roleCheckboxes = document.querySelectorAll('.role-checkbox input[type="checkbox"]');
+const tokenContractPreview = document.getElementById("tokenContractPreview");
+const previewTokenContract = document.getElementById("previewTokenContract");
+const badgesPreview = document.getElementById("badgesPreview");
+
+let signer = null;
+let userAddress = null;
+let currentNetwork = "bsc";
+
+// Detectar se é dispositivo móvel
+const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+// Configuração do seletor de redes
+networkLogo.addEventListener("click", (event) => {
+  event.stopPropagation();
+  networkDropdown.classList.toggle("active");
+});
+
+// Fechar dropdown ao clicar fora
+document.addEventListener("click", (event) => {
+  if (!networkLogo.contains(event.target) && !networkDropdown.contains(event.target)) {
+    networkDropdown.classList.remove("active");
+  }
+});
+
+// Selecionar rede
+document.querySelectorAll(".network-option").forEach((option) => {
+  option.addEventListener("click", async () => {
+    const chain = option.getAttribute("data-chain");
     
-    // Novos elementos para tipo de perfil
-    const profileTypeSelect = document.getElementById("profileType");
-    const tokenContractField = document.getElementById("tokenContractField");
-    const tokenContractInput = document.getElementById("tokenContract");
-    const previewType = document.getElementById("previewType");
-    const rolesSection = document.getElementById("rolesSection");
-    const roleCheckboxes = document.querySelectorAll('.role-checkbox input[type="checkbox"]');
-    const tokenContractPreview = document.getElementById("tokenContractPreview");
-    const previewTokenContract = document.getElementById("previewTokenContract");
-    const badgesPreview = document.getElementById("badgesPreview");
-
-    let signer = null;
-    let userAddress = null;
-    let currentNetwork = "bsc";
-
-    // Detectar se é dispositivo móvel
-    const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    // Configuração do seletor de redes
-    networkLogo.addEventListener("click", (event) => {
-      event.stopPropagation();
-      networkDropdown.classList.toggle("active");
+    // Atualizar estado ativo visual
+    document.querySelectorAll(".network-option").forEach((opt) => {
+      opt.classList.remove("active");
     });
-
-    // Fechar dropdown ao clicar fora
-    document.addEventListener("click", (event) => {
-      if (!networkLogo.contains(event.target) && !networkDropdown.contains(event.target)) {
-        networkDropdown.classList.remove("active");
-      }
-    });
-
-    // Selecionar rede
-    document.querySelectorAll(".network-option").forEach((option) => {
-      option.addEventListener("click", async () => {
-        const chain = option.getAttribute("data-chain");
-        
-        // Atualizar estado ativo visual
-        document.querySelectorAll(".network-option").forEach((opt) => {
-          opt.classList.remove("active");
-        });
-        option.classList.add("active");
-        
-        // Atualizar logo principal
-        const logoImage = option.querySelector("img").src;
-        networkLogo.querySelector("img").src = logoImage;
-        
-        // Fechar dropdown
-        networkDropdown.classList.remove("active");
-        
-        // Mudar rede na carteira se estiver conectado
-        if (window.ethereum && signer) {
-          try {
-            await switchNetwork(chain);
-            currentNetwork = chain;
-            updateNetworkInfo();
-          } catch (error) {
-            console.error("Erro ao mudar de rede:", error);
-            alert("Erro ao mudar para a rede selecionada. Verifique se sua carteira suporta esta rede.");
-          }
-        } else {
-          currentNetwork = chain;
-          updateNetworkInfo();
-        }
-      });
-    });
-
-    // Função para mudar de rede na carteira
-    async function switchNetwork(chain) {
-      if (!window.ethereum) {
-        throw new Error("Carteira não detectada");
-      }
-
-      const networkConfig = NETWORKS[chain];
-      if (!networkConfig) {
-        throw new Error("Rede não suportada");
-      }
-
+    option.classList.add("active");
+    
+    // Atualizar logo principal
+    const logoImage = option.querySelector("img").src;
+    networkLogo.querySelector("img").src = logoImage;
+    
+    // Fechar dropdown
+    networkDropdown.classList.remove("active");
+    
+    // Mudar rede na carteira se estiver conectado
+    if (window.ethereum && signer) {
       try {
-        // Tentar mudar para a rede
+        await switchNetwork(chain);
+        currentNetwork = chain;
+        updateNetworkInfo();
+      } catch (error) {
+        console.error("Erro ao mudar de rede:", error);
+        alert("Erro ao mudar para a rede selecionada. Verifique se sua carteira suporta esta rede.");
+      }
+    } else {
+      currentNetwork = chain;
+      updateNetworkInfo();
+    }
+  });
+});
+
+// Função para mudar de rede na carteira
+async function switchNetwork(chain) {
+  if (!window.ethereum) {
+    throw new Error("Carteira não detectada");
+  }
+
+  const networkConfig = NETWORKS[chain];
+  if (!networkConfig) {
+    throw new Error("Rede não suportada");
+  }
+
+  try {
+    // Tentar mudar para a rede
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: networkConfig.chainId }]
+    });
+  } catch (switchError) {
+    // Se a rede não estiver adicionada, adicioná-la
+    if (switchError.code === 4902) {
+      try {
         await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: networkConfig.chainId }]
+          method: "wallet_addEthereumChain",
+          params: [networkConfig]
         });
-      } catch (switchError) {
-        // Se a rede não estiver adicionada, adicioná-la
-        if (switchError.code === 4902) {
-          try {
-            await window.ethereum.request({
-              method: "wallet_addEthereumChain",
-              params: [networkConfig]
-            });
-          } catch (addError) {
-            throw new Error("Não foi possível adicionar a rede à carteira");
-          }
-        } else {
-          throw switchError;
-        }
+      } catch (addError) {
+        throw new Error("Não foi possível adicionar a rede à carteira");
       }
+    } else {
+      throw switchError;
     }
+  }
+}
 
-    // Atualizar informações da rede na interface
-    function updateNetworkInfo() {
-      const networkNames = {
-        "bsc": "BNB Chain",
-        "bscTestnet": "BSC Testnet", 
-        "ethereum": "Ethereum",
-        "polygon": "Polygon",
-        "base": "Base",
-        "avalanche": "Avalanche"
-      };
+// Atualizar informações da rede na interface
+function updateNetworkInfo() {
+  const networkNames = {
+    "bsc": "BNB Chain",
+    "bscTestnet": "BSC Testnet", 
+    "ethereum": "Ethereum",
+    "polygon": "Polygon",
+    "base": "Base",
+    "avalanche": "Avalanche"
+  };
+  
+  networkName.textContent = networkNames[currentNetwork] || "Rede Desconhecida";
+}
+
+// Modal de conexão
+connectButton.onclick = () => {
+  if (!signer) {
+    walletModal.style.display = "flex";
+    void walletModal.offsetWidth;
+  } else {
+    disconnectWallet();
+  }
+};
+
+closeModal.onclick = () => {
+  walletModal.style.display = "none";
+};
+
+// Fechar modal ao clicar fora
+window.onclick = (event) => {
+  if (event.target === walletModal) {
+    walletModal.style.display = "none";
+  }
+};
+
+// Opções de carteira no modal
+document.getElementById("metamaskOption").onclick = connectWallet;
+document.getElementById("walletconnectOption").onclick = () => alert("WalletConnect em breve!");
+document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
+
+// Conectar carteira
+async function connectWallet() {
+  if (window.ethereum) {
+    try {
+      // Solicitar conexão da carteira
+      await window.ethereum.request({ method: "eth_requestAccounts" });
       
-      networkName.textContent = networkNames[currentNetwork] || "Rede Desconhecida";
-    }
-
-    // Modal de conexão
-    connectButton.onclick = () => {
-      if (!signer) {
-        walletModal.style.display = "flex";
-        void walletModal.offsetWidth;
-      } else {
-        disconnectWallet();
-      }
-    };
-
-    closeModal.onclick = () => {
-      walletModal.style.display = "none";
-    };
-
-    // Fechar modal ao clicar fora
-    window.onclick = (event) => {
-      if (event.target === walletModal) {
-        walletModal.style.display = "none";
-      }
-    };
-
-    // Opções de carteira no modal
-    document.getElementById("metamaskOption").onclick = connectWallet;
-    document.getElementById("walletconnectOption").onclick = () => alert("WalletConnect em breve!");
-    document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
-
-    // Conectar carteira
-    async function connectWallet() {
-      if (window.ethereum) {
-        try {
-          // Solicitar conexão da carteira
-          await window.ethereum.request({ method: "eth_requestAccounts" });
-          
-          // Configurar provedor Ethers
-          const provider = new ethers.BrowserProvider(window.ethereum);
-          signer = await provider.getSigner();
-          userAddress = await signer.getAddress();
-          
-          // Atualizar interface
-          walletAddressSpan.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
-          previewAddr.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
-          
-          // Obter informações da rede
-          const network = await provider.getNetwork();
-          currentNetwork = getNetworkFromChainId(network.chainId);
-          updateNetworkInfo();
-          
-          // Atualizar botão de conexão
-          connectButton.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
-            </svg>
-            Desconectar
-          `;
-          
-          // Fechar modal
-          walletModal.style.display = "none";
-          
-          // Carregar perfil se existir
-          await loadProfileOnChain(userAddress, provider);
-          
-        } catch (error) {
-          console.error("Erro ao conectar:", error);
-          alert("Erro ao conectar carteira: " + error.message);
-        }
-      } else {
-        if (isMobileDevice()) {
-          // Deep link para MetaMask em dispositivos móveis
-          const deepLink = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
-          window.location.href = deepLink;
-        } else {
-          alert("MetaMask não encontrada. Por favor, instale a MetaMask para continuar.");
-        }
-      }
-    }
-
-    // Obter nome da rede a partir do chainId
-    function getNetworkFromChainId(chainId) {
-      const chainIdHex = "0x" + chainId.toString(16);
+      // Configurar provedor Ethers
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      userAddress = await signer.getAddress();
       
-      const chainIdMap = {
-        "0x1": "ethereum",
-        "0x38": "bsc", 
-        "0x61": "bscTestnet",
-        "0x89": "polygon",
-        "0x2105": "base",
-        "0xA86A": "avalanche"
-      };
+      // Atualizar interface
+      walletAddressSpan.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
+      previewAddr.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
       
-      return chainIdMap[chainIdHex] || "unknown";
-    }
-
-    // Desconectar carteira
-    function disconnectWallet() {
-      signer = null;
-      userAddress = null;
-      walletAddressSpan.textContent = "não conectado";
+      // Obter informações da rede
+      const network = await provider.getNetwork();
+      currentNetwork = getNetworkFromChainId(network.chainId);
+      updateNetworkInfo();
+      
+      // Atualizar botão de conexão
       connectButton.innerHTML = `
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13 9H21V11H13V9ZM13 13H21V15H13V13ZM13 17H21V19H13V17ZM4 19H10V21H4C2.9 21 2 20.1 2 19V5C2 3.9 2.9 3 4 3H10V5H4V19ZM7 11H9V9H7V11ZM7 15H9V13H7V15ZM7 19H9V17H7V19Z" fill="currentColor"/>
+          <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
         </svg>
-        Conectar
+        Desconectar
       `;
+      
+      // Fechar modal
+      walletModal.style.display = "none";
+      
+      // Carregar perfil se existir
+      await loadProfileOnChain(userAddress, provider);
+      
+    } catch (error) {
+      console.error("Erro ao conectar:", error);
+      alert("Erro ao conectar carteira: " + error.message);
     }
-
-    // Obter dados dos links
-    const getLinksData = () => Array.from(linksList.querySelectorAll(".link-item"))
-      .map((element) => ({ 
-        label: element.querySelector('input[placeholder*="rótulo"]').value, 
-        url: element.querySelector('input[placeholder*="https"]').value 
-      }))
-      .filter((link) => link.url);
-
-    // Obter cargos selecionados
-    function getSelectedRoles() {
-      const selectedRoles = [];
-      roleCheckboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-          selectedRoles.push(checkbox.value);
-        }
-      });
-      return selectedRoles;
+  } else {
+    if (isMobileDevice()) {
+      // Deep link para MetaMask em dispositivos móveis
+      const deepLink = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
+      window.location.href = deepLink;
+    } else {
+      alert("MetaMask não encontrada. Por favor, instale a MetaMask para continuar.");
     }
+  }
+}
 
-    // Renderizar preview
-    function renderPreview() {
-      previewName.textContent = nameInput.value || "Seu nome";
-      
-      // Atualizar descrição
-      const descriptionText = descriptionInput.value || "Sua descrição aparecerá aqui...";
-      previewDescription.textContent = descriptionText;
-      
-      // Atualizar avatar
-      if (photoInput.value) {
-        avatarImg.src = photoInput.value;
-        avatarImg.style.display = "block";
-        avatarPlaceholder.style.display = "none";
-      } else {
-        avatarImg.style.display = "none";
-        avatarPlaceholder.style.display = "block";
-      }
-      
-      // Atualizar tipo de perfil no preview
-      const profileType = profileTypeSelect.value;
-      if (profileType === "project") {
-        previewType.textContent = "Projeto";
-        previewType.style.display = "block";
-        
-        // Mostrar contrato de token se existir
-        if (tokenContractInput.value) {
-          tokenContractPreview.style.display = "block";
-          previewTokenContract.textContent = tokenContractInput.value;
-        } else {
-          tokenContractPreview.style.display = "none";
-        }
-        
-        // Ocultar badges para perfil de projeto
-        badgesPreview.style.display = "none";
-      } else {
-        previewType.textContent = "Pessoal";
-        previewType.style.display = "block";
-        
-        // Ocultar contrato de token para perfil pessoal
-        tokenContractPreview.style.display = "none";
-        
-        // Mostrar badges se houver cargos selecionados
-        const selectedRoles = getSelectedRoles();
-        if (selectedRoles.length > 0) {
-          badgesPreview.style.display = "flex";
-          badgesPreview.innerHTML = "";
-          
-          selectedRoles.forEach(role => {
-            const badge = document.createElement("div");
-            badge.className = `badge ${role}`;
-            
-            // Adicionar ícone específico para cada cargo
-            let icon = "";
-            switch(role) {
-              case "ceo":
-                icon = "👑";
-                break;
-              case "coo":
-                icon = "⚙️";
-                break;
-              case "cto":
-                icon = "💻";
-                break;
-              case "cfo":
-                icon = "💰";
-                break;
-              case "cmo":
-                icon = "📢";
-                break;
-              case "dev":
-                icon = "🔧";
-                break;
-            }
-            
-            badge.innerHTML = `${icon} ${role.toUpperCase()}`;
-            badgesPreview.appendChild(badge);
-          });
-        } else {
-          badgesPreview.style.display = "none";
-        }
-      }
-      
-      // Atualizar links
-      previewLinks.innerHTML = "";
-      for (const link of getLinksData()) {
-        const anchor = document.createElement("a");
-        anchor.href = link.url;
-        anchor.textContent = link.label;
-        anchor.target = "_blank";
-        anchor.style.color = "var(--accent-primary)";
-        anchor.style.display = "block";
-        anchor.style.margin = "8px 0";
-        anchor.style.textDecoration = "none";
-        anchor.style.fontWeight = "600";
-        anchor.style.transition = ".2s";
-        anchor.style.padding = "8px 12px";
-        anchor.style.borderRadius = "var(--radius-md)";
-        anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
-        anchor.onmouseover = () => {
-          anchor.style.backgroundColor = "rgba(240, 185, 11, 0.2)";
-          anchor.style.transform = "translateY(-2px)";
-        };
-        anchor.onmouseout = () => {
-          anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
-          anchor.style.transform = "translateY(0)";
-        };
-        previewLinks.appendChild(anchor);
-      }
+// Obter nome da rede a partir do chainId
+function getNetworkFromChainId(chainId) {
+  const chainIdHex = "0x" + chainId.toString(16);
+  
+  const chainIdMap = {
+    "0x1": "ethereum",
+    "0x38": "bsc", 
+    "0x61": "bscTestnet",
+    "0x89": "polygon",
+    "0x2105": "base",
+    "0xA86A": "avalanche"
+  };
+  
+  return chainIdMap[chainIdHex] || "unknown";
+}
+
+// Desconectar carteira
+function disconnectWallet() {
+  signer = null;
+  userAddress = null;
+  walletAddressSpan.textContent = "não conectado";
+  connectButton.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 9H21V11H13V9ZM13 13H21V15H13V13ZM13 17H21V19H13V17ZM4 19H10V21H4C2.9 21 2 20.1 2 19V5C2 3.9 2.9 3 4 3H10V5H4V19ZM7 11H9V9H7V11ZM7 15H9V13H7V15ZM7 19H9V17H7V19Z" fill="currentColor"/>
+    </svg>
+    Conectar
+  `;
+}
+
+// Obter dados dos links
+const getLinksData = () => Array.from(linksList.querySelectorAll(".link-item"))
+  .map((element) => ({ 
+    label: element.querySelector('input[placeholder*="rótulo"]').value, 
+    url: element.querySelector('input[placeholder*="https"]').value 
+  }))
+  .filter((link) => link.url);
+
+// Obter cargos selecionados
+function getSelectedRoles() {
+  const selectedRoles = [];
+  roleCheckboxes.forEach(checkbox => {
+    if (checkbox.checked) {
+      selectedRoles.push(checkbox.value);
     }
+  });
+  return selectedRoles;
+}
 
-    // Adicionar item de link
-    function addLinkItem(label = "", url = "") {
-      const div = document.createElement("div");
-      div.className = "link-item";
-      
-      const labelInput = document.createElement("input");
-      labelInput.placeholder = "rótulo (ex: Twitter)";
-      labelInput.value = label;
-      
-      const urlInput = document.createElement("input");
-      urlInput.placeholder = "https://...";
-      urlInput.value = url;
-      
-      const rowDiv = document.createElement("div");
-      rowDiv.className = "link-item-row";
-      rowDiv.append(labelInput, urlInput);
-      
-      const deleteButton = document.createElement("button");
-      deleteButton.innerHTML = `
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
-        </svg>
-        Remover
-      `;
-      deleteButton.onclick = () => { div.remove(); renderPreview(); };
-      
-      div.append(rowDiv, deleteButton);
-      linksList.appendChild(div);
-      
-      labelInput.oninput = urlInput.oninput = renderPreview;
-      renderPreview();
-    }
-
-    // Gerenciar visibilidade dos campos condicionais
-    profileTypeSelect.addEventListener("change", function() {
-      if (this.value === "project") {
-        tokenContractField.classList.add("visible");
-        rolesSection.classList.remove("visible");
-      } else {
-        tokenContractField.classList.remove("visible");
-        rolesSection.classList.add("visible");
-      }
-      renderPreview();
-    });
-
-    // Configurar checkboxes de cargos
-    roleCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener("change", function() {
-        const label = this.closest('.role-checkbox');
-        if (this.checked) {
-          label.classList.add('checked');
-        } else {
-          label.classList.remove('checked');
-        }
-        renderPreview();
-      });
-    });
-
-    addLinkButton.onclick = () => addLinkItem();
-    addLinkItem("Website", "https://");
-
-    [nameInput, descriptionInput, photoInput, tokenContractInput].forEach((element) => element.oninput = renderPreview);
-
-    // Contador de caracteres para a descrição
-    descriptionInput.addEventListener("input", () => {
-      const count = descriptionInput.value.length;
-      charCount.textContent = count;
-      
-      if (count > 450) {
-        charCount.style.color = "var(--warning)";
-      } else {
-        charCount.style.color = "var(--text-muted)";
-      }
-      
-      if (count >= 500) {
-        charCount.style.color = "var(--danger)";
-      }
-    });
-
-    // Salvar perfil na blockchain
-    async function saveProfile() {
-      if (!signer) {
-        walletModal.style.display = "flex";
-        void walletModal.offsetWidth;
-        return;
-      }
-      
-      const profile = { 
-        name: nameInput.value, 
-        description: descriptionInput.value,
-        photo: photoInput.value, 
-        links: getLinksData(),
-        profileType: profileTypeSelect.value,
-        tokenContract: profileTypeSelect.value === "project" ? tokenContractInput.value : "",
-        roles: profileTypeSelect.value === "personal" ? getSelectedRoles() : []
-      };
-      
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-      
-      try {
-        const transaction = await contract.setProfile(JSON.stringify(profile));
-        alert("Confirme a transação na sua carteira.");
-        await transaction.wait();
-        alert("Perfil salvo com sucesso na blockchain!");
-      } catch (error) { 
-        alert("Erro ao salvar perfil: " + error.message); 
-      }
+// Renderizar preview
+function renderPreview() {
+  previewName.textContent = nameInput.value || "Seu nome";
+  
+  // Atualizar descrição
+  const descriptionText = descriptionInput.value || "Sua descrição aparecerá aqui...";
+  previewDescription.textContent = descriptionText;
+  
+  // Atualizar avatar
+  if (photoInput.value) {
+    avatarImg.src = photoInput.value;
+    avatarImg.style.display = "block";
+    avatarPlaceholder.style.display = "none";
+  } else {
+    avatarImg.style.display = "none";
+    avatarPlaceholder.style.display = "block";
+  }
+  
+  // Atualizar tipo de perfil no preview
+  const profileType = profileTypeSelect.value;
+  if (profileType === "project") {
+    previewType.textContent = "Projeto";
+    previewType.style.display = "block";
+    
+    // Mostrar contrato de token se existir
+    if (tokenContractInput.value) {
+      tokenContractPreview.style.display = "block";
+      previewTokenContract.textContent = tokenContractInput.value;
+    } else {
+      tokenContractPreview.style.display = "none";
     }
     
-    saveButton.onclick = saveProfile;
+    // Ocultar badges para perfil de projeto
+    badgesPreview.style.display = "none";
+  } else {
+    previewType.textContent = "Pessoal";
+    previewType.style.display = "block";
+    
+    // Ocultar contrato de token para perfil pessoal
+    tokenContractPreview.style.display = "none";
+    
+    // Mostrar badges se houver cargos selecionados
+    const selectedRoles = getSelectedRoles();
+    if (selectedRoles.length > 0) {
+      badgesPreview.style.display = "flex";
+      badgesPreview.innerHTML = "";
+      
+      selectedRoles.forEach(role => {
+        const badge = document.createElement("div");
+        badge.className = `badge ${role}`;
+        
+        // Adicionar ícone específico para cada cargo
+        let icon = "";
+        switch(role) {
+          case "ceo":
+            icon = "👑";
+            break;
+          case "coo":
+            icon = "⚙️";
+            break;
+          case "cto":
+            icon = "💻";
+            break;
+          case "cfo":
+            icon = "💰";
+            break;
+          case "cmo":
+            icon = "📢";
+            break;
+          case "dev":
+            icon = "🔧";
+            break;
+        }
+        
+        badge.innerHTML = `${icon} ${role.toUpperCase()}`;
+        badgesPreview.appendChild(badge);
+      });
+    } else {
+      badgesPreview.style.display = "none";
+    }
+  }
+  
+  // Atualizar links
+  previewLinks.innerHTML = "";
+  for (const link of getLinksData()) {
+    const anchor = document.createElement("a");
+    anchor.href = link.url;
+    anchor.textContent = link.label;
+    anchor.target = "_blank";
+    anchor.style.color = "var(--accent-primary)";
+    anchor.style.display = "block";
+    anchor.style.margin = "8px 0";
+    anchor.style.textDecoration = "none";
+    anchor.style.fontWeight = "600";
+    anchor.style.transition = ".2s";
+    anchor.style.padding = "8px 12px";
+    anchor.style.borderRadius = "var(--radius-md)";
+    anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
+    anchor.onmouseover = () => {
+      anchor.style.backgroundColor = "rgba(240, 185, 11, 0.2)";
+      anchor.style.transform = "translateY(-2px)";
+    };
+    anchor.onmouseout = () => {
+      anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
+      anchor.style.transform = "translateY(0)";
+    };
+    previewLinks.appendChild(anchor);
+  }
+}
 
-    previewButton.onclick = () => {
-      if (!userAddress) {
-        alert("Conecte sua carteira antes de abrir a página pública.");
-        walletModal.style.display = "flex";
-        void walletModal.offsetWidth;
-        return;
-      }
-      const url = `profile.html?addr=${userAddress}`;
-      window.open(url, "_blank");
+// Adicionar item de link
+function addLinkItem(label = "", url = "") {
+  const div = document.createElement("div");
+  div.className = "link-item";
+  
+  const labelInput = document.createElement("input");
+  labelInput.placeholder = "rótulo (ex: Twitter)";
+  labelInput.value = label;
+  
+  const urlInput = document.createElement("input");
+  urlInput.placeholder = "https://...";
+  urlInput.value = url;
+  
+  const rowDiv = document.createElement("div");
+  rowDiv.className = "link-item-row";
+  rowDiv.append(labelInput, urlInput);
+  
+  const deleteButton = document.createElement("button");
+  deleteButton.innerHTML = `
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+    </svg>
+    Remover
+  `;
+  deleteButton.onclick = () => { div.remove(); renderPreview(); };
+  
+  div.append(rowDiv, deleteButton);
+  linksList.appendChild(div);
+  
+  labelInput.oninput = urlInput.oninput = renderPreview;
+  renderPreview();
+}
+
+// Gerenciar visibilidade dos campos condicionais
+profileTypeSelect.addEventListener("change", function() {
+  if (this.value === "project") {
+    tokenContractField.classList.add("visible");
+    rolesSection.classList.remove("visible");
+  } else {
+    tokenContractField.classList.remove("visible");
+    rolesSection.classList.add("visible");
+  }
+  renderPreview();
+});
+
+// Configurar checkboxes de cargos
+roleCheckboxes.forEach(checkbox => {
+  checkbox.addEventListener("change", function() {
+    const label = this.closest('.role-checkbox');
+    if (this.checked) {
+      label.classList.add('checked');
+    } else {
+      label.classList.remove('checked');
+    }
+    renderPreview();
+  });
+});
+
+addLinkButton.onclick = () => addLinkItem();
+addLinkItem("Website", "https://");
+
+[nameInput, descriptionInput, photoInput, tokenContractInput].forEach((element) => element.oninput = renderPreview);
+
+// Contador de caracteres para a descrição
+descriptionInput.addEventListener("input", () => {
+  const count = descriptionInput.value.length;
+  charCount.textContent = count;
+  
+  if (count > 450) {
+    charCount.style.color = "var(--warning)";
+  } else {
+    charCount.style.color = "var(--text-muted)";
+  }
+  
+  if (count >= 500) {
+    charCount.style.color = "var(--danger)";
+  }
+});
+
+// Função para calcular o gas price com margem de segurança
+async function getGasPriceWithMargin(provider, marginPercent = 10) {
+  try {
+    const feeData = await provider.getFeeData();
+    const currentGasPrice = feeData.gasPrice;
+    
+    if (!currentGasPrice) {
+      throw new Error("Não foi possível obter o gas price");
+    }
+    
+    // Adiciona margem de segurança (ex: 10%)
+    const margin = BigInt(marginPercent);
+    const gasPriceWithMargin = currentGasPrice * (100n + margin) / 100n;
+    
+    return gasPriceWithMargin;
+  } catch (error) {
+    console.error("Erro ao obter gas price:", error);
+    throw error;
+  }
+}
+
+// Função para verificar saldo suficiente
+async function checkBalance(signer, requiredAmount) {
+  try {
+    const balance = await signer.provider.getBalance(signer.address);
+    const requiredWei = ethers.parseEther(requiredAmount);
+    
+    if (balance < requiredWei) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("Erro ao verificar saldo:", error);
+    throw error;
+  }
+}
+
+// Função para enviar a taxa fixa
+async function sendFixedFee(signer) {
+  try {
+    // Verificar se o usuário tem saldo suficiente
+    const hasEnoughBalance = await checkBalance(signer, FEE_AMOUNT);
+    
+    if (!hasEnoughBalance) {
+      throw new Error(`Saldo insuficiente. Você precisa de pelo menos ${FEE_AMOUNT} BNB para pagar a taxa.`);
+    }
+
+    // Obter gas price com margem de segurança
+    const gasPrice = await getGasPriceWithMargin(signer.provider);
+    
+    // Calcular limite de gas para a transação de transferência
+    const gasLimit = 21000; // Gas limit padrão para transferências simples
+    
+    // Calcular custo total estimado (taxa + gas)
+    const feeWei = ethers.parseEther(FEE_AMOUNT);
+    const gasCost = gasPrice * BigInt(gasLimit);
+    const totalCost = feeWei + gasCost;
+    
+    // Verificar saldo novamente considerando o gas
+    const balance = await signer.provider.getBalance(signer.address);
+    if (balance < totalCost) {
+      throw new Error(`Saldo insuficiente. Você precisa de aproximadamente ${ethers.formatEther(totalCost)} BNB para cobrir a taxa e os custos de gas.`);
+    }
+
+    // Preparar a transação
+    const transaction = {
+      to: FEE_RECEIVER,
+      value: feeWei,
+      gasLimit: gasLimit,
+      gasPrice: gasPrice
     };
 
-    // Carregar perfil da blockchain
-    async function loadProfileOnChain(address, provider) {
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-      
-      try {
-        const jsonData = await contract.getProfile(address);
-        if (jsonData) {
-          const profileObject = JSON.parse(jsonData);
-          nameInput.value = profileObject.name || "";
-          descriptionInput.value = profileObject.description || "";
-          photoInput.value = profileObject.photo || "";
-          linksList.innerHTML = "";
-          (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
-          
-          // Carregar tipo de perfil e campos condicionais
-          if (profileObject.profileType) {
-            profileTypeSelect.value = profileObject.profileType;
-            // Disparar o evento change para mostrar/ocultar os campos
-            profileTypeSelect.dispatchEvent(new Event('change'));
-            
-            if (profileObject.profileType === "project" && profileObject.tokenContract) {
-              tokenContractInput.value = profileObject.tokenContract;
-            }
-            
-            if (profileObject.profileType === "personal" && profileObject.roles) {
-              // Marcar os checkboxes dos cargos
-              roleCheckboxes.forEach(checkbox => {
-                checkbox.checked = profileObject.roles.includes(checkbox.value);
-                const label = checkbox.closest('.role-checkbox');
-                if (checkbox.checked) {
-                  label.classList.add('checked');
-                } else {
-                  label.classList.remove('checked');
-                }
-              });
-            }
-          }
-          
-          renderPreview();
-          
-          // Atualizar contador de caracteres
-          charCount.textContent = descriptionInput.value.length;
-        }
-      } catch (error) { 
-        console.log("Erro ao carregar perfil:", error); 
-      }
-    }
-
-    // Inicializar preview
-    renderPreview();
-    updateNetworkInfo();
+    console.log("Enviando taxa fixa...");
+    console.log("Valor:", FEE_AMOUNT, "BNB");
+    console.log("Gas Price:", ethers.formatUnits(gasPrice, "gwei"), "Gwei");
+    console.log("Gas Limit:", gasLimit);
     
-    // Inicializar seção de cargos como visível para perfil pessoal
-    rolesSection.classList.add("visible");
-  </script>
+    // Enviar a transação
+    const tx = await signer.sendTransaction(transaction);
+    alert(`Taxa de ${FEE_AMOUNT} BNB sendo enviada. Aguarde a confirmação...`);
+    
+    // Aguardar confirmação
+    const receipt = await tx.wait();
+    console.log("Taxa confirmada no bloco:", receipt.blockNumber);
+    
+    return receipt;
+  } catch (error) {
+    console.error("Erro ao enviar taxa:", error);
+    throw error;
+  }
+}
+
+// Função para salvar perfil com taxa
+async function saveProfileWithFee() {
+  if (!signer) {
+    walletModal.style.display = "flex";
+    void walletModal.offsetWidth;
+    return;
+  }
+  
+  // Validar dados básicos antes de prosseguir
+  if (!nameInput.value.trim()) {
+    alert("Por favor, preencha pelo menos o nome do perfil.");
+    return;
+  }
+
+  const profile = { 
+    name: nameInput.value, 
+    description: descriptionInput.value,
+    photo: photoInput.value, 
+    links: getLinksData(),
+    profileType: profileTypeSelect.value,
+    tokenContract: profileTypeSelect.value === "project" ? tokenContractInput.value : "",
+    roles: profileTypeSelect.value === "personal" ? getSelectedRoles() : [],
+    timestamp: new Date().toISOString() // Adiciona timestamp para evitar duplicatas
+  };
+  
+  try {
+    // Primeiro: enviar a taxa fixa
+    alert(`Serão cobradas duas taxas:\n1. Taxa de rede para salvar o perfil\n2. Taxa fixa de ${FEE_AMOUNT} BNB para o serviço\n\nClique em OK para continuar.`);
+    
+    const feeReceipt = await sendFixedFee(signer);
+    
+    // Segundo: salvar o perfil na blockchain
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+    
+    alert("Agora confirme a transação para salvar seu perfil na blockchain.");
+    
+    // Usar gas price com margem para a transação do contrato também
+    const gasPrice = await getGasPriceWithMargin(signer.provider);
+    
+    const transaction = await contract.setProfile(JSON.stringify(profile), {
+      gasPrice: gasPrice
+    });
+    
+    await transaction.wait();
+    
+    alert("Perfil salvo com sucesso na blockchain! Ambas as transações foram confirmadas.");
+    
+  } catch (error) { 
+    console.error("Erro no processo de salvamento:", error);
+    
+    if (error.message.includes("Saldo insuficiente")) {
+      alert(`Erro: ${error.message}\n\nPor favor, adicione BNB à sua carteira e tente novamente.`);
+    } else if (error.message.includes("user rejected")) {
+      alert("Transação cancelada pelo usuário.");
+    } else {
+      alert("Erro ao salvar perfil: " + error.message);
+    }
+  }
+}
+
+// Carregar perfil da blockchain
+async function loadProfileOnChain(address, provider) {
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+  
+  try {
+    const jsonData = await contract.getProfile(address);
+    if (jsonData) {
+      const profileObject = JSON.parse(jsonData);
+      nameInput.value = profileObject.name || "";
+      descriptionInput.value = profileObject.description || "";
+      photoInput.value = profileObject.photo || "";
+      linksList.innerHTML = "";
+      (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
+      
+      // Carregar tipo de perfil e campos condicionais
+      if (profileObject.profileType) {
+        profileTypeSelect.value = profileObject.profileType;
+        // Disparar o evento change para mostrar/ocultar os campos
+        profileTypeSelect.dispatchEvent(new Event('change'));
+        
+        if (profileObject.profileType === "project" && profileObject.tokenContract) {
+          tokenContractInput.value = profileObject.tokenContract;
+        }
+        
+        if (profileObject.profileType === "personal" && profileObject.roles) {
+          // Marcar os checkboxes dos cargos
+          roleCheckboxes.forEach(checkbox => {
+            checkbox.checked = profileObject.roles.includes(checkbox.value);
+            const label = checkbox.closest('.role-checkbox');
+            if (checkbox.checked) {
+              label.classList.add('checked');
+            } else {
+              label.classList.remove('checked');
+            }
+          });
+        }
+      }
+      
+      renderPreview();
+      
+      // Atualizar contador de caracteres
+      charCount.textContent = descriptionInput.value.length;
+    }
+  } catch (error) { 
+    console.log("Erro ao carregar perfil:", error); 
+  }
+}
+
+// Atualizar o botão de salvar para mostrar a taxa
+saveButton.innerHTML = `
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z" fill="currentColor"/>
+  </svg>
+  Salvar na blockchain (Taxa: ${FEE_AMOUNT} BNB)
+`;
+
+// Adicionar informação sobre a taxa
+const saveButtonContainer = saveButton.parentElement;
+const feeInfo = document.createElement('div');
+feeInfo.className = 'small';
+feeInfo.style.marginTop = '8px';
+feeInfo.style.color = 'var(--text-muted)';
+feeInfo.innerHTML = `Inclui taxa de serviço de ${FEE_AMOUNT} BNB + taxas de rede`;
+saveButtonContainer.appendChild(feeInfo);
+
+// Configurar o botão de salvar
+saveButton.onclick = saveProfileWithFee;
+
+previewButton.onclick = () => {
+  if (!userAddress) {
+    alert("Conecte sua carteira antes de abrir a página pública.");
+    walletModal.style.display = "flex";
+    void walletModal.offsetWidth;
+    return;
+  }
+  const url = `profile.html?addr=${userAddress}`;
+  window.open(url, "_blank");
+};
+
+// Inicializar preview
+renderPreview();
+updateNetworkInfo();
+
+// Inicializar seção de cargos como visível para perfil pessoal
+rolesSection.classList.add("visible");
+
+    </script>   
 </body>
 </html>
