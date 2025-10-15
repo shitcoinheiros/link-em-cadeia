@@ -1026,11 +1026,18 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   <!-- Header -->
   <header class="main-header">
     <div class="header-content">
-      <div class="logo-section">
-        <a href="#" class="logo">
-          <div class="logo-text">TieBio</div>
-        </a>
-      </div>
+
+<div class="logo-section">
+  <a href="#" class="logo">
+ <!--   <img src="https://github.com/shitcoinheiros/link-em-cadeia/blob/main/Logo%20TIEBIO.png?raw=true" alt="Logo TieBIO" class="logo-icon">  -->
+    <div class="logo-text">TieBio</div>
+  </a>
+</div>
+      
+
+    
+
+    
       
       <div class="wallet-section">
         <div class="network-selector">
@@ -1140,16 +1147,13 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             </select>
           </div>
 
-          <!-- Seção FOTO (aparece para ambos os tipos) -->
-          <div class="form-section">
-            <label for="photo">Foto (URL)</label>
-            <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
-          </div>
-
-          <!-- Seção NOME (aparece para ambos os tipos) -->
-          <div class="form-section">
-            <label for="name">Nome</label>
-            <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
+          <!-- Campo condicional para Token Contract (Projeto) -->
+          <div class="form-section token-contract-field" id="tokenContractField">
+            <label for="tokenContract">Endereço do Contrato do Token</label>
+            <input id="tokenContract" type="text" placeholder="0x..." />
+            <div class="small" style="margin-top: 4px;">
+              Cole o endereço do contrato do token do seu projeto
+            </div>
           </div>
 
           <!-- Campo condicional para Cargos (Pessoal) -->
@@ -1186,7 +1190,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             </div>
           </div>
 
-          <!-- Seção DESCRIÇÃO (aparece para ambos os tipos) -->
+          <div class="form-section">
+            <label for="name">Nome</label>
+            <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
+          </div>
+
           <div class="form-section">
             <label for="description">Descrição</label>
             <textarea id="description" placeholder="Fale um pouco sobre você, seus interesses, projetos... (máx. 500 caracteres)" maxlength="500"></textarea>
@@ -1195,16 +1203,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             </div>
           </div>
 
-          <!-- Campo condicional para Token Contract (Projeto) -->
-          <div class="form-section token-contract-field" id="tokenContractField">
-            <label for="tokenContract">Endereço do Contrato do Token</label>
-            <input id="tokenContract" type="text" placeholder="0x..." />
-            <div class="small" style="margin-top: 4px;">
-              Cole o endereço do contrato do token do seu projeto
-            </div>
+          <div class="form-section">
+            <label for="photo">Foto (URL)</label>
+            <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
           </div>
 
-          <!-- Seção LINKS (aparece para ambos os tipos) -->
           <div class="form-section" id="linksBox">
             <label>Links (rede social, site, etc.)</label>
             <div id="linksList"></div>
@@ -1241,48 +1244,30 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
         <aside>
           <div class="profile-preview" id="previewBox">
-            <!-- Avatar/Foto -->
             <div class="avatar">
               <div class="avatar-placeholder" id="avatarPlaceholder">Adicione uma URL de imagem</div>
               <img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover;display:none"/>
             </div>
-            
-            <!-- Nome e Tipo de Perfil -->
             <div style="margin-top:12px;text-align:center">
               <div id="previewName" style="font-weight:700;font-size:20px">Nome</div>
+              <div id="previewAddr" class="small" style="margin-top:4px">endereço</div>
+              <!-- Nova linha para mostrar o tipo de perfil no preview -->
               <div id="previewType" class="small" style="margin-top:2px;color:var(--accent-primary);font-weight:600"></div>
             </div>
-
-            <!-- Badges (apenas para perfil pessoal) -->
-            <div id="badgesPreview" class="badges-container" style="display: none; margin-top: 8px;"></div>
-
-            <!-- Descrição -->
-            <div class="preview-description" id="previewDescription" style="margin-top: 12px;">
+            <div class="preview-description" id="previewDescription">
               Sua descrição aparecerá aqui...
-            </div>
-
-            <!-- Endereço da Carteira (aparece para ambos) -->
-            <div style="margin-top:12px;text-align:center">
-              <div class="small" style="font-weight:600;color:var(--text-secondary);margin-bottom:4px">Carteira:</div>
-              <div id="previewAddr" class="small" style="word-break:break-all;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-md);font-family:monospace">endereço</div>
             </div>
             
             <!-- Container para o contrato de token (Projeto) -->
-            <div id="tokenContractPreview" class="token-contract-preview" style="display: none; margin-top: 12px;">
-              <div class="small" style="font-weight:600;color:var(--text-secondary);margin-bottom:4px">Contrato do Token:</div>
-              <div id="previewTokenContract" style="word-break:break-all;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-md);font-family:monospace">—</div>
+            <div id="tokenContractPreview" class="token-contract-preview" style="display: none;">
+              <strong>Token Contract:</strong><br>
+              <span id="previewTokenContract">—</span>
             </div>
             
-            <!-- Gráfico do Token (placeholder para projeto) -->
-            <div id="tokenChartPreview" class="token-chart-preview" style="display: none; margin-top: 12px;">
-              <div class="small" style="font-weight:600;color:var(--text-secondary);margin-bottom:4px">Gráfico do Token:</div>
-              <div style="padding:20px;background:var(--bg-secondary);border-radius:var(--radius-md);text-align:center;color:var(--text-muted);font-size:14px;">
-                Gráfico do token aparecerá aqui
-              </div>
-            </div>
+            <!-- Container para os emblemas de cargos (Pessoal) -->
+            <div id="badgesPreview" class="badges-container" style="display: none;"></div>
             
-            <!-- Links -->
-            <div class="links" id="previewLinks" style="margin-top: 16px;"></div>
+            <div class="links" id="previewLinks"></div>
           </div>
           
           <!-- Bloco informativo - versão mobile -->
@@ -1394,10 +1379,10 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   };
 
-  // CONTRATO
+  // NOVO CONTRATO - ATUALIZEI AQUI
   const CONTRACT_ADDRESS = "0x892E166032765cDd4FE23Be77327328CE4992D90";
   
-  // ABI
+  // ABI ATUALIZADA PARA O NOVO CONTRATO
   const ABI = [
     "function setProfile(string calldata json) external payable",
     "function getProfile(address user) public view returns (string memory)",
@@ -1420,11 +1405,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     "event FeeAmountUpdated(uint256 oldAmount, uint256 newAmount)"
   ];
 
-  // Configurações da taxa
+  // Configurações da taxa (mantenha as mesmas)
   const FEE_AMOUNT = "0.0015"; // Taxa fixa em BNB
   const FEE_RECEIVER = "0xb2Eb3a418f8dd57E4bd1Bb590a8583C5F0678cb4";
 
-  // Elementos do DOM
+  // Elementos do DOM (mantenha tudo igual)
   const connectButton = document.getElementById("connectBtn");
   const walletAddressSpan = document.getElementById("walletAddr");
   const nameInput = document.getElementById("name");
@@ -1457,7 +1442,6 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   const tokenContractPreview = document.getElementById("tokenContractPreview");
   const previewTokenContract = document.getElementById("previewTokenContract");
   const badgesPreview = document.getElementById("badgesPreview");
-  const tokenChartPreview = document.getElementById("tokenChartPreview");
 
   let signer = null;
   let userAddress = null;
@@ -1466,20 +1450,20 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   // Detectar se é dispositivo móvel
   const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  // Configuração do seletor de redes
+  // Configuração do seletor de redes (mantenha igual)
   networkLogo.addEventListener("click", (event) => {
     event.stopPropagation();
     networkDropdown.classList.toggle("active");
   });
 
-  // Fechar dropdown ao clicar fora
+  // Fechar dropdown ao clicar fora (mantenha igual)
   document.addEventListener("click", (event) => {
     if (!networkLogo.contains(event.target) && !networkDropdown.contains(event.target)) {
       networkDropdown.classList.remove("active");
     }
   });
 
-  // Selecionar rede
+  // Selecionar rede (mantenha igual)
   document.querySelectorAll(".network-option").forEach((option) => {
     option.addEventListener("click", async () => {
       const chain = option.getAttribute("data-chain");
@@ -1510,7 +1494,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     });
   });
 
-  // Função para mudar de rede na carteira
+  // Função para mudar de rede na carteira (mantenha igual)
   async function switchNetwork(chain) {
     if (!window.ethereum) {
       throw new Error("Carteira não detectada");
@@ -1542,7 +1526,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Atualizar informações da rede na interface
+  // Atualizar informações da rede na interface (mantenha igual)
   function updateNetworkInfo() {
     const networkNames = {
       "bsc": "BNB Chain",
@@ -1556,7 +1540,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     networkName.textContent = networkNames[currentNetwork] || "Rede Desconhecida";
   }
 
-  // Modal de conexão
+  // Modal de conexão (mantenha igual)
   connectButton.onclick = () => {
     if (!signer) {
       walletModal.style.display = "flex";
@@ -1576,12 +1560,12 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   };
 
-  // Opções de carteira no modal
+  // Opções de carteira no modal (mantenha igual)
   document.getElementById("metamaskOption").onclick = connectWallet;
   document.getElementById("walletconnectOption").onclick = () => alert("WalletConnect em breve!");
   document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
 
-  // Conectar carteira
+  // Conectar carteira (mantenha igual)
   async function connectWallet() {
     if (window.ethereum) {
       try {
@@ -1623,7 +1607,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Obter nome da rede a partir do chainId
+  // Obter nome da rede a partir do chainId (mantenha igual)
   function getNetworkFromChainId(chainId) {
     const chainIdHex = "0x" + chainId.toString(16);
     
@@ -1639,7 +1623,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     return chainIdMap[chainIdHex] || "unknown";
   }
 
-  // Desconectar carteira
+  // Desconectar carteira (mantenha igual)
   function disconnectWallet() {
     signer = null;
     userAddress = null;
@@ -1652,7 +1636,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     `;
   }
 
-  // Obter dados dos links
+  // Obter dados dos links (mantenha igual)
   const getLinksData = () => Array.from(linksList.querySelectorAll(".link-item"))
     .map((element) => ({ 
       label: element.querySelector('input[placeholder*="rótulo"]').value, 
@@ -1660,7 +1644,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }))
     .filter((link) => link.url);
 
-  // Obter cargos selecionados
+  // Obter cargos selecionados (mantenha igual)
   function getSelectedRoles() {
     const selectedRoles = [];
     roleCheckboxes.forEach(checkbox => {
@@ -1671,7 +1655,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     return selectedRoles;
   }
 
-  // Renderizar preview
+  // Renderizar preview (mantenha igual)
   function renderPreview() {
     previewName.textContent = nameInput.value || "Seu nome";
     
@@ -1692,14 +1676,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       previewType.textContent = "Projeto";
       previewType.style.display = "block";
       
-      // Mostrar contrato do token e gráfico para projetos
       if (tokenContractInput.value) {
         tokenContractPreview.style.display = "block";
-        tokenChartPreview.style.display = "block";
         previewTokenContract.textContent = tokenContractInput.value;
       } else {
         tokenContractPreview.style.display = "none";
-        tokenChartPreview.style.display = "none";
       }
       
       badgesPreview.style.display = "none";
@@ -1708,7 +1689,6 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       previewType.style.display = "block";
       
       tokenContractPreview.style.display = "none";
-      tokenChartPreview.style.display = "none";
       
       const selectedRoles = getSelectedRoles();
       if (selectedRoles.length > 0) {
@@ -1776,7 +1756,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Adicionar item de link
+  // Adicionar item de link (mantenha igual)
   function addLinkItem(label = "", url = "") {
     const div = document.createElement("div");
     div.className = "link-item";
@@ -1809,7 +1789,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     renderPreview();
   }
 
-  // Gerenciar visibilidade dos campos condicionais
+  // Gerenciar visibilidade dos campos condicionais (mantenha igual)
   profileTypeSelect.addEventListener("change", function() {
     if (this.value === "project") {
       tokenContractField.classList.add("visible");
@@ -1821,7 +1801,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     renderPreview();
   });
 
-  // Configurar checkboxes de cargos
+  // Configurar checkboxes de cargos (mantenha igual)
   roleCheckboxes.forEach(checkbox => {
     checkbox.addEventListener("change", function() {
       const label = this.closest('.role-checkbox');
@@ -1839,7 +1819,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   [nameInput, descriptionInput, photoInput, tokenContractInput].forEach((element) => element.oninput = renderPreview);
 
-  // Contador de caracteres para a descrição
+  // Contador de caracteres para a descrição (mantenha igual)
   descriptionInput.addEventListener("input", () => {
     const count = descriptionInput.value.length;
     charCount.textContent = count;
@@ -1855,7 +1835,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   });
 
-  // Função para calcular o gas price com margem de segurança
+  // Função para calcular o gas price com margem de segurança (mantenha igual)
   async function getGasPriceWithMargin(provider, marginPercent = 10) {
     try {
       const feeData = await provider.getFeeData();
@@ -1875,7 +1855,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Salvar perfil com transação única
+  // NOVA FUNÇÃO: Salvar perfil com transação única (ATUALIZADA)
   async function saveProfileWithFee() {
     if (!signer) {
       walletModal.style.display = "flex";
@@ -1900,20 +1880,24 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     };
     
     try {
+      // CONFIRMAÇÃO ÚNICA
       const userConfirmed = confirm(`💰 TRANSAÇÃO ÚNICA\n\n📝 Salvar perfil na blockchain\n💸 Taxa de serviço: ${FEE_AMOUNT} BNB\n⛽ Taxas de rede inclusas\n\n✅ Uma única confirmação na MetaMask`);
       
       if (!userConfirmed) {
         throw new Error("Transação cancelada pelo usuário");
       }
 
+      // TRANSAÇÃO ÚNICA - TUDO EM UMA SÓ
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       
+      // Calcular gas com margem
       const gasPrice = await getGasPriceWithMargin(signer.provider, 15);
       
       console.log("🚀 Enviando transação única...");
       
+      // Enviar transação única com valor (taxa incluída)
       const tx = await contract.setProfile(JSON.stringify(profile), {
-        value: ethers.parseEther(FEE_AMOUNT),
+        value: ethers.parseEther(FEE_AMOUNT), // ✅ Taxa incluída aqui
         gasPrice: gasPrice
       });
       
@@ -1939,7 +1923,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Carregar perfil da blockchain
+  // Carregar perfil da blockchain (mantenha igual)
   async function loadProfileOnChain(address, provider) {
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
     
@@ -1982,7 +1966,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Atualizar o botão de salvar
+  // Atualizar o botão de salvar (mantenha igual)
   saveButton.innerHTML = `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z" fill="currentColor"/>
@@ -1990,7 +1974,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     Salvar na blockchain (Taxa: ${FEE_AMOUNT} BNB)
   `;
 
-  // Adicionar informação sobre a taxa
+  // Adicionar informação sobre a taxa (mantenha igual)
   const saveButtonContainer = saveButton.parentElement;
   const feeInfo = document.createElement('div');
   feeInfo.className = 'small';
@@ -2001,7 +1985,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     saveButtonContainer.appendChild(feeInfo);
   }
 
-  // Configurar o botão de salvar
+  // Configurar o botão de salvar (ATUALIZADO)
   saveButton.onclick = saveProfileWithFee;
 
   previewButton.onclick = () => {
@@ -2022,6 +2006,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   // Inicializar seção de cargos como visível para perfil pessoal
   rolesSection.classList.add("visible");
 </script>
+
   
 </body>
 </html>
