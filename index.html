@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CHART IN BIO</title>
   <link rel="icon" type="https://i.postimg.cc/kG5V5Qk4/Picsart-25-10-09-15-34-05-434.png">
+  <!-- Adicionar Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <style>   
     :root {
       --bg-primary: #0B0E11;
@@ -515,10 +517,6 @@
       width: 100%;
     }
 
-    .link-item-row input {
-      flex: 1;
-    }
-
     .link-item button {
       padding: 10px 12px;
       background: var(--bg-primary);
@@ -995,13 +993,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     color: white;
   }
 
-
-
-
-
-
-  
-    .token-contract-preview {
+  .token-contract-preview {
       margin: 12px 0;
       padding: 10px;
       background: rgba(240, 185, 11, 0.1);
@@ -1019,6 +1011,125 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
     .token-contract-preview a:hover {
       text-decoration: underline;
+    }
+
+    /* Novos estilos para os ícones dos links */
+    .icon-selector-container {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-selector {
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
+      background: rgba(11, 14, 17, 0.6);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .icon-selector:hover {
+      border-color: var(--accent-primary);
+      background: rgba(240, 185, 11, 0.05);
+    }
+
+    .icon-selector i {
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .icon-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      width: 200px;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 102;
+      backdrop-filter: blur(10px);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .icon-dropdown.active {
+      display: grid;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .icon-option {
+      width: 100%;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(11, 14, 17, 0.6);
+    }
+
+    .icon-option:hover {
+      background: rgba(240, 185, 11, 0.1);
+      transform: scale(1.1);
+    }
+
+    .icon-option i {
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .preview-link-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(240, 185, 11, 0.1);
+      border-radius: var(--radius-md);
+      margin: 8px 0;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .preview-link-item:hover {
+      background: rgba(240, 185, 11, 0.2);
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+    }
+
+    .preview-link-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .preview-link-icon i {
+      font-size: 16px;
+      color: var(--accent-primary);
+    }
+
+    .preview-link-label {
+      flex: 1;
+      text-align: center;
     }
   </style>
 </head>
@@ -1459,6 +1570,16 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   const badgesPreview = document.getElementById("badgesPreview");
   const tokenChartPreview = document.getElementById("tokenChartPreview");
 
+  // Ícones disponíveis para os links
+  const AVAILABLE_ICONS = [
+    'bi-globe', 'bi-twitter-x', 'bi-facebook', 'bi-instagram', 'bi-linkedin', 
+    'bi-github', 'bi-discord', 'bi-telegram', 'bi-youtube', 'bi-tiktok',
+    'bi-reddit', 'bi-whatsapp', 'bi-envelope', 'bi-link-45deg', 'bi-share',
+    'bi-heart', 'bi-star', 'bi-bookmark', 'bi-flag', 'bi-gear',
+    'bi-house', 'bi-person', 'bi-people', 'bi-chat', 'bi-send',
+    'bi-camera', 'bi-image', 'bi-music-note', 'bi-film', 'bi-mic'
+  ];
+
   let signer = null;
   let userAddress = null;
   let currentNetwork = "bsc";
@@ -1656,7 +1777,8 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   const getLinksData = () => Array.from(linksList.querySelectorAll(".link-item"))
     .map((element) => ({ 
       label: element.querySelector('input[placeholder*="rótulo"]').value, 
-      url: element.querySelector('input[placeholder*="https"]').value 
+      url: element.querySelector('input[placeholder*="https"]').value,
+      icon: element.querySelector('.icon-selector i').className
     }))
     .filter((link) => link.url);
 
@@ -1753,33 +1875,60 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     for (const link of getLinksData()) {
       const anchor = document.createElement("a");
       anchor.href = link.url;
-      anchor.textContent = link.label;
       anchor.target = "_blank";
-      anchor.style.color = "var(--accent-primary)";
-      anchor.style.display = "block";
-      anchor.style.margin = "8px 0";
-      anchor.style.textDecoration = "none";
-      anchor.style.fontWeight = "600";
-      anchor.style.transition = ".2s";
-      anchor.style.padding = "8px 12px";
-      anchor.style.borderRadius = "var(--radius-md)";
-      anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
-      anchor.onmouseover = () => {
-        anchor.style.backgroundColor = "rgba(240, 185, 11, 0.2)";
-        anchor.style.transform = "translateY(-2px)";
-      };
-      anchor.onmouseout = () => {
-        anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
-        anchor.style.transform = "translateY(0)";
-      };
+      anchor.className = "preview-link-item";
+      
+      anchor.innerHTML = `
+        <div class="preview-link-icon">
+          <i class="${link.icon}"></i>
+        </div>
+        <div class="preview-link-label">${link.label}</div>
+      `;
+      
       previewLinks.appendChild(anchor);
     }
   }
 
   // Adicionar item de link
-  function addLinkItem(label = "", url = "") {
+  function addLinkItem(label = "", url = "", icon = "bi-link-45deg") {
     const div = document.createElement("div");
     div.className = "link-item";
+    
+    const iconSelectorContainer = document.createElement("div");
+    iconSelectorContainer.className = "icon-selector-container";
+    
+    const iconSelector = document.createElement("div");
+    iconSelector.className = "icon-selector";
+    iconSelector.innerHTML = `<i class="${icon}"></i>`;
+    
+    const iconDropdown = document.createElement("div");
+    iconDropdown.className = "icon-dropdown";
+    
+    // Popular o dropdown com ícones
+    AVAILABLE_ICONS.forEach(iconClass => {
+      const iconOption = document.createElement("div");
+      iconOption.className = "icon-option";
+      iconOption.innerHTML = `<i class="${iconClass}"></i>`;
+      iconOption.addEventListener("click", () => {
+        iconSelector.innerHTML = `<i class="${iconClass}"></i>`;
+        iconDropdown.classList.remove("active");
+        renderPreview();
+      });
+      iconDropdown.appendChild(iconOption);
+    });
+    
+    iconSelector.addEventListener("click", (event) => {
+      event.stopPropagation();
+      iconDropdown.classList.toggle("active");
+    });
+    
+    // Fechar dropdown ao clicar fora
+    document.addEventListener("click", () => {
+      iconDropdown.classList.remove("active");
+    });
+    
+    iconSelectorContainer.appendChild(iconSelector);
+    iconSelectorContainer.appendChild(iconDropdown);
     
     const labelInput = document.createElement("input");
     labelInput.placeholder = "rótulo (ex: Twitter)";
@@ -1791,7 +1940,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     
     const rowDiv = document.createElement("div");
     rowDiv.className = "link-item-row";
-    rowDiv.append(labelInput, urlInput);
+    rowDiv.append(iconSelectorContainer, labelInput, urlInput);
     
     const deleteButton = document.createElement("button");
     deleteButton.innerHTML = `
@@ -1835,7 +1984,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   });
 
   addLinkButton.onclick = () => addLinkItem();
-  addLinkItem("Website", "https://");
+  addLinkItem("Website", "https://", "bi-globe");
 
   [nameInput, descriptionInput, photoInput, tokenContractInput].forEach((element) => element.oninput = renderPreview);
 
@@ -1951,7 +2100,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         descriptionInput.value = profileObject.description || "";
         photoInput.value = profileObject.photo || "";
         linksList.innerHTML = "";
-        (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
+        (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url, link.icon || "bi-link-45deg"));
         
         if (profileObject.profileType) {
           profileTypeSelect.value = profileObject.profileType;
