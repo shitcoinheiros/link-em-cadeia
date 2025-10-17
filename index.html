@@ -1416,7 +1416,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             Personalize sua página e veja as mudanças ao vivo no painel acima.
           </div>
           
-          <div style="margin-top:16px;font-size:14px;color:var(--text-secondary);font-weight:500">Link público (após salvar):</div>
+          <div style="margin-top:16px;font-size:14px;color:var(--text-secondary);font-weight=500">Link público (após salvar):</div>
           <div id="publicLink" class="small" style="word-break:break-all;margin-top:6px;padding:10px;background:rgba(240,185,11,0.03);border-radius:var(--radius-md);border:1px solid var(--border-light)">—</div>
         </aside>
       </div>
@@ -2022,27 +2022,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   });
 
-  // Função para calcular o gas price com margem de segurança
-  async function getGasPriceWithMargin(provider, marginPercent = 10) {
-    try {
-      const feeData = await provider.getFeeData();
-      const currentGasPrice = feeData.gasPrice;
-      
-      if (!currentGasPrice) {
-        throw new Error("Não foi possível obter o gas price");
-      }
-      
-      const margin = BigInt(marginPercent);
-      const gasPriceWithMargin = currentGasPrice * (100n + margin) / 100n;
-      
-      return gasPriceWithMargin;
-    } catch (error) {
-      console.error("Erro ao obter gas price:", error);
-      throw error;
-    }
-  }
-
-  // Salvar perfil com transação única
+  // Salvar perfil com transação única - VERSÃO CORRIGIDA
   async function saveProfileWithFee() {
     if (!signer) {
       walletModal.style.display = "flex";
@@ -2075,13 +2055,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       
-      const gasPrice = await getGasPriceWithMargin(signer.provider, 15);
+      console.log("🚀 Enviando transação...");
       
-      console.log("🚀 Enviando transação única...");
-      
+      // Usar a mesma lógica simples que estava funcionando
       const tx = await contract.setProfile(JSON.stringify(profile), {
-        value: ethers.parseEther(FEE_AMOUNT),
-        gasPrice: gasPrice
+        value: ethers.parseEther(FEE_AMOUNT)
       });
       
       alert("⏳ Aguardando confirmação da transação...");
@@ -2089,19 +2067,19 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       const receipt = await tx.wait();
       console.log("✅ Transação confirmada:", receipt.blockNumber);
       
-      alert("🎉 Perfil salvo com sucesso! Taxa processada em uma única transação.");
+      alert("🎉 Perfil salvo com sucesso!");
       
     } catch (error) { 
       console.error("Erro ao salvar perfil:", error);
       
-      if (error.message.includes("Saldo insuficiente")) {
-        alert(`Erro: ${error.message}\n\nPor favor, adicione BNB à sua carteira e tente novamente.`);
-      } else if (error.message.includes("user rejected")) {
+      if (error.message.includes("user rejected") || error.message.includes("denied transaction")) {
         alert("Transação cancelada pelo usuário.");
-      } else if (error.message.includes("insufficient fee")) {
-        alert("Valor da taxa incorreto. Por favor, use o valor exato de " + FEE_AMOUNT + " BNB.");
+      } else if (error.message.includes("insufficient funds") || error.message.includes("saldo insuficiente")) {
+        alert(`Saldo insuficiente! Você precisa de pelo menos ${FEE_AMOUNT} BNB + taxas de rede.`);
+      } else if (error.message.includes("revert") || error.message.includes("execution reverted")) {
+        alert("Erro no contrato: A transação foi revertida. Verifique os dados e tente novamente.");
       } else {
-        alert("Erro ao salvar perfil: " + error.message);
+        alert("Erro ao salvar perfil: " + (error.reason || error.message || "Erro desconhecido"));
       }
     }
   }
