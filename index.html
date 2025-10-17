@@ -954,6 +954,14 @@
     gap: 6px;
   }
 
+    .badge.holder {
+   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+    color: white;
+  }
+
+
   .badge.ceo {
    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -986,6 +994,14 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     color: white;
   }
+
+    .badge.kol {
+   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+    color: white;
+  }
+
 
   .badge.dev {
     background: linear-gradient(135deg, #232526, #414345);
@@ -1283,7 +1299,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
               Selecione os cargos que você representa no projeto
             </div>
             <div class="roles-grid">
-              <label class="role-checkbox" data-role="ceo">
+              <label class="role-checkbox" data-role="holder">
+                <input type="checkbox" value="holder">
+                <span>HOLDER</span>
+              </label>
+                <label class="role-checkbox" data-role="ceo">
                 <input type="checkbox" value="ceo">
                 <span>CEO</span>
               </label>
@@ -1302,6 +1322,10 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
               <label class="role-checkbox" data-role="cmo">
                 <input type="checkbox" value="cmo">
                 <span>CMO</span>
+              </label>
+                <label class="role-checkbox" data-role="kol">
+                <input type="checkbox" value="kol">
+                <span>KOL</span>
               </label>
               <label class="role-checkbox" data-role="dev">
                 <input type="checkbox" value="dev">
@@ -1858,6 +1882,9 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             case "ceo":
               icon = "👑";
               break;
+               case "holder":
+              icon = "💎";
+              break;
             case "coo":
               icon = "⚙️";
               break;
@@ -1869,6 +1896,9 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
               break;
             case "cmo":
               icon = "📢";
+              break;
+              case "kol":
+              icon = "💻";
               break;
             case "dev":
               icon = "🔧";
