@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CHART IN BIO</title>
   <link rel="icon" type="https://i.postimg.cc/kG5V5Qk4/Picsart-25-10-09-15-34-05-434.png">
+  <!-- Adicionar Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <style>   
     :root {
       --bg-primary: #0B0E11;
@@ -515,10 +517,6 @@
       width: 100%;
     }
 
-    .link-item-row input {
-      flex: 1;
-    }
-
     .link-item button {
       padding: 10px 12px;
       background: var(--bg-primary);
@@ -995,13 +993,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     color: white;
   }
 
-
-
-
-
-
-  
-    .token-contract-preview {
+  .token-contract-preview {
       margin: 12px 0;
       padding: 10px;
       background: rgba(240, 185, 11, 0.1);
@@ -1020,24 +1012,140 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     .token-contract-preview a:hover {
       text-decoration: underline;
     }
+
+    /* NOVOS ESTILOS PARA OS ÍCONES DOS LINKS - ATUALIZADOS */
+    .icon-selector-container {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      position: relative;
+    }
+
+    .icon-selector {
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
+      background: rgba(11, 14, 17, 0.6);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .icon-selector:hover {
+      border-color: var(--accent-primary);
+      background: rgba(240, 185, 11, 0.05);
+    }
+
+    .icon-selector i {
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .icon-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      width: 200px;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      z-index: 102;
+      backdrop-filter: blur(10px);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .icon-dropdown.active {
+      display: grid;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .icon-option {
+      width: 100%;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(11, 14, 17, 0.6);
+    }
+
+    .icon-option:hover {
+      background: rgba(240, 185, 11, 0.1);
+      transform: scale(1.1);
+    }
+
+    .icon-option i {
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    /* PREVIEW ATUALIZADO - ÍCONE NO CENTRO SEM NOME */
+    .preview-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(240, 185, 11, 0.1);
+      border-radius: var(--radius-md);
+      margin: 8px 0;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      width: 100%;
+    }
+
+    .preview-link-item:hover {
+      background: rgba(240, 185, 11, 0.2);
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+    }
+
+    .preview-link-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview-link-icon i {
+      font-size: 20px;
+      color: var(--accent-primary);
+    }
+
+    /* Remove o label do preview */
+    .preview-link-label {
+      display: none;
+    }
+
+    /* Ajustes para o formulário de links - removendo campo de rótulo */
+    .link-url-input {
+      flex: 1;
+    }
   </style>
 </head>
 <body>
   <!-- Header -->
   <header class="main-header">
     <div class="header-content">
-
-<div class="logo-section">
-  <a href="#" class="logo">
- <!--   <img src="https://github.com/shitcoinheiros/link-em-cadeia/blob/main/Logo%20TIEBIO.png?raw=true" alt="Logo TieBIO" class="logo-icon">  -->
-    <div class="logo-text">TieBio</div>
-  </a>
-</div>
-      
-
-    
-
-    
+      <div class="logo-section">
+        <a href="#" class="logo">
+          <div class="logo-text">TieBio</div>
+        </a>
+      </div>
       
       <div class="wallet-section">
         <div class="network-selector">
@@ -1147,13 +1255,16 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             </select>
           </div>
 
-          <!-- Campo condicional para Token Contract (Projeto) -->
-          <div class="form-section token-contract-field" id="tokenContractField">
-            <label for="tokenContract">Endereço do Contrato do Token</label>
-            <input id="tokenContract" type="text" placeholder="0x..." />
-            <div class="small" style="margin-top: 4px;">
-              Cole o endereço do contrato do token do seu projeto
-            </div>
+          <!-- Seção FOTO (aparece para ambos os tipos) -->
+          <div class="form-section">
+            <label for="photo">Foto (URL)</label>
+            <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
+          </div>
+
+          <!-- Seção NOME (aparece para ambos os tipos) -->
+          <div class="form-section">
+            <label for="name">Nome</label>
+            <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
           </div>
 
           <!-- Campo condicional para Cargos (Pessoal) -->
@@ -1190,11 +1301,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             </div>
           </div>
 
-          <div class="form-section">
-            <label for="name">Nome</label>
-            <input id="name" type="text" placeholder="Seu nome público (ex: @william)" />
-          </div>
-
+          <!-- Seção DESCRIÇÃO (aparece para ambos os tipos) -->
           <div class="form-section">
             <label for="description">Descrição</label>
             <textarea id="description" placeholder="Fale um pouco sobre você, seus interesses, projetos... (máx. 500 caracteres)" maxlength="500"></textarea>
@@ -1203,11 +1310,16 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             </div>
           </div>
 
-          <div class="form-section">
-            <label for="photo">Foto (URL)</label>
-            <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
+          <!-- Campo condicional para Token Contract (Projeto) -->
+          <div class="form-section token-contract-field" id="tokenContractField">
+            <label for="tokenContract">Endereço do Contrato do Token</label>
+            <input id="tokenContract" type="text" placeholder="0x..." />
+            <div class="small" style="margin-top: 4px;">
+              Cole o endereço do contrato do token do seu projeto
+            </div>
           </div>
 
+          <!-- Seção LINKS (aparece para ambos os tipos) -->
           <div class="form-section" id="linksBox">
             <label>Links (rede social, site, etc.)</label>
             <div id="linksList"></div>
@@ -1244,30 +1356,48 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
         <aside>
           <div class="profile-preview" id="previewBox">
+            <!-- Avatar/Foto -->
             <div class="avatar">
               <div class="avatar-placeholder" id="avatarPlaceholder">Adicione uma URL de imagem</div>
               <img id="avatarImg" src="" alt="avatar" style="width:100%;height:100%;object-fit:cover;display:none"/>
             </div>
+            
+            <!-- Nome e Tipo de Perfil -->
             <div style="margin-top:12px;text-align:center">
               <div id="previewName" style="font-weight:700;font-size:20px">Nome</div>
-              <div id="previewAddr" class="small" style="margin-top:4px">endereço</div>
-              <!-- Nova linha para mostrar o tipo de perfil no preview -->
               <div id="previewType" class="small" style="margin-top:2px;color:var(--accent-primary);font-weight:600"></div>
             </div>
-            <div class="preview-description" id="previewDescription">
+
+            <!-- Badges (apenas para perfil pessoal) -->
+            <div id="badgesPreview" class="badges-container" style="display: none; margin-top: 8px;"></div>
+
+            <!-- Descrição -->
+            <div class="preview-description" id="previewDescription" style="margin-top: 12px;">
               Sua descrição aparecerá aqui...
+            </div>
+
+            <!-- Endereço da Carteira (aparece para ambos) -->
+            <div style="margin-top:12px;text-align:center">
+              <div class="small" style="font-weight:600;color:var(--text-secondary);margin-bottom:4px">Carteira:</div>
+              <div id="previewAddr" class="small" style="word-break:break-all;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-md);font-family:monospace">endereço</div>
             </div>
             
             <!-- Container para o contrato de token (Projeto) -->
-            <div id="tokenContractPreview" class="token-contract-preview" style="display: none;">
-              <strong>Token Contract:</strong><br>
-              <span id="previewTokenContract">—</span>
+            <div id="tokenContractPreview" class="token-contract-preview" style="display: none; margin-top: 12px;">
+              <div class="small" style="font-weight:600;color:var(--text-secondary);margin-bottom:4px">Contrato do Token:</div>
+              <div id="previewTokenContract" style="word-break:break-all;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-md);font-family:monospace">—</div>
             </div>
             
-            <!-- Container para os emblemas de cargos (Pessoal) -->
-            <div id="badgesPreview" class="badges-container" style="display: none;"></div>
+            <!-- Gráfico do Token (placeholder para projeto) -->
+            <div id="tokenChartPreview" class="token-chart-preview" style="display: none; margin-top: 12px;">
+              <div class="small" style="font-weight:600;color:var(--text-secondary);margin-bottom:4px">Gráfico do Token:</div>
+              <div style="padding:20px;background:var(--bg-secondary);border-radius:var(--radius-md);text-align:center;color:var(--text-muted);font-size:14px;">
+                Gráfico do token aparecerá aqui
+              </div>
+            </div>
             
-            <div class="links" id="previewLinks"></div>
+            <!-- Links -->
+            <div class="links" id="previewLinks" style="margin-top: 16px;"></div>
           </div>
           
           <!-- Bloco informativo - versão mobile -->
@@ -1379,10 +1509,10 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   };
 
-  // NOVO CONTRATO - ATUALIZEI AQUI
+  // CONTRATO
   const CONTRACT_ADDRESS = "0x892E166032765cDd4FE23Be77327328CE4992D90";
   
-  // ABI ATUALIZADA PARA O NOVO CONTRATO
+  // ABI
   const ABI = [
     "function setProfile(string calldata json) external payable",
     "function getProfile(address user) public view returns (string memory)",
@@ -1405,11 +1535,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     "event FeeAmountUpdated(uint256 oldAmount, uint256 newAmount)"
   ];
 
-  // Configurações da taxa (mantenha as mesmas)
+  // Configurações da taxa
   const FEE_AMOUNT = "0.0015"; // Taxa fixa em BNB
   const FEE_RECEIVER = "0xb2Eb3a418f8dd57E4bd1Bb590a8583C5F0678cb4";
 
-  // Elementos do DOM (mantenha tudo igual)
+  // Elementos do DOM
   const connectButton = document.getElementById("connectBtn");
   const walletAddressSpan = document.getElementById("walletAddr");
   const nameInput = document.getElementById("name");
@@ -1442,6 +1572,17 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   const tokenContractPreview = document.getElementById("tokenContractPreview");
   const previewTokenContract = document.getElementById("previewTokenContract");
   const badgesPreview = document.getElementById("badgesPreview");
+  const tokenChartPreview = document.getElementById("tokenChartPreview");
+
+  // Ícones disponíveis para os links
+  const AVAILABLE_ICONS = [
+    'bi-globe', 'bi-twitter-x', 'bi-facebook', 'bi-instagram', 'bi-linkedin', 
+    'bi-github', 'bi-discord', 'bi-telegram', 'bi-youtube', 'bi-tiktok',
+    'bi-reddit', 'bi-whatsapp', 'bi-envelope', 'bi-link-45deg', 'bi-share',
+    'bi-heart', 'bi-star', 'bi-bookmark', 'bi-flag', 'bi-gear',
+    'bi-house', 'bi-person', 'bi-people', 'bi-chat', 'bi-send',
+    'bi-camera', 'bi-image', 'bi-music-note', 'bi-film', 'bi-mic'
+  ];
 
   let signer = null;
   let userAddress = null;
@@ -1450,20 +1591,20 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   // Detectar se é dispositivo móvel
   const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  // Configuração do seletor de redes (mantenha igual)
+  // Configuração do seletor de redes
   networkLogo.addEventListener("click", (event) => {
     event.stopPropagation();
     networkDropdown.classList.toggle("active");
   });
 
-  // Fechar dropdown ao clicar fora (mantenha igual)
+  // Fechar dropdown ao clicar fora
   document.addEventListener("click", (event) => {
     if (!networkLogo.contains(event.target) && !networkDropdown.contains(event.target)) {
       networkDropdown.classList.remove("active");
     }
   });
 
-  // Selecionar rede (mantenha igual)
+  // Selecionar rede
   document.querySelectorAll(".network-option").forEach((option) => {
     option.addEventListener("click", async () => {
       const chain = option.getAttribute("data-chain");
@@ -1494,7 +1635,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     });
   });
 
-  // Função para mudar de rede na carteira (mantenha igual)
+  // Função para mudar de rede na carteira
   async function switchNetwork(chain) {
     if (!window.ethereum) {
       throw new Error("Carteira não detectada");
@@ -1526,7 +1667,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Atualizar informações da rede na interface (mantenha igual)
+  // Atualizar informações da rede na interface
   function updateNetworkInfo() {
     const networkNames = {
       "bsc": "BNB Chain",
@@ -1540,7 +1681,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     networkName.textContent = networkNames[currentNetwork] || "Rede Desconhecida";
   }
 
-  // Modal de conexão (mantenha igual)
+  // Modal de conexão
   connectButton.onclick = () => {
     if (!signer) {
       walletModal.style.display = "flex";
@@ -1560,12 +1701,12 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   };
 
-  // Opções de carteira no modal (mantenha igual)
+  // Opções de carteira no modal
   document.getElementById("metamaskOption").onclick = connectWallet;
   document.getElementById("walletconnectOption").onclick = () => alert("WalletConnect em breve!");
   document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
 
-  // Conectar carteira (mantenha igual)
+  // Conectar carteira
   async function connectWallet() {
     if (window.ethereum) {
       try {
@@ -1607,7 +1748,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Obter nome da rede a partir do chainId (mantenha igual)
+  // Obter nome da rede a partir do chainId
   function getNetworkFromChainId(chainId) {
     const chainIdHex = "0x" + chainId.toString(16);
     
@@ -1623,7 +1764,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     return chainIdMap[chainIdHex] || "unknown";
   }
 
-  // Desconectar carteira (mantenha igual)
+  // Desconectar carteira
   function disconnectWallet() {
     signer = null;
     userAddress = null;
@@ -1636,15 +1777,15 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     `;
   }
 
-  // Obter dados dos links (mantenha igual)
+  // Obter dados dos links - ATUALIZADO: removido label
   const getLinksData = () => Array.from(linksList.querySelectorAll(".link-item"))
     .map((element) => ({ 
-      label: element.querySelector('input[placeholder*="rótulo"]').value, 
-      url: element.querySelector('input[placeholder*="https"]').value 
+      url: element.querySelector('.link-url-input').value,
+      icon: element.querySelector('.icon-selector i').className
     }))
     .filter((link) => link.url);
 
-  // Obter cargos selecionados (mantenha igual)
+  // Obter cargos selecionados
   function getSelectedRoles() {
     const selectedRoles = [];
     roleCheckboxes.forEach(checkbox => {
@@ -1655,7 +1796,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     return selectedRoles;
   }
 
-  // Renderizar preview (mantenha igual)
+  // Renderizar preview - ATUALIZADO: ícone no centro sem nome
   function renderPreview() {
     previewName.textContent = nameInput.value || "Seu nome";
     
@@ -1676,11 +1817,14 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       previewType.textContent = "Projeto";
       previewType.style.display = "block";
       
+      // Mostrar contrato do token e gráfico para projetos
       if (tokenContractInput.value) {
         tokenContractPreview.style.display = "block";
+        tokenChartPreview.style.display = "block";
         previewTokenContract.textContent = tokenContractInput.value;
       } else {
         tokenContractPreview.style.display = "none";
+        tokenChartPreview.style.display = "none";
       }
       
       badgesPreview.style.display = "none";
@@ -1689,6 +1833,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       previewType.style.display = "block";
       
       tokenContractPreview.style.display = "none";
+      tokenChartPreview.style.display = "none";
       
       const selectedRoles = getSelectedRoles();
       if (selectedRoles.length > 0) {
@@ -1733,45 +1878,76 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     for (const link of getLinksData()) {
       const anchor = document.createElement("a");
       anchor.href = link.url;
-      anchor.textContent = link.label;
       anchor.target = "_blank";
-      anchor.style.color = "var(--accent-primary)";
-      anchor.style.display = "block";
-      anchor.style.margin = "8px 0";
-      anchor.style.textDecoration = "none";
-      anchor.style.fontWeight = "600";
-      anchor.style.transition = ".2s";
-      anchor.style.padding = "8px 12px";
-      anchor.style.borderRadius = "var(--radius-md)";
-      anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
-      anchor.onmouseover = () => {
-        anchor.style.backgroundColor = "rgba(240, 185, 11, 0.2)";
-        anchor.style.transform = "translateY(-2px)";
-      };
-      anchor.onmouseout = () => {
-        anchor.style.backgroundColor = "rgba(240, 185, 11, 0.1)";
-        anchor.style.transform = "translateY(0)";
-      };
+      anchor.className = "preview-link-item";
+      
+      anchor.innerHTML = `
+        <div class="preview-link-icon">
+          <i class="${link.icon}"></i>
+        </div>
+      `;
+      
       previewLinks.appendChild(anchor);
     }
   }
 
-  // Adicionar item de link (mantenha igual)
-  function addLinkItem(label = "", url = "") {
+  // Adicionar item de link - ATUALIZADO: removido campo de rótulo
+  function addLinkItem(url = "", icon = "bi-link-45deg") {
     const div = document.createElement("div");
     div.className = "link-item";
     
-    const labelInput = document.createElement("input");
-    labelInput.placeholder = "rótulo (ex: Twitter)";
-    labelInput.value = label;
+    const iconSelectorContainer = document.createElement("div");
+    iconSelectorContainer.className = "icon-selector-container";
+    
+    const iconSelector = document.createElement("div");
+    iconSelector.className = "icon-selector";
+    iconSelector.innerHTML = `<i class="${icon}"></i>`;
+    
+    const iconDropdown = document.createElement("div");
+    iconDropdown.className = "icon-dropdown";
+    
+    // Popular o dropdown com ícones
+    AVAILABLE_ICONS.forEach(iconClass => {
+      const iconOption = document.createElement("div");
+      iconOption.className = "icon-option";
+      iconOption.innerHTML = `<i class="${iconClass}"></i>`;
+      iconOption.addEventListener("click", () => {
+        iconSelector.innerHTML = `<i class="${iconClass}"></i>`;
+        iconDropdown.classList.remove("active");
+        renderPreview();
+      });
+      iconDropdown.appendChild(iconOption);
+    });
+    
+    iconSelector.addEventListener("click", (event) => {
+      event.stopPropagation();
+      // Fechar outros dropdowns abertos
+      document.querySelectorAll('.icon-dropdown.active').forEach(dropdown => {
+        if (dropdown !== iconDropdown) {
+          dropdown.classList.remove('active');
+        }
+      });
+      iconDropdown.classList.toggle("active");
+    });
+    
+    // Fechar dropdown ao clicar fora
+    document.addEventListener("click", (event) => {
+      if (!iconSelectorContainer.contains(event.target)) {
+        iconDropdown.classList.remove("active");
+      }
+    });
+    
+    iconSelectorContainer.appendChild(iconSelector);
+    iconSelectorContainer.appendChild(iconDropdown);
     
     const urlInput = document.createElement("input");
+    urlInput.className = "link-url-input";
     urlInput.placeholder = "https://...";
     urlInput.value = url;
     
     const rowDiv = document.createElement("div");
     rowDiv.className = "link-item-row";
-    rowDiv.append(labelInput, urlInput);
+    rowDiv.append(iconSelectorContainer, urlInput);
     
     const deleteButton = document.createElement("button");
     deleteButton.innerHTML = `
@@ -1785,11 +1961,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     div.append(rowDiv, deleteButton);
     linksList.appendChild(div);
     
-    labelInput.oninput = urlInput.oninput = renderPreview;
+    urlInput.oninput = renderPreview;
     renderPreview();
   }
 
-  // Gerenciar visibilidade dos campos condicionais (mantenha igual)
+  // Gerenciar visibilidade dos campos condicionais
   profileTypeSelect.addEventListener("change", function() {
     if (this.value === "project") {
       tokenContractField.classList.add("visible");
@@ -1801,7 +1977,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     renderPreview();
   });
 
-  // Configurar checkboxes de cargos (mantenha igual)
+  // Configurar checkboxes de cargos
   roleCheckboxes.forEach(checkbox => {
     checkbox.addEventListener("change", function() {
       const label = this.closest('.role-checkbox');
@@ -1815,11 +1991,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   });
 
   addLinkButton.onclick = () => addLinkItem();
-  addLinkItem("Website", "https://");
+  addLinkItem("https://", "bi-globe");
 
   [nameInput, descriptionInput, photoInput, tokenContractInput].forEach((element) => element.oninput = renderPreview);
 
-  // Contador de caracteres para a descrição (mantenha igual)
+  // Contador de caracteres para a descrição
   descriptionInput.addEventListener("input", () => {
     const count = descriptionInput.value.length;
     charCount.textContent = count;
@@ -1835,7 +2011,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   });
 
-  // Função para calcular o gas price com margem de segurança (mantenha igual)
+  // Função para calcular o gas price com margem de segurança
   async function getGasPriceWithMargin(provider, marginPercent = 10) {
     try {
       const feeData = await provider.getFeeData();
@@ -1855,7 +2031,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // NOVA FUNÇÃO: Salvar perfil com transação única (ATUALIZADA)
+  // Salvar perfil com transação única
   async function saveProfileWithFee() {
     if (!signer) {
       walletModal.style.display = "flex";
@@ -1880,24 +2056,20 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     };
     
     try {
-      // CONFIRMAÇÃO ÚNICA
       const userConfirmed = confirm(`💰 TRANSAÇÃO ÚNICA\n\n📝 Salvar perfil na blockchain\n💸 Taxa de serviço: ${FEE_AMOUNT} BNB\n⛽ Taxas de rede inclusas\n\n✅ Uma única confirmação na MetaMask`);
       
       if (!userConfirmed) {
         throw new Error("Transação cancelada pelo usuário");
       }
 
-      // TRANSAÇÃO ÚNICA - TUDO EM UMA SÓ
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
       
-      // Calcular gas com margem
       const gasPrice = await getGasPriceWithMargin(signer.provider, 15);
       
       console.log("🚀 Enviando transação única...");
       
-      // Enviar transação única com valor (taxa incluída)
       const tx = await contract.setProfile(JSON.stringify(profile), {
-        value: ethers.parseEther(FEE_AMOUNT), // ✅ Taxa incluída aqui
+        value: ethers.parseEther(FEE_AMOUNT),
         gasPrice: gasPrice
       });
       
@@ -1923,7 +2095,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Carregar perfil da blockchain (mantenha igual)
+  // Carregar perfil da blockchain - ATUALIZADO: removido label
   async function loadProfileOnChain(address, provider) {
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
     
@@ -1935,7 +2107,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         descriptionInput.value = profileObject.description || "";
         photoInput.value = profileObject.photo || "";
         linksList.innerHTML = "";
-        (profileObject.links || []).forEach((link) => addLinkItem(link.label, link.url));
+        (profileObject.links || []).forEach((link) => addLinkItem(link.url, link.icon || "bi-link-45deg"));
         
         if (profileObject.profileType) {
           profileTypeSelect.value = profileObject.profileType;
@@ -1966,7 +2138,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   }
 
-  // Atualizar o botão de salvar (mantenha igual)
+  // Atualizar o botão de salvar
   saveButton.innerHTML = `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z" fill="currentColor"/>
@@ -1974,7 +2146,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     Salvar na blockchain (Taxa: ${FEE_AMOUNT} BNB)
   `;
 
-  // Adicionar informação sobre a taxa (mantenha igual)
+  // Adicionar informação sobre a taxa
   const saveButtonContainer = saveButton.parentElement;
   const feeInfo = document.createElement('div');
   feeInfo.className = 'small';
@@ -1985,7 +2157,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     saveButtonContainer.appendChild(feeInfo);
   }
 
-  // Configurar o botão de salvar (ATUALIZADO)
+  // Configurar o botão de salvar
   saveButton.onclick = saveProfileWithFee;
 
   previewButton.onclick = () => {
@@ -2006,7 +2178,6 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   // Inicializar seção de cargos como visível para perfil pessoal
   rolesSection.classList.add("visible");
 </script>
-
   
 </body>
 </html>
