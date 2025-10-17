@@ -303,6 +303,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+    }
+
+    .wallet-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .wallet-name {
@@ -1226,25 +1233,19 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       <div class="wallet-options">
         <div class="wallet-option" id="metamaskOption">
           <div class="wallet-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 7L12 14L3 7V5L12 12L21 5V7Z" fill="#F6851B"/>
-            </svg>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask">
           </div>
           <div class="wallet-name">MetaMask</div>
         </div>
         <div class="wallet-option" id="walletconnectOption">
           <div class="wallet-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="#3B99FC"/>
-            </svg>
+            <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="Trust Wallet">
           </div>
-          <div class="wallet-name">WalletConnect</div>
+          <div class="wallet-name">Trust Wallet</div>
         </div>
         <div class="wallet-option" id="binanceOption">
           <div class="wallet-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="#F0B90B"/>
-            </svg>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Binance-coin-bnb-logo.png" alt="Binance">
           </div>
           <div class="wallet-name">Binance Chain</div>
         </div>
