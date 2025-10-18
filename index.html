@@ -1493,6 +1493,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       </a>
     </nav>
   </footer>
+
 <script type="module">
   import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.min.js";
 
@@ -1624,11 +1625,6 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   // Detectar se é dispositivo móvel
   const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  // Função para detectar se é Trust Wallet
-  function isTrustWallet() {
-    return !!window.ethereum?.isTrust;
-  }
-
   // Configuração do seletor de redes
   networkLogo.addEventListener("click", (event) => {
     event.stopPropagation();
@@ -1739,65 +1735,12 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
   };
 
-  // Opções de carteira no modal - ATUALIZADO: Trust Wallet agora conecta
+  // Opções de carteira no modal
   document.getElementById("metamaskOption").onclick = connectWallet;
-  document.getElementById("walletconnectOption").onclick = connectTrustWallet;
+  document.getElementById("walletconnectOption").onclick = () => alert("WalletConnect em breve!");
   document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
 
-  // Conectar com Trust Wallet
-  async function connectTrustWallet() {
-    if (window.ethereum && isTrustWallet()) {
-      // Trust Wallet no navegador desktop
-      try {
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-        
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        signer = await provider.getSigner();
-        userAddress = await signer.getAddress();
-        
-        walletAddressSpan.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
-        previewAddr.textContent = `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
-        
-        const network = await provider.getNetwork();
-        currentNetwork = getNetworkFromChainId(network.chainId);
-        updateNetworkInfo();
-        
-        connectButton.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
-          </svg>
-          Desconectar
-        `;
-        
-        walletModal.style.display = "none";
-        
-        await loadProfileOnChain(userAddress, provider);
-        
-      } catch (error) {
-        console.error("Erro ao conectar Trust Wallet:", error);
-        alert("Erro ao conectar Trust Wallet: " + error.message);
-      }
-    } else if (isMobileDevice()) {
-      // Trust Wallet em dispositivos móveis - usar deeplink
-      const currentUrl = encodeURIComponent(window.location.href);
-      const trustWalletDeepLink = `https://link.trustwallet.com/open_url?url=${currentUrl}`;
-      
-      // Tentar abrir o deeplink
-      window.location.href = trustWalletDeepLink;
-      
-      // Fallback: se não abrir após um tempo, mostrar instruções
-      setTimeout(() => {
-        if (!signer) {
-          alert("Trust Wallet não detectado. Por favor, abra este site diretamente no navegador da Trust Wallet ou instale a Trust Wallet.");
-        }
-      }, 2000);
-    } else {
-      // Navegador desktop sem Trust Wallet
-      alert("Trust Wallet não detectada. Por favor, instale a Trust Wallet para continuar.");
-    }
-  }
-
-  // Conectar carteira MetaMask
+  // Conectar carteira
   async function connectWallet() {
     if (window.ethereum) {
       try {
