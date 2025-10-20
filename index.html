@@ -1581,7 +1581,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   ];
 
   // Configurações da taxa
-  const FEE_AMOUNT = "0.0015"; // Taxa fixa em BNB
+  const FEE_AMOUNT = "0.0015"; 
   const FEE_RECEIVER = "0xb2Eb3a418f8dd57E4bd1Bb590a8583C5F0678cb4";
 
   // Elementos do DOM
@@ -1727,7 +1727,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   // Atualizar informações da rede na interface
   function updateNetworkInfo() {
     const networkNames = {
-      "bsc": "Binance Smart Chain",
+      "bsc": "BSC",
       "ethereum": "Ethereum",
       "polygon": "Polygon",
       "base": "Base",
@@ -1759,7 +1759,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   // Opções de carteira no modal - APENAS METAMASK E BINANCE
   document.getElementById("metamaskOption").onclick = connectWallet;
-  document.getElementById("binanceOption").onclick = () => alert("Binance Chain em breve!");
+  document.getElementById("binanceOption").onclick = () => alert("Add chartinbio.com directly to your wallet's browser to continue.");
 
   // Conectar carteira
   async function connectWallet() {
@@ -1801,7 +1801,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         const deepLink = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
         window.location.href = deepLink;
       } else {
-        alert("MetaMask não encontrada. Por favor, instale a MetaMask para continuar.");
+        alert("MetaMask not found. Please install MetaMask to continue.");
       }
     }
   }
@@ -1825,12 +1825,12 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   function disconnectWallet() {
     signer = null;
     userAddress = null;
-    walletAddressSpan.textContent = "não conectado";
+    walletAddressSpan.textContent = "not connected";
     connectButton.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M13 9H21V11H13V9ZM13 13H21V15H13V13ZM13 17H21V19H13V17ZM4 19H10V21H4C2.9 21 2 20.1 2 19V5C2 3.9 2.9 3 4 3H10V5H4V19ZM7 11H9V9H7V11ZM7 15H9V13H7V15ZM7 19H9V17H7V19Z" fill="currentColor"/>
       </svg>
-      Conectar
+      Connect
     `;
     mobileNetworkWarning.classList.remove('show');
   }
@@ -1858,9 +1858,9 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   // Renderizar preview - ATUALIZADO: ícone no centro sem nome
   function renderPreview() {
-    previewName.textContent = nameInput.value || "Seu nome";
+    previewName.textContent = nameInput.value || "Name";
     
-    const descriptionText = descriptionInput.value || "Sua descrição aparecerá aqui...";
+    const descriptionText = descriptionInput.value || "Your description will appear here...";
     previewDescription.textContent = descriptionText;
     
     if (photoInput.value) {
@@ -2020,7 +2020,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
       </svg>
-      Remover
+ Remove
     `;
     deleteButton.onclick = () => { div.remove(); renderPreview(); };
     
@@ -2106,7 +2106,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
     
     if (!nameInput.value.trim()) {
-      alert("Por favor, preencha pelo menos o nome do perfil.");
+      alert("Please fill in at least the profile name.");
       return;
     }
 
