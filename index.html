@@ -2122,10 +2122,10 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     };
     
     try {
-      const userConfirmed = confirm(`💰 TRANSAÇÃO ÚNICA\n\n📝 Salvar perfil na blockchain\n💸 Taxa de serviço: ${FEE_AMOUNT} BNB\n⛽ Taxas de rede inclusas\n\n✅ Uma única confirmação na MetaMask`);
+      const userConfirmed = confirm(`🔗All your links in one place on the blockchain.✅ A single confirmation on MetaMask`);
       
       if (!userConfirmed) {
-        throw new Error("Transação cancelada pelo usuário");
+        throw new Error("Transaction canceled by the user");
       }
 
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
@@ -2139,7 +2139,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         gasPrice: gasPrice
       });
       
-      alert("⏳ Aguardando confirmação da transação...");
+      alert("Confirm transaction...");
       
       const receipt = await tx.wait();
       console.log("✅ Transação confirmada:", receipt.blockNumber);
@@ -2147,16 +2147,16 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       alert("🎉 Perfil salvo com sucesso! Taxa processada em uma única transação.");
       
     } catch (error) { 
-      console.error("Erro ao salvar perfil:", error);
+      console.error("Error saving profile:", error);
       
-      if (error.message.includes("Saldo insuficiente")) {
-        alert(`Erro: ${error.message}\n\nPor favor, adicione BNB à sua carteira e tente novamente.`);
+      if (error.message.includes("Insufficient balance")) {
+        alert(`Erro: ${error.message}\n\nPlease add BNB to your wallet and try again.`);
       } else if (error.message.includes("user rejected")) {
-        alert("Transação cancelada pelo usuário.");
+        alert("Transaction canceled by the user.");
       } else if (error.message.includes("insufficient fee")) {
-        alert("Valor da taxa incorreto. Por favor, use o valor exato de " + FEE_AMOUNT + " BNB.");
+        alert("Por favor, use o valor exato de " + FEE_AMOUNT + " BNB.");
       } else {
-        alert("Erro ao salvar perfil: " + error.message);
+        alert("Error saving profile:" + error.message);
       }
     }
   }
@@ -2209,7 +2209,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM12 19C10.34 19 9 17.66 9 16C9 14.34 10.34 13 12 13C13.66 13 15 14.34 15 16C15 17.66 13.66 19 12 19ZM15 9H5V5H15V9Z" fill="currentColor"/>
     </svg>
-    Salvar na blockchain (Taxa: ${FEE_AMOUNT} BNB)
+    Save
   `;
 
   // Adicionar informação sobre a taxa
@@ -2218,7 +2218,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   feeInfo.className = 'small';
   feeInfo.style.marginTop = '8px';
   feeInfo.style.color = 'var(--text-muted)';
-  feeInfo.innerHTML = `Inclui taxa de serviço de ${FEE_AMOUNT} BNB + taxas de rede`;
+  feeInfo.innerHTML = `Saving your link profile on the Blockchain.`;
   if (saveButtonContainer) {
     saveButtonContainer.appendChild(feeInfo);
   }
@@ -2228,7 +2228,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   previewButton.onclick = () => {
     if (!userAddress) {
-      alert("Conecte sua carteira antes de abrir a página pública.");
+      alert("Connect your wallet before opening the public page.");
       walletModal.style.display = "flex";
       void walletModal.offsetWidth;
       return;
