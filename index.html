@@ -1197,7 +1197,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
           <div class="network-dropdown" id="networkDropdown">
             <div class="network-option active" data-chain="bsc">
               <div class="network-option-icon">
-                <img src="https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png" alt="BNB Chain">
+                <img src="https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png" alt="Binance Smart Chain">
               </div>
               <div class="network-option-name">BNB Chain</div>
             </div>
@@ -1227,12 +1227,12 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             </div>
           </div>
         </div>
-        <span id="walletAddr" class="wallet-address">não conectado</span>
+        <span id="walletAddr" class="wallet-address">not connected</span>
         <button id="connectBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M13 9H21V11H13V9ZM13 13H21V15H13V13ZM13 17H21V19H13V17ZM4 19H10V21H4C2.9 21 2 20.1 2 19V5C2 3.9 2.9 3 4 3H10V5H4V19ZM7 11H9V9H7V11ZM7 15H9V13H7V15ZM7 19H9V17H7V19Z" fill="currentColor"/>
           </svg>
-          Conectar
+          Connect
         </button>
       </div>
     </div>
@@ -1242,7 +1242,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   <div class="modal" id="walletModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">Conectar Carteira</h2>
+        <h2 class="modal-title">Connect Wallet</h2>
         <button class="close-modal" id="closeModal">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19 6.41L17.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
@@ -1270,51 +1270,50 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   <main class="main-content">
     <div class="card">
       <div class="page-header">
-        <h1 class="page-title">Criar / Editar Perfil</h1>
-        <p class="page-subtitle">Gerencie sua identidade Web3 na blockchain</p>
+        <h1 class="page-title">Create / Edit Profile</h1>
+        <p class="page-subtitle">Manage your link identity on the blockchain</p>
       </div>
 
       <!-- Aviso de rede móvel -->
       <div class="mobile-network-warning" id="mobileNetworkWarning">
-        ⚠️ Para melhor experiência, recomendamos usar a BNB Smart Chain. 
-        <br>Altere para a rede BSC em sua carteira.
+     Change the network to Binance Smart Chain!
+        <br>Make sure that the network has been changed in the browser in question.
       </div>
 
       <div class="grid">
         <div>
           <!-- Nova seção: Tipo de Perfil -->
           <div class="form-section">
-            <label for="profileType">Tipo de Perfil</label>
+            <label for="profileType">Profile Type</label>
             <select id="profileType">
-              <option value="personal">Perfil Pessoal</option>
-              <option value="project">Perfil de Projeto</option>
+              <option value="personal">Personal</option>
+              <option value="project">Project</option>
             </select>
           </div>
 
           <div class="form-section">
-            <label for="photo">Foto (URL)</label>
+            <label for="photo">Image (URL)</label>
             <div class="small" style="margin-bottom: 8px;">
-              Adicione um link para a sua imagem do perfil,
-              caso não tenha um link pode adicionar em
+             Add a link to your profile picture, if you don't have a link you can add it in
               <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer">
                 postimages.org
               </a>
-              e colar o link direto
+           and paste the direct link
             </div>
-            <input id="photo" type="text" placeholder="https://.../avatar.jpg" />
+            <input id="photo" type="text" placeholder="https://.../image.jpg" />
           </div>
 
           <!-- Seção NOME (aparece para ambos os tipos) -->
           <div class="form-section">
-            <label for="name">Nome</label>
-            <input id="name" type="text" placeholder="Seu nome público (ex: Jhon Smith )" />
+            <label for="name">Name</label>
+            <input id="name" type="text" placeholder="Your public name  (e.g., Jhon Smith )" />
           </div>
 
           <!-- Campo condicional para Cargos (Pessoal) -->
           <div class="form-section roles-section" id="rolesSection">
-            <label>Cargos no Projeto</label>
+            <label>Position</label>
             <div class="small" style="margin-bottom: 8px;">
-              Selecione os cargos que você representa no projeto
+              Check if you hold a position in projects
             </div>
             <div class="roles-grid">
               <label class="role-checkbox" data-role="hold">
@@ -1354,10 +1353,10 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
           <!-- Seção DESCRIÇÃO (aparece para ambos os tipos) -->
           <div class="form-section">
-            <label for="description">Descrição</label>
-            <textarea id="description" placeholder="Fale um pouco sobre você, seus interesses, projetos... (máx. 500 caracteres)" maxlength="500"></textarea>
+            <label for="description">Bio</label>
+            <textarea id="description" placeholder="Write a little about... (max. 100 characters)" maxlength="100"></textarea>
             <div class="small" style="text-align: right; margin-top: 4px;">
-              <span id="charCount">0</span>/500 caracteres
+              <span id="charCount">0</span>/100 caracteres
             </div>
           </div>
 
