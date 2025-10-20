@@ -1237,17 +1237,12 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
           </div>
           <div class="wallet-name">MetaMask</div>
         </div>
-        <div class="wallet-option" id="walletconnectOption">
-          <div class="wallet-icon">
-            <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="Trust Wallet">
-          </div>
-          <div class="wallet-name">Trust Wallet</div>
-        </div>
+    
         <div class="wallet-option" id="binanceOption">
           <div class="wallet-icon">
             <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Binance-coin-bnb-logo.png" alt="Binance">
           </div>
-          <div class="wallet-name">Binance Chain</div>
+          <div class="wallet-name">Binance Wallet</div>
         </div>
       </div>
     </div>
@@ -1506,13 +1501,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
       blockExplorerUrls: ["https://bscscan.com"]
     },
-    bscTestnet: {
-      chainId: "0x61",
-      chainName: "Binance Smart Chain Testnet",
-      rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-      nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
-      blockExplorerUrls: ["https://testnet.bscscan.com"]
-    },
+
     ethereum: {
       chainId: "0x1",
       chainName: "Ethereum Mainnet",
@@ -1705,7 +1694,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   function updateNetworkInfo() {
     const networkNames = {
       "bsc": "BNB Chain",
-      "bscTestnet": "BSC Testnet", 
+ 
       "ethereum": "Ethereum",
       "polygon": "Polygon",
       "base": "Base",
@@ -1789,7 +1778,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     const chainIdMap = {
       "0x1": "ethereum",
       "0x38": "bsc", 
-      "0x61": "bscTestnet",
+     
       "0x89": "polygon",
       "0x2105": "base",
       "0xA86A": "avalanche"
